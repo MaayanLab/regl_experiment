@@ -1,10 +1,8 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var regl = require('regl')
-
 // // background color
 // ///////////////////
 // // First we import regl and call the constructor
-// var regl = require('regl')()
+var regl = require('regl')()
 
 // // Then we hook a callback to draw the current frame
 // regl.frame(function () {
@@ -92,6 +90,13 @@ var regl = require('regl')
 // })
 
 
+
+
+
+
+// smoothly animating points
+////////////////////////////
+
 const glsl = require('glslify')
 const linspace = require('ndarray-linspace')
 const vectorFill = require('ndarray-vector-fill')
@@ -138,22 +143,28 @@ function spiral (n) {
 }
 
 function run (regl) {
-  let n = 100000
+
+  let max_nodes = 1000000
+
+  max_nodes = 10 * max_nodes
+
+  let n = 0.01*max_nodes
   let datasets = []
   let colorBasis
   let datasetPtr = 0
 
-  let pointRadius = 3
+  let pointRadius = 1
 
   let lastSwitchTime = 0
-  let switchInterval = 2
-  let switchDuration = 1
+  let switchInterval = 10
+  let switchDuration = 10
 
   const createDatasets = () => {
     // This is a cute little pattern that *either* creates a buffer or updates
     // the existing buffer since both the constructor and the current instance
     // can be called as a function.
-    datasets = [phyllotaxis, grid, sine, spiral].map((func, i) =>
+    // phyllotaxis, grid, sine, spiral
+    datasets = [phyllotaxis, grid].map((func, i) =>
       (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)))
     )
     // This is just a list from 1 to 0 for coloring:
@@ -166,8 +177,8 @@ function run (regl) {
   // Create nice controls:
   require('control-panel')([
     {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
-    {type: 'range', min: 1000, max: 200000, label: 'n', initial: n, step: 1000}
-  ], {width: 400}).on('input', (data) => {
+    {type: 'range', min: 1000, max: max_nodes, label: 'n', initial: n, step: 1000}
+  ], {width: 600}).on('input', (data) => {
     pointRadius = data.radius
     if (data.n !== n) {
       n = Math.round(data.n)
@@ -219,6 +230,234 @@ function run (regl) {
     drawPoints({interp: ease((time - lastSwitchTime) / switchDuration)})
   })
 }
+
+
+// // triangle with zoom
+// /////////////////////
+// const regl = require('regl')()
+
+// const drawTriangle = regl({
+//   vert: `
+//   precision mediump float;
+//   uniform float scale;
+//   attribute vec2 position;
+//   attribute vec3 color;
+//   varying vec3 fcolor;
+//   void main () {
+//     fcolor = color;
+//     gl_Position = vec4(scale * position, 0, 1);
+//   }
+//   `,
+
+//   frag: `
+//   precision mediump float;
+//   varying vec3 fcolor;
+//   void main () {
+//     gl_FragColor = vec4(sqrt(fcolor), 1);
+//   }
+//   `,
+
+//   attributes: {
+//     position: [
+//       [1, 0],
+//       [0, 1],
+//       [-1, -1]
+//     ],
+
+//     color: [
+//       [1, 0, 0],
+//       [0, 1, 0],
+//       [0, 0, 1]
+//     ]
+//   },
+
+//   uniforms: {
+//     scale: regl.prop('scale')
+//   },
+
+//   count: 3
+// })
+
+// regl.frame(() => {
+//   regl.clear({
+//     color: [0, 0, 0, 1],
+//     depth: 1
+//   })
+
+//   drawTriangle({
+//     // this document does not have a DOM element with id scale-input
+//     // scale: +document.querySelector('#scale-input').value
+//     scale: 0.2
+//   })
+// })
+
+// // auto-zooming triangle
+// ////////////////////////
+// const drawTriangle = regl({
+//   vert: `
+//   precision mediump float;
+//   uniform float tick;
+//   attribute vec2 position;
+//   attribute vec3 color;
+//   varying vec3 fcolor;
+//   void main () {
+//     fcolor = color;
+//     float scale = cos(0.01 * tick);
+//     gl_Position = vec4(scale * position, 0, 1);
+//   }
+//   `,
+
+//   frag: `
+//   precision mediump float;
+//   varying vec3 fcolor;
+//   void main () {
+//     gl_FragColor = vec4(sqrt(fcolor), 1);
+//   }
+//   `,
+
+//   attributes: {
+//     position: [
+//       [1, 0],
+//       [0, 1],
+//       [-1, -1]
+//     ],
+
+//     color: [
+//       [1, 0, 0],
+//       [0, 1, 0],
+//       [0, 0, 1]
+//     ]
+//   },
+
+//   uniforms: {
+//     tick: regl.context('tick')
+//   },
+
+//   count: 3
+// })
+
+// regl.frame(() => {
+//   regl.clear({
+//     color: [0, 0, 0, 1],
+//     depth: 1
+//   })
+
+//   drawTriangle()
+// })
+
+// // function example (moving triangle)
+// //////////////////////////////////////
+// const drawTriangle = regl({
+//   vert: `
+//   precision mediump float;
+//   uniform vec2 translate, scale;
+//   attribute vec2 position;
+//   attribute vec3 color;
+//   varying vec3 fcolor;
+//   void main () {
+//     fcolor = color;
+//     gl_Position = vec4(scale * position + translate, 0, 1);
+//   }
+//   `,
+
+//   frag: `
+//   precision mediump float;
+//   varying vec3 fcolor;
+//   void main () {
+//     gl_FragColor = vec4(sqrt(fcolor), 1);
+//   }
+//   `,
+
+//   attributes: {
+//     position: [
+//       [1, 0],
+//       [0, 1],
+//       [-1, -1]
+//     ],
+
+//     color: [
+//       [1, 0, 0],
+//       [0, 1, 0],
+//       [0, 0, 1]
+//     ]
+//   },
+
+//   uniforms: {
+//     translate: ({tick}) => [ Math.cos(0.01 * tick), Math.sin(0.03 * tick) ],
+//     scale: ({tick}, {scale}) => [ 0.3 * Math.cos(0.08 * tick) + scale, scale ]
+//   },
+
+//   count: 3
+// })
+
+// regl.frame(() => {
+//   regl.clear({
+//     color: [0, 0, 0, 1],
+//     depth: 1
+//   })
+
+//   drawTriangle({
+//     scale: 0.5
+//   })
+// })
+
+// // batch (does not work)
+// ////////////////////////
+
+// const COLORS = [
+//   [1, 0, 0],
+//   [0, 1, 0],
+//   [0, 0, 1]
+// ]
+
+// const drawTriangle = regl({
+//   vert: `
+//   precision mediump float;
+//   uniform vec2 translate;
+//   uniform float scale;
+//   attribute vec2 position;
+//   void main () {
+//     gl_Position = vec4(scale * position + translate, 0, 1);
+//   }
+//   `,
+
+//   frag: `
+//   precision mediump float;
+//   uniform vec3 color;
+//   void main () {
+//     gl_FragColor = vec4(color, 1);
+//   }
+//   `,
+
+//   attributes: {
+//     position: [
+//       [1, 0],
+//       [0, 1],
+//       [-1, -1]
+//     ]
+//   },
+
+//   uniforms: {
+//     translate: regl.prop('translate'),
+//     scale: regl.prop('scale'),
+//     color: (context, props, batchId) => COLORS[batchId]
+//   },
+
+//   count: 3
+// })
+
+// regl.frame(({tick}) => {
+//   regl.clear({
+//     color: [0, 0, 0, 1],
+//     depth: 1
+//   })
+
+//   drawTriangle([
+//     {
+//       translate: [ Math.cos()]
+//     },
+//   ])
+// })
 
 },{"control-panel":15,"eases/cubic-in-out":27,"fail-nicely":29,"glslify":30,"ndarray":54,"ndarray-linspace":52,"ndarray-vector-fill":53,"regl":59}],2:[function(require,module,exports){
 /* The following list is defined in React's core */
