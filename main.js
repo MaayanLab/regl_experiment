@@ -2,28 +2,35 @@ const regl = require('regl')()
 const mouse = require('mouse-change')()
 const camera = require('regl-camera')(regl)
 const mesh = require('bunny')
+const normals = require('angle-normals')
 
 const drawMesh = regl({
 
   frag: `
+    precision highp float;
+    varying vec3 color;
     void main () {
-      gl_FragColor = vec4(1, 1, 1, 1);
+      // gl_FragColor = vec4(color, 1);
+      gl_FragColor = vec4(0,1,0, 1);
     }
   `,
 
   vert: `
     precision highp float;
-    attribute vec3 position;
+    varying vec3 color;
+    attribute vec3 position, normal;
     uniform vec2 translate;
     uniform mat4 projection, view;
     void main() {
-      gl_Position = projection * view * vec4(position, 1);
+      color = 0.5 * (1. + normal);
+      gl_Position = projection * view * vec4(position - 0.1 * normal, 1);
     }
   `,
 
 
   attributes: {
-    position: mesh.positions
+    position: mesh.positions,
+    normal: normals(mesh.cells, mesh.positions)
   },
 
   elements: mesh.cells
