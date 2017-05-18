@@ -4,44 +4,49 @@ const camera = require('regl-camera')(regl)
 const mesh = require('bunny')
 const normals = require('angle-normals')
 
-const drawMesh = regl({
+function processMesh (mesh){
 
-  frag: `
-    precision highp float;
-    varying vec3 color;
-    void main () {
-      gl_FragColor = vec4(color, 1);
-    }
-  `,
+  return regl({
 
-  vert: `
-    precision highp float;
-    varying vec3 color;
-    attribute vec3 position, normal;
-    uniform vec2 translate;
-    uniform mat4 projection, view;
-    uniform float t;
-    void main() {
-      color = 0.5 * (1. + normal);
-      gl_Position = projection * view * vec4(position - t * normal, 1);
-    }
-  `,
+    frag: `
+      precision highp float;
+      varying vec3 color;
+      void main () {
+        gl_FragColor = vec4(color, 1);
+      }
+    `,
 
-
-  attributes: {
-    position: mesh.positions,
-    normal: normals(mesh.cells, mesh.positions)
-  },
-
-  uniforms: {
-    t: ({tick}) => Math.cos(0.1 * tick)
-  },
-
-  elements: mesh.cells
-
-})
+    vert: `
+      precision highp float;
+      varying vec3 color;
+      attribute vec3 position, normal;
+      uniform vec2 translate;
+      uniform mat4 projection, view;
+      uniform float t;
+      void main() {
+        color = 0.5 * (1. + normal);
+        gl_Position = projection * view * vec4(position - t * normal, 1);
+      }
+    `,
 
 
+    attributes: {
+      position: mesh.positions,
+      normal: normals(mesh.cells, mesh.positions)
+    },
+
+    uniforms: {
+      t: ({tick}) => Math.cos(0.1 * tick)
+    },
+
+    elements: mesh.cells
+
+  })
+
+
+}
+
+const drawMesh = processMesh(mesh)
 
 regl.frame(() => {
   regl.clear({
