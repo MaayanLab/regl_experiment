@@ -1,7 +1,9 @@
 const regl = require('regl')()
 const mouse = require('mouse-change')()
+const camera = require('regl-camera')(regl)
+const mesh = require('bunny')
 
-const drawTriangle = regl({
+const drawMesh = regl({
 
   frag: `
     void main () {
@@ -11,28 +13,21 @@ const drawTriangle = regl({
 
   vert: `
     precision highp float;
-    attribute vec2 position;
+    attribute vec3 position;
     uniform vec2 translate;
+    uniform mat4 projection, view;
     void main() {
-      gl_Position = vec4(position + translate, 0, 1);
+      gl_Position = projection * view * vec4(position, 1);
     }
   `,
 
 
   attributes: {
-    position: [
-      [1, 0],
-      [0, 1],
-      [-1, -1]
-    ]
+    position: mesh.positions
   },
 
-  uniforms: {
-    // translate: ({tick}) => [ Math.cos(0.1 * tick) ,0]
-    translate: regl.prop('translate')
-  },
+  elements: mesh.cells
 
-  count: 3
 })
 
 
@@ -43,7 +38,8 @@ regl.frame(() => {
     depth: 1
   })
 
-  drawTriangle( {
-    translate: [mouse.x/1000, -mouse.y/1000]
-  } )
+  camera(() => {
+    drawMesh()
+  })
+
 })
