@@ -10,8 +10,7 @@ const drawMesh = regl({
     precision highp float;
     varying vec3 color;
     void main () {
-      // gl_FragColor = vec4(color, 1);
-      gl_FragColor = vec4(0,1,0, 1);
+      gl_FragColor = vec4(color, 1);
     }
   `,
 
@@ -21,9 +20,10 @@ const drawMesh = regl({
     attribute vec3 position, normal;
     uniform vec2 translate;
     uniform mat4 projection, view;
+    uniform float t;
     void main() {
       color = 0.5 * (1. + normal);
-      gl_Position = projection * view * vec4(position - 0.1 * normal, 1);
+      gl_Position = projection * view * vec4(position - t * normal, 1);
     }
   `,
 
@@ -31,6 +31,10 @@ const drawMesh = regl({
   attributes: {
     position: mesh.positions,
     normal: normals(mesh.cells, mesh.positions)
+  },
+
+  uniforms: {
+    t: ({tick}) => Math.cos(0.1 * tick)
   },
 
   elements: mesh.cells
