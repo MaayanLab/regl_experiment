@@ -1,5 +1,6 @@
 const regl = require('regl')()
 
+
 const drawTriangle = regl({
 
   frag: `
@@ -9,12 +10,13 @@ const drawTriangle = regl({
   `,
 
   vert: `
+    precision highp float;
     attribute vec2 position;
+    uniform vec2 translate;
     void main() {
-      gl_Position = vec4(position, 0, 1);
+      gl_Position = vec4(position + translate, 0, 1);
     }
   `,
-
 
 
   attributes: {
@@ -25,9 +27,12 @@ const drawTriangle = regl({
     ]
   },
 
+  uniforms: {
+    translate: [0,0]
+  },
+
   count: 3
 })
-
 
 
 
