@@ -1,5 +1,5 @@
 const regl = require('regl')()
-
+const mouse = require('mouse-change')()
 
 const drawTriangle = regl({
 
@@ -28,7 +28,8 @@ const drawTriangle = regl({
   },
 
   uniforms: {
-    translate: ({tick}) => [ Math.cos(0.1 * tick) ,0]
+    // translate: ({tick}) => [ Math.cos(0.1 * tick) ,0]
+    translate: regl.prop('translate')
   },
 
   count: 3
@@ -42,5 +43,7 @@ regl.frame(() => {
     depth: 1
   })
 
-  drawTriangle()
+  drawTriangle( {
+    translate: [mouse.x/1000, -mouse.y/1000]
+  } )
 })
