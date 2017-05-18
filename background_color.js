@@ -19,3 +19,15 @@ regl.frame(function () {
     // Try changing these numbers in your program and see what happens!
   })
 })
+
+
+// ///////////
+// // alt
+// //////////
+// var regl = require('regl')()
+
+// regl.frame(() => {
+//   regl.clear({
+//     color: [1, 0.1, 1, 1]
+//   })
+// })
