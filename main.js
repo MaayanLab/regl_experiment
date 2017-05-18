@@ -28,7 +28,7 @@ const drawTriangle = regl({
   },
 
   uniforms: {
-    translate: [0,0]
+    translate: ({tick}) => [ Math.cos(0.1 * tick) ,0]
   },
 
   count: 3
