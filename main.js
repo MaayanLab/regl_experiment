@@ -12,28 +12,13 @@ require('regl')({onDone: require('fail-nicely')(run)})
 function run (regl) {
 
   console.log('regl function')
-
   let max_nodes = 1000
-
-  let n = max_nodes
   let datasets = []
-  // let colorBasis
   let datasetPtr = 0
-
   let pointRadius = 3
-
   let lastSwitchTime = 0
   let switchInterval = 7
   let switchDuration = 5
-
-  const createDatasets = () => {
-    datasets = [phyllotaxis, grid].map((func, i) =>
-      (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)))
-    )
-  }
-
-  // Initialize:
-  createDatasets()
 
   const drawPoints = regl({
     vert: `
@@ -69,7 +54,7 @@ function run (regl) {
       interp: (ctx, props) => Math.max(0, Math.min(1, props.interp))
     },
     primitive: 'point',
-    count: () => n
+    count: () => max_nodes
   })
 
   regl.frame(({time}) => {
@@ -83,13 +68,23 @@ function run (regl) {
 
     drawPoints({interp: ease((time - lastSwitchTime) / switchDuration)})
   })
+
+  // Initialize:
+  createDatasets()
+
+  function createDatasets(){
+    datasets = [phyllotaxis, grid].map((func, i) =>
+      (datasets[i] || regl.buffer)(vectorFill(ndarray([], [max_nodes, 2]), func(max_nodes)))
+    )
+  }
+
 }
 
 
-function phyllotaxis (n) {
+function phyllotaxis (max_nodes) {
   const theta = Math.PI * (3 - Math.sqrt(5))
   return function (i) {
-    let r = Math.sqrt(i / n)
+    let r = Math.sqrt(i / max_nodes)
     let th = i * theta
     return [
       r * Math.cos(th),
@@ -98,8 +93,8 @@ function phyllotaxis (n) {
   }
 }
 
-function grid (n) {
-  const rowlen = Math.round(Math.sqrt(n))
+function grid (max_nodes) {
+  const rowlen = Math.round(Math.sqrt(max_nodes))
   return (i) => [
     -0.8 + 1.6 / rowlen * (i % rowlen),
     -0.8 + 1.6 / rowlen * Math.floor(i / rowlen)
