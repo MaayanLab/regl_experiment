@@ -42,17 +42,18 @@ function run (regl, new_thing, assets) {
 
   // debugger
 
+
   console.log('running')
   console.log(new_thing)
   console.log(assets.scores)
 
-  let max_nodes = 1000
+  let max_nodes = 500
   let n = max_nodes/10
   let datasets = []
   let colorBasis
   let datasetPtr = 0
 
-  let pointRadius = 4
+  let pointRadius = parseInt(assets.scores)
 
   let lastSwitchTime = 0
   let switchInterval = 5
