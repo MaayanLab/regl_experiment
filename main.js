@@ -4,6 +4,18 @@ const camera = require('regl-camera')(regl)
 const mesh = require('bunny')
 const normals = require('angle-normals')
 
+require('resl')({
+  manifest:{
+    'scores':{
+      type:'text',
+      src:'data/scores.csv'
+    }
+  },
+  onDone: (assets) => {
+    console.log(assets.scores)
+  }
+})
+
 console.log('here')
 g_regal = regl;
 
