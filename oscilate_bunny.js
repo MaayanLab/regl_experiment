@@ -25,7 +25,7 @@ function processMesh (mesh){
       uniform float t;
       void main() {
         color = 0.5 * (1. + normal);
-        gl_Position = projection * view * vec4(position , 1);
+        gl_Position = projection * view * vec4(position * normal, 1);
       }
     `,
 
