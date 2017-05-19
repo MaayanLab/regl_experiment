@@ -34,10 +34,10 @@ function run (regl) {
 
   // Create nice controls:
   require('control-panel')([
-    {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
+    // {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
     {type: 'range', min: 10, max: max_nodes/2, label: 'n', initial: n, step: 50}
   ], {width: 400}).on('input', (data) => {
-    pointRadius = data.radius
+    // pointRadius = data.radius
     if (data.n !== n) {
       n = Math.round(data.n)
       createDatasets()
