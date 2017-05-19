@@ -12,8 +12,7 @@ require('regl')({onDone: require('fail-nicely')(run)})
 function run (regl) {
 
   let max_nodes = 1000
-
-  let n = max_nodes
+  let n = max_nodes/10
   let datasets = []
   let colorBasis
   let datasetPtr = 0
@@ -21,8 +20,8 @@ function run (regl) {
   let pointRadius = 4
 
   let lastSwitchTime = 0
-  let switchInterval = 3
-  let switchDuration = 5
+  let switchInterval = 5
+  let switchDuration = 3
 
   const createDatasets = () => {
     datasets = [phyllotaxis, grid].map((func, i) =>
@@ -36,7 +35,7 @@ function run (regl) {
   // Create nice controls:
   require('control-panel')([
     {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
-    {type: 'range', min: 10, max: max_nodes, label: 'n', initial: n, step: 50}
+    {type: 'range', min: 10, max: max_nodes/2, label: 'n', initial: n, step: 50}
   ], {width: 400}).on('input', (data) => {
     pointRadius = data.radius
     if (data.n !== n) {
