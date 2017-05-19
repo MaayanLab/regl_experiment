@@ -53,13 +53,13 @@ function smoothly_animate(filename){
     console.log(new_thing)
     console.log(assets.scores)
 
-    let max_nodes = 500
+    let max_nodes = parseInt(assets.scores)
     let n = max_nodes/10
     let datasets = []
     let colorBasis
     let datasetPtr = 0
 
-    let pointRadius = parseInt(assets.scores)
+    let pointRadius = 5
 
     let lastSwitchTime = 0
     let switchInterval = 5
