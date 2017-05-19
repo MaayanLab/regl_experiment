@@ -11,9 +11,9 @@ require('regl')({onDone: require('fail-nicely')(run)})
 
 function run (regl) {
 
-  let max_nodes = 10000
+  console.log('regl function')
 
-  max_nodes = 0.5 * max_nodes
+  let max_nodes = 1000
 
   let n = max_nodes
   let datasets = []
@@ -23,15 +23,13 @@ function run (regl) {
   let pointRadius = 3
 
   let lastSwitchTime = 0
-  let switchInterval = 10
-  let switchDuration = 10
+  let switchInterval = 7
+  let switchDuration = 5
 
   const createDatasets = () => {
     datasets = [phyllotaxis, grid].map((func, i) =>
       (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)))
     )
-    // This is just a list from 1 to 0 for coloring:
-    // colorBasis = (colorBasis || regl.buffer)(linspace(ndarray([], [n]), 1, 0))
   }
 
   // Initialize:
@@ -53,7 +51,6 @@ function run (regl) {
     `,
     frag: glsl(`
       precision mediump float;
-      #pragma glslify: colormap = require(glsl-colormap/viridis)
       varying float t;
       void main () {
         gl_FragColor = vec4( 0, 0, 0, 1);
@@ -81,6 +78,7 @@ function run (regl) {
     if ((time - lastSwitchTime) > switchInterval) {
       lastSwitchTime = time
       datasetPtr++
+      console.log('update: ' + String(datasetPtr))
     }
 
     drawPoints({interp: ease((time - lastSwitchTime) / switchDuration)})
