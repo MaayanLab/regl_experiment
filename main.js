@@ -23,7 +23,7 @@ require('resl')({
     //   onDone: require('fail-nicely')(run)
     // })
 
-    run(regl, something);
+    run(regl, something, assets);
 
   }
 })
@@ -38,12 +38,13 @@ require('resl')({
 // /////////////////////////
 // run(regl, something);
 
-function run (regl, new_thing) {
+function run (regl, new_thing, assets) {
 
   // debugger
 
   console.log('running')
   console.log(new_thing)
+  console.log(assets.scores)
 
   let max_nodes = 1000
   let n = max_nodes/10
