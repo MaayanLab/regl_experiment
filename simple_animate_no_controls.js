@@ -6,43 +6,33 @@ const linspace = require('ndarray-linspace')
 const vectorFill = require('ndarray-vector-fill')
 const ndarray = require('ndarray')
 const ease = require('eases/cubic-in-out')
+
 require('regl')({onDone: require('fail-nicely')(run)})
+
 
 
 function run (regl) {
 
+  console.log('regl function')
   let max_nodes = 1000
-
   let n = max_nodes
   let datasets = []
-  let colorBasis
   let datasetPtr = 0
-
-  let pointRadius = 4
-
+  let pointRadius = 3
   let lastSwitchTime = 0
-  let switchInterval = 3
+  let switchInterval = 7
   let switchDuration = 5
-
-  const createDatasets = () => {
-    datasets = [phyllotaxis, grid].map((func, i) =>
-      (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)))
-    )
-  }
-
-  // Initialize:
-  createDatasets()
 
   // Create nice controls:
   require('control-panel')([
     {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
-    {type: 'range', min: 10, max: max_nodes, label: 'n', initial: n, step: 50}
+    {type: 'range', min: 10, max: max_nodes, label: 'n', initial: n/2, step: 10}
   ], {width: 400}).on('input', (data) => {
     pointRadius = data.radius
-    if (data.n !== n) {
+    // if (data.n !== n) {
       n = Math.round(data.n)
       createDatasets()
-    }
+    // }
   })
 
   const drawPoints = regl({
@@ -63,7 +53,7 @@ function run (regl) {
       precision mediump float;
       varying float t;
       void main () {
-        gl_FragColor = vec4(0, 0, 0, 1);
+        gl_FragColor = vec4( 0, 0, 0, 1);
       }
     `),
     depth: {enable: false},
@@ -79,7 +69,7 @@ function run (regl) {
       interp: (ctx, props) => Math.max(0, Math.min(1, props.interp))
     },
     primitive: 'point',
-    count: () => n
+    count: () => max_nodes
   })
 
   regl.frame(({time}) => {
@@ -88,17 +78,30 @@ function run (regl) {
     if ((time - lastSwitchTime) > switchInterval) {
       lastSwitchTime = time
       datasetPtr++
+      console.log('update: ' + String(datasetPtr))
     }
+
+
 
     drawPoints({interp: ease((time - lastSwitchTime) / switchDuration)})
   })
+
+  // Initialize:
+  createDatasets()
+
+  function createDatasets(){
+    datasets = [phyllotaxis, grid].map((func, i) =>
+      (datasets[i] || regl.buffer)(vectorFill(ndarray([], [max_nodes, 2]), func(max_nodes)))
+    )
+  }
+
 }
 
 
-function phyllotaxis (n) {
+function phyllotaxis (max_nodes) {
   const theta = Math.PI * (3 - Math.sqrt(5))
   return function (i) {
-    let r = Math.sqrt(i / n)
+    let r = Math.sqrt(i / max_nodes)
     let th = i * theta
     return [
       r * Math.cos(th),
@@ -107,8 +110,8 @@ function phyllotaxis (n) {
   }
 }
 
-function grid (n) {
-  const rowlen = Math.round(Math.sqrt(n))
+function grid (max_nodes) {
+  const rowlen = Math.round(Math.sqrt(max_nodes))
   return (i) => [
     -0.8 + 1.6 / rowlen * (i % rowlen),
     -0.8 + 1.6 / rowlen * Math.floor(i / rowlen)
