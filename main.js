@@ -4,6 +4,9 @@ const camera = require('regl-camera')(regl)
 const mesh = require('bunny')
 const normals = require('angle-normals')
 
+console.log('here')
+g_regal = regl;
+
 function processMesh (mesh){
 
   return regl({
