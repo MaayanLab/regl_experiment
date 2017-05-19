@@ -6,10 +6,43 @@ const linspace = require('ndarray-linspace')
 const vectorFill = require('ndarray-vector-fill')
 const ndarray = require('ndarray')
 const ease = require('eases/cubic-in-out')
-require('regl')({onDone: require('fail-nicely')(run)})
 
 
-function run (regl) {
+// require('resl')({
+//   manifest:{
+//     'scores':{
+//       type: 'text',
+//       src: 'data/scores.csv'
+//     }
+//   },
+//   onDone: (assets) => {
+
+//     // console.log(assets.scores)
+
+//     require('regl')({
+//       onDone: require('fail-nicely')(run)
+//     })
+
+//   }
+// })
+
+// require('regl')({
+//   onDone: require('fail-nicely')(run)
+// })
+
+var something = {thing:'thing'}
+
+regl = require('regl')()
+run(regl, something)
+
+function run (regl, assets) {
+
+  // debugger
+
+  console.log('running')
+  console.log(something)
+
+  console.log(assets.scores)
 
   let max_nodes = 1000
   let n = max_nodes/10
@@ -34,10 +67,8 @@ function run (regl) {
 
   // Create nice controls:
   require('control-panel')([
-    // {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
     {type: 'range', min: 10, max: max_nodes/2, label: 'n', initial: n, step: 50}
   ], {width: 400}).on('input', (data) => {
-    // pointRadius = data.radius
     if (data.n !== n) {
       n = Math.round(data.n)
       createDatasets()
