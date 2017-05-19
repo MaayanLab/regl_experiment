@@ -6,43 +6,44 @@ const linspace = require('ndarray-linspace')
 const vectorFill = require('ndarray-vector-fill')
 const ndarray = require('ndarray')
 const ease = require('eases/cubic-in-out')
+const regl = require('regl')()
 
+var something = {thing:'something'}
 
-// require('resl')({
-//   manifest:{
-//     'scores':{
-//       type: 'text',
-//       src: 'data/scores.csv'
-//     }
-//   },
-//   onDone: (assets) => {
+require('resl')({
+  manifest:{
+    'scores':{
+      type: 'text',
+      src: 'data/scores.csv'
+    }
+  },
+  onDone: (assets) => {
 
-//     // console.log(assets.scores)
+    // require('regl')({
+    //   onDone: require('fail-nicely')(run)
+    // })
 
-//     require('regl')({
-//       onDone: require('fail-nicely')(run)
-//     })
+    run(regl, something);
 
-//   }
-// })
+  }
+})
 
+// // original way of running
+// ///////////////////////////
 // require('regl')({
 //   onDone: require('fail-nicely')(run)
 // })
 
-var something = {thing:'thing'}
+// // run and pass argument
+// /////////////////////////
+// run(regl, something);
 
-regl = require('regl')()
-run(regl, something)
-
-function run (regl, assets) {
+function run (regl, new_thing) {
 
   // debugger
 
   console.log('running')
-  console.log(something)
-
-  console.log(assets.scores)
+  console.log(new_thing)
 
   let max_nodes = 1000
   let n = max_nodes/10
