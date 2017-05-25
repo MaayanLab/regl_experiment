@@ -59,7 +59,7 @@ function smoothly_animate(filename){
     let colorBasis
     let datasetPtr = 0
 
-    let pointRadius = 5
+    let pointRadius = 1
 
     let lastSwitchTime = 0
     let switchInterval = 5
