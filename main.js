@@ -5,6 +5,13 @@
 
 window.smoothly_animate = smoothly_animate;
 
+// This example needs to be run from the console
+var filename = 'data/num_points.txt'
+smoothly_animate(filename);
+
+// Also, budo will be overridden by any index.html files, so this needs to
+// be removed when using budo.
+
 function smoothly_animate(filename){
 
   console.log('passing ' + filename + ' to smoothly_animate')
@@ -59,7 +66,7 @@ function smoothly_animate(filename){
     let colorBasis
     let datasetPtr = 0
 
-    let pointRadius = 1
+    let pointRadius = 10
 
     let lastSwitchTime = 0
     let switchInterval = 5
@@ -102,7 +109,7 @@ function smoothly_animate(filename){
         precision mediump float;
         varying float t;
         void main () {
-          gl_FragColor = vec4(0, 0, 0, 1);
+          gl_FragColor = vec4(0, 0, 0, 0.5);
         }
       `),
       depth: {enable: false},
@@ -118,7 +125,22 @@ function smoothly_animate(filename){
         interp: (ctx, props) => Math.max(0, Math.min(1, props.interp))
       },
       primitive: 'point',
-      count: () => n
+      count: () => n,
+
+      // necessary for opacity control
+      blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 'src color',
+          dstRGB: 'one',
+          dstAlpha: 'one',
+          // src: 'one',
+          // dst: 'one'
+        },
+        equation: 'add',
+        color: [0, 0, 0, 0]
+      },
     })
 
     regl.frame(({time}) => {

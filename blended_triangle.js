@@ -41,10 +41,10 @@ regl({
   },
 
   uniforms: {
-    color: [1, 0, 0, 0.5]
+    color: [1, 0, 0, 0.7]
   },
 
-    blend: {
+  blend: {
     enable: true,
     func: {
       srcRGB: 'src alpha',
