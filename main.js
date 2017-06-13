@@ -108,8 +108,9 @@ function smoothly_animate(filename){
       frag: glsl(`
         precision mediump float;
         varying float t;
+        varying vec3 fragColor;
         void main () {
-          gl_FragColor = vec4(0, 0, 0, 0.5);
+          gl_FragColor = vec4(0, 0, 0, 0.2);
         }
       `),
       depth: {enable: false},
