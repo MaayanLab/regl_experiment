@@ -59,3 +59,11 @@ Using smoothly animate example
   or
 
   budo main.js --open --live -- -t es2020 -t glslify
+
+
+Links from gitter
+=================
+
+https://threejs.org/examples/webgl_materials_blending_custom.html
+
+http://www.andersriggelsen.dk/glblendfunc.php
