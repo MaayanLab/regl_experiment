@@ -38,16 +38,18 @@ const drawParticles = regl({
   vert: `
   precision mediump float;
   attribute vec4 freq, phase;
-  attribute vec3 inst_color;
+  attribute vec3 color_var;
   uniform float time;
   uniform mat4 view, projection;
   varying vec3 frag_color;
   void main() {
     vec3 position = 8.0 * cos(freq.xyz * time + phase.xyz);
-    // gl_PointSize = 5.0 * (1.0 + cos(freq.w * time + phase.w));
-    gl_PointSize = 10.0;
+    gl_PointSize = 10.0*(cos(freq.w * time + phase.w));
+    // gl_PointSize = 10.;
     gl_Position = projection * view * vec4(position, 1);
-    frag_color = inst_color;
+
+    // this is where the frac_color is being modified
+    frag_color = color_var;
   }`,
 
   frag: `
@@ -71,7 +73,7 @@ const drawParticles = regl({
       stride: VERT_SIZE,
       offset: 16
     },
-    inst_color: {
+    color_var: {
       buffer: pointBuffer,
       stride: VERT_SIZE,
       offset: 32
