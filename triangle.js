@@ -49,13 +49,16 @@ var drawTriangle = regl({
 })
 
 // Now that our command is defined, we hook a callback to draw it each frame:
-regl.frame(function () {
+regl.frame( function (){
+
   // First we clear the color and depth buffers like before
+  // (does not appear to be necessary)
   regl.clear({
-    color: [1, 1, 1, 1],
+    color: [0, 0, 0, 1],
     depth: 1
   })
 
   // Then we call the command that we just defined
   drawTriangle()
+
 })
