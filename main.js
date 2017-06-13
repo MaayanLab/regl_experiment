@@ -121,6 +121,7 @@ function smoothly_animate(filename){
       uniforms: {
         radius: () => pointRadius,
         aspect: ctx => ctx.viewportWidth / ctx.viewportHeight,
+
         // The current interpolation position, from 0 to 1:
         interp: (ctx, props) => Math.max(0, Math.min(1, props.interp))
       },
