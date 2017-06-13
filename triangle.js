@@ -16,9 +16,12 @@ var drawTriangle = regl({
   //
   vert: `
     // This is a simple vertex shader that just passes the position through
-    attribute vec2 position;
+
+    // get the attribute (defined below) position_data and pass it to the vertex
+    // shader
+    attribute vec2 position_data;
     void main () {
-      gl_Position = vec4(position, 0, 1);
+      gl_Position = vec4(position_data, 0, 1);
     }
   `,
 
@@ -28,14 +31,14 @@ var drawTriangle = regl({
   frag: `
     // This is program just colors the triangle white
     void main () {
-      gl_FragColor = vec4(1, 1, 1, 1);
+      gl_FragColor = vec4(0.4, 0.5, 1, 1);
     }
   `,
 
   // Finally we need to give the vertices to the GPU
   attributes: {
-    position: [
-      [1, 0],
+    position_data: [
+      [0.4, 0],
       [0, 1],
       [-1, -1]
     ]
@@ -49,7 +52,7 @@ var drawTriangle = regl({
 regl.frame(function () {
   // First we clear the color and depth buffers like before
   regl.clear({
-    color: [0, 0, 0, 1],
+    color: [1, 1, 1, 1],
     depth: 1
   })
 
