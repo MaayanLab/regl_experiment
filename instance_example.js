@@ -71,9 +71,10 @@ var color_array = Array(num_tri * num_tri)
 var frag_string = `
   precision highp float;
 
-  varying vec3 vColor;
+  varying vec3 inst_color;
+
   void main() {
-    gl_FragColor = vec4(vColor, 1.0);
+    gl_FragColor = vec4(inst_color, 1.0);
   }`;
 
 vert_string = `
@@ -82,17 +83,20 @@ vert_string = `
   attribute vec2 position;
 
   // These three are instanced attributes.
-  attribute vec3 color;
+  attribute vec3 color_att;
   attribute vec2 offset;
   attribute float angle;
 
-  varying vec3 vColor;
+  varying vec3 inst_color;
 
   void main() {
+
     gl_Position = vec4(
       cos(angle) * position.x + sin(angle) * position.y + offset.x,
         -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
-    vColor = color;
+
+    inst_color = color_att;
+
   }`;
 
 const draw = regl({
@@ -109,7 +113,7 @@ const draw = regl({
       divisor: 1 // one separate offset for every triangle.
     },
 
-    color: {
+    color_att: {
       buffer: regl.buffer(color_array),
       divisor: 1 // one separate color for every triangle
     },
@@ -128,7 +132,9 @@ const draw = regl({
   // However, every such triangle are drawn N * N times,
   // through instancing.
   count: 3,
-  instances: num_tri * num_tri
+
+  instances: num_tri * num_tri,
+
 })
 
 // draw the scene
