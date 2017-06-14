@@ -68,7 +68,7 @@ function run_viz(regl, assets) {
       uniform float radius;
 
       void main () {
-        gl_FragColor = vec4(0, 0, 0, radius);
+        gl_FragColor = vec4(0, 0, 0, 0.2);
       }
     `);
 

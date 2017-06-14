@@ -4,28 +4,8 @@
   In this example, it is shown how you can draw a bunch of triangles using the
   instancing feature of regl.
 
-  gitter info
-
-  "yeah, instancing uses gpu hardware
-  batching reduces number of bind state changes, but still requires multiple draw calls
-  instancing reuses the same draw call, but requires an extension"
-
-  Mikola Lysenko @mikolalysenko 15:24
-  in general yes
-
-  Nicolas Fernandez @cornhundred 15:24
-  thanks
-
-  Mikola Lysenko @mikolalysenko 15:24
-  as always there are caveats and special cases....
-
-  Nicolas Fernandez @cornhundred 15:25
-  okay
-
-  Mikola Lysenko @mikolalysenko 15:27
-  but instancing is generally < draw calls/vertex processing which means better per
-
  */
+
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 // N triangles on the width, N triangles on the height.
@@ -61,20 +41,41 @@ var offset_array = Array(num_tri * num_tri)
 function color_function(_, i){
               var r = Math.floor(i / num_tri) / num_tri;
               var g = (i % num_tri) / num_tri;
-              return [r, g, r * g + 0.2];
+              // return [r, g, r * g + 0.2];
+              return [1, 0, 0, 1];
             };
 
 var color_array = Array(num_tri * num_tri)
           .fill()
           .map(color_function);
 
+  var blend_info = {
+      enable: true,
+      func: {
+        srcRGB: 'src alpha',
+        srcAlpha: 'src color',
+        dstRGB: 'one',
+        dstAlpha: 'one',
+        // src: 'one',
+        // dst: 'one'
+      },
+      equation: 'add',
+      color: [0, 0, 0, 0]
+    };
+
 var frag_string = `
   precision highp float;
 
   varying vec3 inst_color;
+  varying float opacity;
 
   void main() {
-    gl_FragColor = vec4(inst_color, 1.0);
+
+    // gl_FragColor = vec4(inst_color, 1.0);
+
+    // using opacity value
+    gl_FragColor = vec4(1, 0, 0, opacity);
+
   }`;
 
 vert_string = `
@@ -87,7 +88,9 @@ vert_string = `
   attribute vec2 offset;
   attribute float angle;
 
+  // pass varying variables to fragment from vector
   varying vec3 inst_color;
+  varying float opacity;
 
   void main() {
 
@@ -95,7 +98,11 @@ vert_string = `
       cos(angle) * position.x + sin(angle) * position.y + offset.x,
         -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
 
+    // pass color_att attribute in vert to inst_color varying in frag
     inst_color = color_att;
+
+    // pass angle attribute in vert to opacity varying in frag
+    opacity = angle;
 
   }`;
 
@@ -128,6 +135,8 @@ const draw = regl({
     enable: false
   },
 
+  blend: blend_info,
+
   // Every triangle is just three vertices.
   // However, every such triangle are drawn N * N times,
   // through instancing.
@@ -142,7 +151,7 @@ regl.frame(function () {
 
   // clear the background
   regl.clear({
-    color: [0, 0, 0, 1]
+    color: [0, 0, 0, 0]
   })
 
   // rotate all triangles every frame.

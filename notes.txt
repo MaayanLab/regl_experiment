@@ -1,3 +1,26 @@
+instancing notes
+===================
+  gitter info
+
+  "yeah, instancing uses gpu hardware
+  batching reduces number of bind state changes, but still requires multiple draw calls
+  instancing reuses the same draw call, but requires an extension"
+
+  Mikola Lysenko @mikolalysenko 15:24
+  in general yes
+
+  Nicolas Fernandez @cornhundred 15:24
+  thanks
+
+  Mikola Lysenko @mikolalysenko 15:24
+  as always there are caveats and special cases....
+
+  Nicolas Fernandez @cornhundred 15:25
+  okay
+
+  Mikola Lysenko @mikolalysenko 15:27
+  but instancing is generally < draw calls/vertex processing which means better per
+
 
 Working through examples from
 
