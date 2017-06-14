@@ -33,17 +33,32 @@ function run_viz(regl, assets) {
   var switchInterval = 5;
   let switchDuration = 3;
 
-  createDatasets();
+
+  var blend_info = {
+      enable: true,
+      func: {
+        srcRGB: 'src alpha',
+        srcAlpha: 'src color',
+        dstRGB: 'one',
+        dstAlpha: 'one',
+        // src: 'one',
+        // dst: 'one'
+      },
+      equation: 'add',
+      color: [0, 0, 0, 0]
+    };
+
+  var datasets = createDatasets();
 
   var vert_string = `
       precision mediump float;
       attribute vec2 xy0, xy1;
-      uniform float aspect, interp_uni, radius;
+      uniform float interp_uni, radius;
       void main () {
 
         // Interpolate between the two positions using the interpolate uniform
         vec2 pos = mix(xy0, xy1, interp_uni);
-        gl_Position = vec4(pos.x, pos.y * aspect, 0, 1);
+        gl_Position = vec4(pos.x, pos.y, 0, 1);
         gl_PointSize = radius;
 
       }`;
@@ -71,36 +86,18 @@ function run_viz(regl, assets) {
     },
 
     uniforms: {
-
       radius: pointRadius,
-
-      aspect: ctx => ctx.viewportWidth / ctx.viewportHeight,
-
       // The current interpolation position, from 0 to 1:
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop))
-
     },
-
     primitive: 'point',
-
-    count: () => n,
-
+    count: n,
     // necessary for opacity control
-    blend: {
-      enable: true,
-      func: {
-        srcRGB: 'src alpha',
-        srcAlpha: 'src color',
-        dstRGB: 'one',
-        dstAlpha: 'one',
-        // src: 'one',
-        // dst: 'one'
-      },
-      equation: 'add',
-      color: [0, 0, 0, 0]
-    }
+    blend: blend_info
 
   });
+
+  regl.frame( run_draw );
 
   function run_draw({time}){
 
@@ -124,19 +121,17 @@ function run_viz(regl, assets) {
 
   function createDatasets() {
 
-    return datasets = [phyllotaxis, grid]
+    var datasets = [phyllotaxis, grid]
       .map(
         function(func, i){
-          // return (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)));
           var inst_array = ndarray([], [n, 2]);
           return vectorFill(inst_array, func(n));
         }
       );
 
+    return datasets;
+
   }
-
-  regl.frame( run_draw );
-
 }
 
 
