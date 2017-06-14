@@ -1,8 +1,7 @@
-/*
-  tags: basic
-  This example demonstrates how to use batch mode commands
-  To use a command in batch mode, we pass in an array of objects.
-  Then the command is executed once for each object in the array.
+/*  <p>This example demonstrates how to use batch mode commands</p>
+
+<p> To use a command in batch mode, we pass in an array of objects.  Then
+ the command is executed once for each object in the array. </p>
 */
 
 // As usual, we start by creating a full screen regl object
@@ -12,9 +11,9 @@ const regl = require('regl')()
 const draw = regl({
   frag: `
     precision mediump float;
-    uniform vec4 uni_color;
+    uniform vec4 color;
     void main() {
-      gl_FragColor = uni_color;
+      gl_FragColor = color;
     }`,
 
   vert: `
@@ -37,13 +36,13 @@ const draw = regl({
 
   uniforms: {
     // the batchId parameter gives the index of the command
-    uni_color: ({tick}, props, batchId) => [
-      // red
+    color: ({tick}, props, batchId) => [
       Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
-      // gba
-      0,0,1
+      Math.cos(0.02 * (0.02 * tick + 0.1 * batchId)),
+      Math.sin(0.02 * ((0.3 + Math.cos(2.0 * batchId)) * tick + 0.8 * batchId)),
+      1
     ],
-    angle: ({tick}) => 0.001 * tick,
+    angle: ({tick}) => 0.01 * tick,
     offset: regl.prop('offset')
   },
 
@@ -54,7 +53,14 @@ const draw = regl({
   count: 3
 })
 
-var triangle_data = [
+// Here we register a per-frame callback to draw the whole scene
+regl.frame(function () {
+  regl.clear({
+    color: [0, 0, 0, 1]
+  })
+
+  // This tells regl to execute the command once for each object
+  draw([
     { offset: [-1, -1] },
     { offset: [-1, 0] },
     { offset: [-1, 1] },
@@ -64,13 +70,5 @@ var triangle_data = [
     { offset: [1, -1] },
     { offset: [1, 0] },
     { offset: [1, 1] }
-  ];
-
-// Here we register a per-frame callback to draw the whole scene
-frame_function = regl.frame(function () {
-  regl.clear({
-    color: [0, 0, 0, 1]
-  })
-  // This tells regl to execute the command once for each object
-  draw(triangle_data)
+  ])
 })
