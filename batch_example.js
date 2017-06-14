@@ -6,58 +6,13 @@
 */
 
 // As usual, we start by creating a full screen regl object
-const regl = require('regl')()
+const regl = require('regl')();
 
 var tri_position =[
     0.5, 0,
     0, 0.5,
     0.5, 0.5
-  ]
-
-// the batchId parameter gives the index of the command
-var color_function = function({tick}, props, batchId){
-
-  // red
-  return [ Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
-  0,0,1 ];
-}
-
-// Next we create our command
-const draw = regl({
-  frag: `
-    precision mediump float;
-    uniform vec4 uni_color;
-    void main() {
-      gl_FragColor = uni_color;
-    }`,
-
-  vert: `
-    precision mediump float;
-    attribute vec2 position;
-    uniform float angle;
-    uniform vec2 offset;
-    void main() {
-      gl_Position = vec4(
-        cos(angle) * position.x + sin(angle) * position.y + offset.x,
-        -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
-    }`,
-
-  attributes: {
-    position: tri_position
-  },
-
-  uniforms: {
-    uni_color: color_function,
-    angle: ({tick}) => 0.001 * tick,
-    offset: regl.prop('offset')
-  },
-
-  depth: {
-    enable: false
-  },
-
-  count: 3
-})
+  ];
 
 var triangle_data = [
     { offset: [-1, -1] },
@@ -70,6 +25,63 @@ var triangle_data = [
     { offset: [1, 0] },
     { offset: [1, 1] }
   ];
+
+// the batchId parameter gives the index of the command
+var color_function = function({tick}, props, batchId){
+  // red
+  return [ Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
+  0,0,1 ];
+}
+
+var angle_function = function({tick}){
+  return 0.001 * tick;
+}
+
+var frag_string = `
+    precision mediump float;
+    uniform vec4 uni_color;
+    void main() {
+      gl_FragColor = uni_color;
+    }`;
+
+var vert_string = `
+    precision mediump float;
+    attribute vec2 position;
+
+    // access the uniform angle (angle is a function)
+    uniform float angle;
+
+    // access the uniform offset (offset is a property of each data element)
+    uniform vec2 offset;
+    void main() {
+      gl_Position = vec4(
+        cos(angle) * position.x + sin(angle) * position.y + offset.x,
+        -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
+    }`;
+
+// Next we create our command
+const draw = regl({
+  frag: frag_string,
+  vert: vert_string,
+
+  attributes: {
+    position: tri_position
+  },
+
+  uniforms: {
+    uni_color: color_function,
+    angle: angle_function,
+    offset: regl.prop('offset')
+  },
+
+  depth: {
+    enable: false
+  },
+
+  count: 3
+});
+
+
 
 // Here we register a per-frame callback to draw the whole scene
 frame_function = regl.frame(function () {
