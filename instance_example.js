@@ -156,7 +156,8 @@ regl.frame(function () {
 
   // rotate all triangles every frame.
   for (var i = 0; i < num_tri * num_tri; i++) {
-    angle[i] += 0.0001 * i
+    angle[i] += 0.002/num_tri * i
+    // angle[i] += 0.01
   }
 
   // re-initialize buffer (previously used subdata)
