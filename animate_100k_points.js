@@ -126,3 +126,20 @@ const drawPoints = regl({
   // specify that each vertex is a point (not part of a mesh)
   primitive: 'points',
 });
+
+// here's a layout algorithm that randomly positions the points
+/////////////////////////////////////////////////////////////////
+function blueNormalLayout(points){
+  // random number generator based on a normal distribution
+  // with mean = 0, std dev = 0.15
+  const rng = d3.randomNormal(0, 0.15);
+
+  points.forEach(d => {
+    // set the x and y attributes
+    d.x = (rng() * width) +  (width/2);
+    d.y = (rng() * height) + (height/2);
+
+    // blue-green color
+    d.color = [0.0, 0.5, 0.9];
+  });
+}
