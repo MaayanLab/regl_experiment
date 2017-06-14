@@ -143,3 +143,26 @@ function blueNormalLayout(points){
     d.color = [0.0, 0.5, 0.9];
   });
 }
+
+// Animate Function
+/////////////////////
+function animate(layout, points){
+  // make previous end the new beginning
+  points.forEach(d => {
+    d.sx = d.tx;
+    d.sy = d.ty;
+    d.colorStart = d.colorEnd;
+  });
+
+  // layout points, updating x, y, and color attributes
+  // (the layout function is passed to animate)
+  layout(points);
+
+  // copy layout x, y, and color to end values
+  points.forEach((d,i) => {
+    d.tx = d.x;
+    d.ty = d.y;
+    d.colorEnd = d.color;
+  });
+
+}
