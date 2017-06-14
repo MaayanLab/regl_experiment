@@ -39,7 +39,7 @@ for (var i = 0; i < num_tri * num_tri; i++) {
 
 // This buffer stores the angles of all
 // the instanced triangles.
-const angleBuffer = regl.buffer({
+const angle_buffer = regl.buffer({
   length: angle.length * 4,
   type: 'float',
   usage: 'dynamic'
@@ -68,17 +68,16 @@ var color_array = Array(num_tri * num_tri)
           .fill()
           .map(color_function);
 
-const draw = regl({
-  frag: `
-  precision mediump float;
+var frag_string = `
+  precision highp float;
 
   varying vec3 vColor;
   void main() {
     gl_FragColor = vec4(vColor, 1.0);
-  }`,
+  }`;
 
-  vert: `
-  precision mediump float;
+vert_string = `
+  precision highp float;
 
   attribute vec2 position;
 
@@ -94,7 +93,13 @@ const draw = regl({
       cos(angle) * position.x + sin(angle) * position.y + offset.x,
         -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
     vColor = color;
-  }`,
+  }`;
+
+const draw = regl({
+
+  frag: frag_string,
+
+  vert: vert_string,
 
   attributes: {
     position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
@@ -110,7 +115,7 @@ const draw = regl({
     },
 
     angle: {
-      buffer: angleBuffer,
+      buffer: angle_buffer,
       divisor: 1 // one separate angle for every triangle
     }
   },
@@ -126,16 +131,21 @@ const draw = regl({
   instances: num_tri * num_tri
 })
 
+// draw the scene
 regl.frame(function () {
+
+  // clear the background
   regl.clear({
     color: [0, 0, 0, 1]
   })
 
-  // rotate the triangles every frame.
+  // rotate all triangles every frame.
   for (var i = 0; i < num_tri * num_tri; i++) {
-    angle[i] += 0.01
+    angle[i] += 0.0001 * i
   }
-  angleBuffer.subdata(angle)
+
+  // re-initialize buffer (previously used subdata)
+  angle_buffer(angle)
 
   draw()
 })
