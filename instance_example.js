@@ -102,7 +102,7 @@ vert_string = `
     inst_color = color_att;
 
     // pass angle attribute in vert to opacity varying in frag
-    opacity = angle;
+    opacity = sin(angle);
 
   }`;
 
