@@ -1,16 +1,99 @@
 Initialization
-================
 
-Quick start
+  Quick start
 
-  As a fullscreen canvas
+    As a fullscreen canvas
 
-    By default calling module.exports on the regl package creates a full screen canvas element and WebGLRenderingContext.
+      By default calling module.exports on the regl package creates a full screen canvas element and WebGLRenderingContext.
 
-      var regl = require('regl')()
+        var regl = require('regl')()
 
-    This canvas will dynamically resize whenever the window changes shape. For most quick demos this is an easy way to get started using regl.
+      This canvas will dynamically resize whenever the window changes shape. For most quick demos this is an easy way to get started using regl.
 
-  From a container div
+    From a container div
 
-    Alternatively passing a container element
+      Alternatively passing a container element as the first argument appends the generated canvas to its children.
+
+        var regl = require('regl')(element)
+
+        // or:0
+
+        var regl = require('regl')({
+          container: element
+        })
+
+    From a canvas
+
+      If the first argument is an HTMLCanvasElement, the regl will use this canvas to create a new WegGLRenderingContext that it renders into.
+
+        var regl = require('regl')(cavas)
+
+        // or:
+
+        var regl = require('regl')({
+          canvas: canvas
+        })
+
+    From a WebGL context
+
+      Finally, if the first argument is a WebGLRenderingContext, then regl will just use this context without touching the DOM at all.
+
+        var regl = require('regl')(gl)
+
+        // or:
+
+        var regl = require('regl')({
+          gl: gl
+        })
+
+
+    From a headless context
+
+      The above form can also be used to run regl headlessly by comgining it with the headless-gl package. This works in node.js, electron and the browser.
+
+        // Creates a headless 256x256 regl instance
+        var regl = require('regl')(require('gl')(256, 256))
+
+  All initialization options
+
+    Options: Meaning
+
+    gl: A reference to a WebGL rendering context (default created from canvas)
+
+    canvas: A reference to an HTML canvas element (default created adn appending to container)
+
+    container: A container element which regl inserts a canvas into (default document.body)
+
+    attributes: The 'context creation attributes' passed to teh WebGL context constructor (default window.defivePixelRatio)
+
+    extensions: A list of extensions that must be supported by WebGL context. Default []
+
+    optionalExtensions: A list of extensions which are loaded opportunistically (default [])
+
+    profile: If set, turns on profiling for all commands by default (default false)
+
+    onDone: An optional callback, which accepts a pair of arguments, (err, regl), that is called after the application loads. If not specified, context creation errors throw.
+
+    Notes
+      canvas or container may be a CSS selector string or a DOM element
+
+      extension and optionalExtensions can be either arrays or comma separated strings representing all extensions. For more information see the WebGL extension registry
+
+      onDone is called
+
+    Error messages and debug mode
+
+Commands
+
+  Executing commands
+
+    One-shot rendering
+
+    Batch rendering
+
+    Scoped commands
+
+  Inputs
+
+    Example
+
