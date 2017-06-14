@@ -8,12 +8,21 @@ const pointWidth = 4;
 const width = window.innerWidth;
 const height = window.innerHeight;
 
+// duration of the animation ignoring delays
+const duration = 1500; // 1500ms = 1.5s
+
+
 // generate points
 //////////////////////////
 const numPoints = 100000;
 
 // random number generator from d3-random
 const rng = d3.randomNormal(0, 0.15);
+
+// set the order of the layouts and some initial animation state
+const layouts = [greenCircleLayout, blueNormalLayout];
+let currentLayout = 0; // start with green circle layout
+
 
 // create the initial set of points
 const points = d3.range(numPoints).map(i => ({
@@ -22,10 +31,80 @@ const points = d3.range(numPoints).map(i => ({
   color: [0, Math.random(), 0],
 }));
 
+// here's a layout algorithm that randomly positions the points
+/////////////////////////////////////////////////////////////////
+function blueNormalLayout(points){
+  // random number generator based on a normal distribution
+  // with mean = 0, std dev = 0.15
+  const rng = d3.randomNormal(0, 0.15);
+
+  points.forEach(d => {
+    // set the x and y attributes
+    d.x = (rng() * width) +  (width/2);
+    d.y = (rng() * height) + (height/2);
+
+    // blue-green color
+    d.color = [0.0, 0.5, 0.9];
+  });
+}
+
+// helper to layout points in a green fuzzy circle
+function greenCircleLayout(points) {
+  const rng = d3.randomNormal(0, 0.05);
+  points.forEach((d, i) => {
+    d.x = (rng() + Math.cos(i)) * (width / 2.5) + (width / 2);
+    d.y = (rng() + Math.sin(i)) * (height / 2.5) + (height / 2);
+    d.color = [0, Math.random(), 0]; // random amount of green
+  });
+}
+
+// Animate Function
+/////////////////////
+function animate(layout, points){
+  // make previous end the new beginning
+  points.forEach(d => {
+    d.sx = d.tx;
+    d.sy = d.ty;
+    d.colorStart = d.colorEnd;
+  });
+
+  // layout points, updating x, y, and color attributes
+  // (the layout function is passed to animate)
+  layout(points);
+
+  // copy layout x, y, and color to end values
+  points.forEach((d,i) => {
+    d.tx = d.x;
+    d.ty = d.y;
+    d.colorEnd = d.color;
+  });
+
+}
+
+// each point object contains
+// {
+//   sx: start x position - number between 0 and width
+//   sy: start y position - number between 0 and height
+//   colorStart: array with 3 entries between 0 and 1
+//   tx: end x position - number between 0 ane width
+//   ty: end y position - number between 0 and height
+//   colorEnd: array with 3 entries between 0 and 1
+// }
+
 
 // regl draw loop
 ///////////////////////
-regl.frame(() => {
+let startTime = null; // in seconds
+
+// (why is time in curly brackets?)
+regl.frame( ({time}) => {
+
+  // keep track of start time so we can get time elapsed
+  // this is important since time doesn't reset when starting
+  // new animations
+  if (startTime === null){
+    startTime = time;
+  }
 
   // clear the buffer
   regl.clear({
@@ -37,10 +116,68 @@ regl.frame(() => {
   // draw the points using our created regl function
   // note that the arguments are available via regl.prop
   drawPoints({
+
     pointWidth,
     stageWidth: width,
     stageHeight: height,
+
+    // here we pass in the new props
+    duration,
+    startTime
+
   });
+
+   const frameLoop = regl.frame(({ time }) => {
+    // keep track of start time so we can get time elapsed
+    // this is important since time doesn't reset when starting new animations
+    if (startTime === null) {
+      startTime = time;
+    }
+
+    // clear the buffer
+    regl.clear({
+      // background color (black)
+      color: [1, 1, 1, 1],
+      depth: 1,
+    });
+
+    // draw the points using our created regl func
+    // note that the arguments are available via `regl.prop`.
+    drawPoints({
+      pointWidth,
+      stageWidth: width,
+      stageHeight: height,
+      duration,
+      startTime,
+    });
+
+    // if we have exceeded the maximum duration, move on to the next animation
+    if (time - startTime > (duration / 1000)) {
+      console.log('done animating, moving to next layout');
+
+      // cancel this loop, we are going to start another
+      frameLoop.cancel();
+
+      // increment to use next layout function
+      currentLayout = (currentLayout + 1) % layouts.length;
+      animate(layouts[currentLayout], points);
+    }
+  });
+
+  // // if we have exceeded the aximum duration, move on to the
+  // // next animation
+  // if (time - startTime > (duration/1000)){
+  //     console.log('done animating, moving to next layout');
+
+  //     // cancel this loop, we are going to start another
+  //     frameLoop.cancel();
+
+  //     // increment to use next layout function
+  //     currentLayout = (currentLayout + 1) % layouts.length;
+
+  //     // start a new animation loop with next layout function
+  //     animate(layouts[currentLayout], points);
+  // }
 
 });
 
@@ -127,42 +264,3 @@ const drawPoints = regl({
   primitive: 'points',
 });
 
-// here's a layout algorithm that randomly positions the points
-/////////////////////////////////////////////////////////////////
-function blueNormalLayout(points){
-  // random number generator based on a normal distribution
-  // with mean = 0, std dev = 0.15
-  const rng = d3.randomNormal(0, 0.15);
-
-  points.forEach(d => {
-    // set the x and y attributes
-    d.x = (rng() * width) +  (width/2);
-    d.y = (rng() * height) + (height/2);
-
-    // blue-green color
-    d.color = [0.0, 0.5, 0.9];
-  });
-}
-
-// Animate Function
-/////////////////////
-function animate(layout, points){
-  // make previous end the new beginning
-  points.forEach(d => {
-    d.sx = d.tx;
-    d.sy = d.ty;
-    d.colorStart = d.colorEnd;
-  });
-
-  // layout points, updating x, y, and color attributes
-  // (the layout function is passed to animate)
-  layout(points);
-
-  // copy layout x, y, and color to end values
-  points.forEach((d,i) => {
-    d.tx = d.x;
-    d.ty = d.y;
-    d.colorEnd = d.color;
-  });
-
-}
