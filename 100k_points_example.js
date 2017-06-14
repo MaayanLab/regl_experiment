@@ -29,7 +29,7 @@ var datasets = [];
 
 function run_viz(regl, assets) {
 
-  var n = parseInt(assets.num_points);
+  var num_points = parseInt(assets.num_points);
 
   var blend_info = {
       enable: true,
@@ -91,7 +91,7 @@ function run_viz(regl, assets) {
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop))
     },
     primitive: 'point',
-    count: n,
+    count: num_points,
     // necessary for opacity control
     blend: blend_info
 
@@ -120,8 +120,8 @@ function run_viz(regl, assets) {
     datasets = [phyllotaxis, grid]
       .map(
         function(func, i){
-          var inst_array = ndarray([], [n, 2]);
-          return vectorFill(inst_array, func(n));
+          var inst_array = ndarray([], [num_points, 2]);
+          return vectorFill(inst_array, func(num_points));
         }
       );
 
@@ -131,9 +131,9 @@ function run_viz(regl, assets) {
 }
 
 
-  function interp_fun(time){
-    return ease((time - lastSwitchTime) / switchDuration)
-  }
+function interp_fun(time){
+  return ease((time - lastSwitchTime) / switchDuration)
+}
 
 function phyllotaxis (n) {
   const theta = Math.PI * (3 - Math.sqrt(5))
