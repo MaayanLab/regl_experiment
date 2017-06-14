@@ -1,0 +1,16 @@
+Initialization
+================
+
+Quick start
+
+  As a fullscreen canvas
+
+    By default calling module.exports on the regl package creates a full screen canvas element and WebGLRenderingContext.
+
+      var regl = require('regl')()
+
+    This canvas will dynamically resize whenever the window changes shape. For most quick demos this is an easy way to get started using regl.
+
+  From a container div
+
+    Alternatively passing a container element

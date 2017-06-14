@@ -67,6 +67,7 @@ function smoothly_animate(filename){
     let datasetPtr = 0
 
     let pointRadius = 10
+    let opacity = 0.2
 
     let lastSwitchTime = 0
     let switchInterval = 5
@@ -81,16 +82,6 @@ function smoothly_animate(filename){
     // Initialize:
     createDatasets()
 
-    // // Create nice controls:
-    // require('control-panel')([
-    //   {type: 'range', min: 10, max: max_nodes/2, label: 'n', initial: n, step: 50}
-    // ], {width: 400}).on('input', (data) => {
-    //   if (data.n !== n) {
-    //     n = Math.round(data.n)
-    //     createDatasets()
-    //   }
-    // })
-
     const drawPoints = regl({
       vert: `
         precision mediump float;
@@ -99,10 +90,12 @@ function smoothly_animate(filename){
         varying float t;
         uniform float aspect, interp, radius;
         void main () {
+
           // Interpolate between the two positions:
           vec2 pos = mix(xy0, xy1, interp);
           gl_Position = vec4(pos.x, pos.y * aspect, 0, 1);
           gl_PointSize = radius;
+
         }
       `,
       frag: glsl(`
