@@ -31,11 +31,11 @@ var color_function = function({tick}, props, batchId){
   // red
   return [ Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
   0,0,1 ];
-}
+  }
 
 var angle_function = function({tick}){
   return 0.001 * tick;
-}
+  }
 
 var frag_string = `
     // define the precision of the floats
@@ -54,7 +54,6 @@ var vert_string = `
     precision mediump float;
 
     // access the attribute position as vec2
-    // position is not a uniform since it is not the same for all triangles
     attribute vec2 position;
 
     // access the uniform angle (angle is a function)
@@ -80,9 +79,10 @@ const draw = regl({
   vert: vert_string,
 
   attributes: {
-    position: tri_position
+    position: tri_position,
   },
 
+  // declare uniforms, which can be used by frag and vert
   uniforms: {
     uni_color: color_function,
     angle: angle_function,
@@ -93,6 +93,7 @@ const draw = regl({
     enable: false
   },
 
+  // the number of vertices for each object
   count: 3
 });
 
@@ -100,9 +101,13 @@ const draw = regl({
 
 // Here we register a per-frame callback to draw the whole scene
 frame_function = regl.frame(function () {
+
+  // clear the background
   regl.clear({
     color: [0, 0, 0, 1]
-  })
-  // This tells regl to execute the command once for each object
-  draw(triangle_data)
-})
+  });
+
+  // This tells regl to 'batch' execute the command once for each object
+  draw(triangle_data);
+
+});
