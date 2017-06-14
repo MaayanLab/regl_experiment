@@ -1,10 +1,4 @@
-// This example needs to be run from the console
-var filename = 'data/num_points.txt'
-
-
-//////////////////////////////////////////////////
-// smoothly animate points
-//////////////////////////////////////////////////
+// reorganized version of animate 100k points
 const glsl = require('glslify')
 const linspace = require('ndarray-linspace')
 const vectorFill = require('ndarray-vector-fill')
@@ -12,6 +6,7 @@ const ndarray = require('ndarray')
 const ease = require('eases/cubic-in-out')
 const regl = require('regl')()
 
+var filename = 'data/num_points.txt'
 
 require('resl')({
   manifest:{
@@ -32,35 +27,17 @@ function run_viz(regl, assets) {
   var datasets = [];
   var colorBasis;
   var datasetPtr = 0;
-
   var pointRadius = 10;
   var opacity = 0.2;
-
   var lastSwitchTime = 0;
   var switchInterval = 5;
   let switchDuration = 3;
 
-  var createDatasets = function() {
-
-    return datasets = [phyllotaxis, grid]
-      .map(
-        function(func, i){
-          // return (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)));
-          var inst_array = ndarray([], [n, 2]);
-          return vectorFill(inst_array, func(n));
-        }
-      );
-
-  }
-
-  // Initialize:
   createDatasets();
 
   var vert_string = `
       precision mediump float;
       attribute vec2 xy0, xy1;
-      attribute float;
-      varying float t;
       uniform float aspect, interp_uni, radius;
       void main () {
 
@@ -73,7 +50,6 @@ function run_viz(regl, assets) {
 
   var frag_string = glsl(`
       precision mediump float;
-      varying float t;
       varying vec3 fragColor;
       void main () {
         gl_FragColor = vec4(0, 0, 0, 0.2);
@@ -124,7 +100,7 @@ function run_viz(regl, assets) {
       color: [0, 0, 0, 0]
     }
 
-  })
+  });
 
   function run_draw({time}){
 
@@ -136,7 +112,26 @@ function run_viz(regl, assets) {
     };
 
     // pass in interpolation function as property, interp_prop
-    drawPoints({interp_prop: ease((time - lastSwitchTime) / switchDuration)});
+    drawPoints({
+      interp_prop: interp_fun(time)
+    });
+
+  }
+
+  function interp_fun(time){
+    return ease((time - lastSwitchTime) / switchDuration)
+  }
+
+  function createDatasets() {
+
+    return datasets = [phyllotaxis, grid]
+      .map(
+        function(func, i){
+          // return (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)));
+          var inst_array = ndarray([], [n, 2]);
+          return vectorFill(inst_array, func(n));
+        }
+      );
 
   }
 
