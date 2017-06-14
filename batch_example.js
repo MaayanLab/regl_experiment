@@ -38,14 +38,23 @@ var angle_function = function({tick}){
 }
 
 var frag_string = `
+    // define the precision of the floats
     precision mediump float;
+
+    // access the uniform uni_color (uni_color is a function)
     uniform vec4 uni_color;
+
+    // define main function
     void main() {
       gl_FragColor = uni_color;
     }`;
 
 var vert_string = `
+    // define precision for floats
     precision mediump float;
+
+    // access the attribute position as vec2
+    // position is not a uniform since it is not the same for all triangles
     attribute vec2 position;
 
     // access the uniform angle (angle is a function)
@@ -53,15 +62,21 @@ var vert_string = `
 
     // access the uniform offset (offset is a property of each data element)
     uniform vec2 offset;
+
+    // define main function
     void main() {
       gl_Position = vec4(
-        cos(angle) * position.x + sin(angle) * position.y + offset.x,
-        -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
+        position.x + position.y + offset.x + cos(angle),
+        -position.x + position.y + offset.y,
+        0,
+        1);
     }`;
 
 // Next we create our command
 const draw = regl({
+
   frag: frag_string,
+
   vert: vert_string,
 
   attributes: {
