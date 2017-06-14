@@ -28,12 +28,13 @@
  */
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_tri = 10 // N triangles on the width, N triangles on the height.
+// N triangles on the width, N triangles on the height.
+var num_tri = 10
 
 var angle = []
 for (var i = 0; i < num_tri * num_tri; i++) {
   // generate random initial angle.
-  angle[i] = Math.random() * (2 * Math.PI)
+  angle[i] = 0;//Math.random() * (2 * Math.PI)
 }
 
 // This buffer stores the angles of all
@@ -77,21 +78,31 @@ const draw = regl({
 
     offset: {
       buffer: regl.buffer(
-        Array(num_tri * num_tri).fill().map((_, i) => {
-          var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1
-          var y = -1 + 2 * (i % num_tri) / num_tri + 0.1
-          return [x, y]
-        })),
+        Array(num_tri * num_tri)
+          .fill()
+          .map(
+            (_, i) => {
+              var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1
+              var y = -1 + 2 * (i % num_tri) / num_tri + 0.1
+              return [x, y]
+            }
+          )
+      ),
       divisor: 1 // one separate offset for every triangle.
     },
 
     color: {
       buffer: regl.buffer(
-        Array(num_tri * num_tri).fill().map((_, i) => {
-          var r = Math.floor(i / num_tri) / num_tri
-          var g = (i % num_tri) / num_tri
-          return [r, g, r * g + 0.2]
-        })),
+        Array(num_tri * num_tri)
+          .fill()
+          .map(
+            (_, i) => {
+              var r = Math.floor(i / num_tri) / num_tri
+              var g = (i % num_tri) / num_tri
+              return [r, g, r * g + 0.2]
+            }
+          )
+      ),
       divisor: 1 // one separate color for every triangle
     },
 
