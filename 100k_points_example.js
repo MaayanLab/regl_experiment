@@ -20,19 +20,17 @@ require('resl')({
   }
 })
 
+var lastSwitchTime = 0;
+var switchInterval = 5;
+let switchDuration = 3;
+var inst_state = 1;
+var pointRadius = 10;
+var opacity = 0.2;
+var datasets = [];
 
 function run_viz(regl, assets) {
 
   var n = parseInt(assets.num_points);
-  var datasets = [];
-  var colorBasis;
-  var datasetPtr = 0;
-  var pointRadius = 10;
-  var opacity = 0.2;
-  var lastSwitchTime = 0;
-  var switchInterval = 5;
-  let switchDuration = 3;
-
 
   var blend_info = {
       enable: true,
@@ -78,11 +76,10 @@ function run_viz(regl, assets) {
     vert: vert_string,
 
     attributes: {
-
       // Pass two buffers between which we ease in the vertex shader:
-      xy0: () => datasets[datasetPtr % datasets.length],
-      xy1: () => datasets[(datasetPtr + 1) % datasets.length],
-
+      // passs dataset info as attributes
+      xy0: () => datasets[inst_state % datasets.length],
+      xy1: () => datasets[(inst_state + 1) % datasets.length],
     },
 
     uniforms: {
@@ -105,7 +102,7 @@ function run_viz(regl, assets) {
     // and reset the timer if it's time for a switch:
     if ((time - lastSwitchTime) > switchInterval) {
       lastSwitchTime = time
-      datasetPtr++
+      inst_state++
     };
 
     // pass in interpolation function as property, interp_prop
@@ -115,13 +112,9 @@ function run_viz(regl, assets) {
 
   }
 
-  function interp_fun(time){
-    return ease((time - lastSwitchTime) / switchDuration)
-  }
-
   function createDatasets() {
-
-    var datasets = [phyllotaxis, grid]
+    var datasets;
+    datasets = [phyllotaxis, grid]
       .map(
         function(func, i){
           var inst_array = ndarray([], [n, 2]);
@@ -130,11 +123,14 @@ function run_viz(regl, assets) {
       );
 
     return datasets;
-
   }
+
 }
 
 
+  function interp_fun(time){
+    return ease((time - lastSwitchTime) / switchDuration)
+  }
 
 function phyllotaxis (n) {
   const theta = Math.PI * (3 - Math.sqrt(5))
