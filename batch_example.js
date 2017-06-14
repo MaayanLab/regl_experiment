@@ -8,6 +8,20 @@
 // As usual, we start by creating a full screen regl object
 const regl = require('regl')()
 
+var tri_position =[
+    0.5, 0,
+    0, 0.5,
+    0.5, 0.5
+  ]
+
+// the batchId parameter gives the index of the command
+var color_function = function({tick}, props, batchId){
+
+  // red
+  return [ Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
+  0,0,1 ];
+}
+
 // Next we create our command
 const draw = regl({
   frag: `
@@ -29,20 +43,11 @@ const draw = regl({
     }`,
 
   attributes: {
-    position: [
-      0.5, 0,
-      0, 0.5,
-      1, 1]
+    position: tri_position
   },
 
   uniforms: {
-    // the batchId parameter gives the index of the command
-    uni_color: ({tick}, props, batchId) => [
-      // red
-      Math.sin(0.02 * ((0.1 + Math.sin(batchId)) * tick + 3.0 * batchId)),
-      // gba
-      0,0,1
-    ],
+    uni_color: color_function,
     angle: ({tick}) => 0.001 * tick,
     offset: regl.prop('offset')
   },
