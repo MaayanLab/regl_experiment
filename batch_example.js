@@ -100,7 +100,7 @@ const draw = regl({
 
 
 // Here we register a per-frame callback to draw the whole scene
-frame_function = regl.frame(function () {
+regl.frame(function () {
 
   // clear the background
   regl.clear({
