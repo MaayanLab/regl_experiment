@@ -45,6 +45,29 @@ const angleBuffer = regl.buffer({
   usage: 'dynamic'
 })
 
+// set up offset array for buffer
+function offset_function(_, i){
+              var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1;
+              var y = -1 + 2 * (i % num_tri) / num_tri + 0.1;
+              return [x, y];
+            };
+
+
+var offset_array = Array(num_tri * num_tri)
+          .fill()
+          .map(offset_function);
+
+// set up color array for buffer
+function color_function(_, i){
+              var r = Math.floor(i / num_tri) / num_tri;
+              var g = (i % num_tri) / num_tri;
+              return [r, g, r * g + 0.2];
+            };
+
+var color_array = Array(num_tri * num_tri)
+          .fill()
+          .map(color_function);
+
 const draw = regl({
   frag: `
   precision mediump float;
@@ -77,32 +100,12 @@ const draw = regl({
     position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
 
     offset: {
-      buffer: regl.buffer(
-        Array(num_tri * num_tri)
-          .fill()
-          .map(
-            (_, i) => {
-              var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1
-              var y = -1 + 2 * (i % num_tri) / num_tri + 0.1
-              return [x, y]
-            }
-          )
-      ),
+      buffer: regl.buffer(offset_array),
       divisor: 1 // one separate offset for every triangle.
     },
 
     color: {
-      buffer: regl.buffer(
-        Array(num_tri * num_tri)
-          .fill()
-          .map(
-            (_, i) => {
-              var r = Math.floor(i / num_tri) / num_tri
-              var g = (i % num_tri) / num_tri
-              return [r, g, r * g + 0.2]
-            }
-          )
-      ),
+      buffer: regl.buffer(color_array),
       divisor: 1 // one separate color for every triangle
     },
 
