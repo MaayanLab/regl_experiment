@@ -40,56 +40,69 @@ function run_viz(regl, assets) {
   var switchInterval = 5;
   let switchDuration = 3;
 
-  const createDatasets = function() {
-    datasets = [phyllotaxis, grid]
+  var createDatasets = function() {
+
+    return datasets = [phyllotaxis, grid]
       .map(
         function(func, i){
-          return (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)));
+          // return (datasets[i] || regl.buffer)(vectorFill(ndarray([], [n, 2]), func(n)));
+          var inst_array = ndarray([], [n, 2]);
+          return vectorFill(inst_array, func(n));
         }
-      )
+      );
+
   }
 
   // Initialize:
-  createDatasets()
+  createDatasets();
 
-  const drawPoints = regl({
-    vert: `
+  var vert_string = `
       precision mediump float;
       attribute vec2 xy0, xy1;
       attribute float;
       varying float t;
-      uniform float aspect, interp, radius;
+      uniform float aspect, interp_uni, radius;
       void main () {
 
-        // Interpolate between the two positions:
-        vec2 pos = mix(xy0, xy1, interp);
+        // Interpolate between the two positions using the interpolate uniform
+        vec2 pos = mix(xy0, xy1, interp_uni);
         gl_Position = vec4(pos.x, pos.y * aspect, 0, 1);
         gl_PointSize = radius;
 
-      }
-    `,
-    frag: glsl(`
+      }`;
+
+  var frag_string = glsl(`
       precision mediump float;
       varying float t;
       varying vec3 fragColor;
       void main () {
         gl_FragColor = vec4(0, 0, 0, 0.2);
       }
-    `),
-    depth: {enable: false},
+    `);
+
+  const drawPoints = regl({
+
+    frag: frag_string,
+
+    vert: vert_string,
 
     attributes: {
+
       // Pass two buffers between which we ease in the vertex shader:
       xy0: () => datasets[datasetPtr % datasets.length],
       xy1: () => datasets[(datasetPtr + 1) % datasets.length],
+
     },
 
     uniforms: {
-      radius: () => pointRadius,
+
+      radius: pointRadius,
+
       aspect: ctx => ctx.viewportWidth / ctx.viewportHeight,
 
       // The current interpolation position, from 0 to 1:
-      interp: (ctx, props) => Math.max(0, Math.min(1, props.interp))
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop))
+
     },
 
     primitive: 'point',
@@ -113,19 +126,24 @@ function run_viz(regl, assets) {
 
   })
 
-
-  regl.frame(({time}) => {
+  function run_draw({time}){
 
     // Check how long it's been since the last switch, and cycle the buffers
     // and reset the timer if it's time for a switch:
     if ((time - lastSwitchTime) > switchInterval) {
       lastSwitchTime = time
       datasetPtr++
-    }
+    };
 
-    drawPoints({interp: ease((time - lastSwitchTime) / switchDuration)})
-  })
+    // pass in interpolation function as property, interp_prop
+    drawPoints({interp_prop: ease((time - lastSwitchTime) / switchDuration)});
+
+  }
+
+  regl.frame( run_draw );
+
 }
+
 
 
 function phyllotaxis (n) {
