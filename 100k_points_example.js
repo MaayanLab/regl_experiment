@@ -25,7 +25,6 @@ var switchInterval = 5;
 let switchDuration = 3;
 var inst_state = 1;
 var pointRadius = 10;
-var opacity = 0.2;
 var datasets = [];
 
 function run_viz(regl, assets) {
@@ -50,22 +49,26 @@ function run_viz(regl, assets) {
 
   var vert_string = `
       precision mediump float;
-      attribute vec2 xy0, xy1;
+      attribute vec2 pos_ini, pos_fin;
       uniform float interp_uni, radius;
       void main () {
 
         // Interpolate between the two positions using the interpolate uniform
-        vec2 pos = mix(xy0, xy1, interp_uni);
-        gl_Position = vec4(pos.x, pos.y, 0, 1);
+        vec2 pos = mix(pos_ini, pos_fin, interp_uni);
+
+        gl_Position = vec4(pos[0], pos[1], 0, 1);
+
         gl_PointSize = radius;
 
       }`;
 
   var frag_string = glsl(`
       precision mediump float;
-      varying vec3 fragColor;
+
+      uniform float radius;
+
       void main () {
-        gl_FragColor = vec4(0, 0, 0, 0.2);
+        gl_FragColor = vec4(0, 0, 0, radius);
       }
     `);
 
@@ -78,8 +81,8 @@ function run_viz(regl, assets) {
     attributes: {
       // Pass two buffers between which we ease in the vertex shader:
       // passs dataset info as attributes
-      xy0: () => datasets[inst_state % datasets.length],
-      xy1: () => datasets[(inst_state + 1) % datasets.length],
+      pos_ini: datasets[inst_state % datasets.length],
+      pos_fin: datasets[(inst_state + 1) % datasets.length],
     },
 
     uniforms: {
