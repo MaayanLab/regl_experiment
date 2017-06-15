@@ -66,9 +66,19 @@ var blend_info = {
     color: [0, 0, 0, 0]
   };
 
-const draw = regl({
+// // bottom half
+var bottom_half = [[1/num_col, 0.0],
+[0.0, 0.0],
+[0.0, 1/num_row]];
 
-  vert: `
+// top half
+var top_half = [
+  [-1/num_col, 0.0],
+  [0.0, 0.0],
+  [0.0, -1/num_row]
+  ];
+
+var vert_string = `
   precision highp float;
 
   attribute vec2 position;
@@ -90,65 +100,46 @@ const draw = regl({
     // pass angle attribute in vert to opacity varying in frag
     opacity = sin(angle) + 0.1;
 
-  }`,
+  }`;
 
-  frag: `
-      precision highp float;
-      varying float opacity;
-      uniform vec3 inst_color;
-      void main() {
+var frag_string = `
+  precision highp float;
+  varying float opacity;
+  uniform vec3 inst_color;
+  void main() {
 
-        // using opacity value
-        // gl_FragColor = vec4(1, 0, 0, opacity);
-        gl_FragColor = vec4(inst_color, opacity);
+    // using opacity value
+    // gl_FragColor = vec4(1, 0, 0, opacity);
+    gl_FragColor = vec4(inst_color, opacity);
 
-      }`,
+  }`;
 
+const draw = regl({
+  vert: vert_string,
+  frag: frag_string,
   attributes: {
-    position: [
-
-      // // bottom half
-      // [1/num_col, 0.0],
-      // [0.0, 0.0],
-      // [0.0, 1/num_row],
-
-      // top half
-      [-1/num_col, 0.0],
-      [0.0, 0.0],
-      [0.0, -1/num_row],
-
-      ],
-
+    position: bottom_half,
     offset: {
       buffer: regl.buffer(offset_array),
       divisor: 1 // one separate offset for every triangle.
     },
-
     angle: {
       buffer: angle_buffer,
       divisor: 1 // one separate angle for every triangle
-    }
+      }
   },
-
   depth: {
     enable: false
   },
-
   blend: blend_info,
-
   // Every triangle is just three vertices.
-  // However, every such triangle are drawn N * N times,
-  // through instancing.
   count: 3,
-
   uniforms: {
     zoom: zoom_function,
     inst_color: [0,0,1],
   },
-
   instances: num_row * num_col,
-
-})
+});
 
 regl.frame(function () {
 
