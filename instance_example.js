@@ -156,7 +156,7 @@ const draw = regl({
 // draw the scene
 regl.frame(function () {
 
-  camera.draw( () => {
+  // camera.draw( () => {
 
     // clear the background
     regl.clear({
@@ -173,5 +173,5 @@ regl.frame(function () {
 
     draw();
 
-  });
+  // });
 })
