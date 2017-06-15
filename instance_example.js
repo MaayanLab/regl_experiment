@@ -8,6 +8,13 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
+const camera = require('./camera-2d')(regl, {
+  xrange: [-5, 5],
+  yrange: [-5, 5]
+});
+
+window.addEventListener('resize', camera.resize);
+
 // N triangles on the width, N triangles on the height.
 var num_tri = 10
 
@@ -149,19 +156,22 @@ const draw = regl({
 // draw the scene
 regl.frame(function () {
 
-  // clear the background
-  regl.clear({
-    color: [0, 0, 0, 0]
-  })
+  camera.draw( () => {
 
-  // rotate all triangles every frame.
-  for (var i = 0; i < num_tri * num_tri; i++) {
-    angle[i] += 0.002/num_tri * i
-    // angle[i] += 0.01
-  }
+    // clear the background
+    regl.clear({
+      color: [0, 0, 0, 0]
+    });
 
-  // re-initialize buffer (previously used subdata)
-  angle_buffer(angle)
+    // rotate all triangles every frame.
+    for (var i = 0; i < num_tri * num_tri; i++) {
+      angle[i] += 0.002/num_tri * i;
+    }
 
-  draw()
+    // re-initialize buffer (previously used subdata)
+    angle_buffer(angle);
+
+    draw();
+
+  });
 })
