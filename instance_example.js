@@ -19,11 +19,10 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_row = 10;
-var num_col = 10;
+var num_cell = 1000;
 
 var opacity = []
-for (var i = 0; i < num_row * num_col; i++) {
+for (var i = 0; i < num_cell * num_cell; i++) {
   opacity[i] = Math.random();
   // opacity[i] = 0.2; //Math.random();
 }
@@ -42,13 +41,13 @@ opacity_buffer(opacity);
 
 // set up offset array for buffer
 function offset_function(_, i){
-              var x = -0.5 +  ( Math.floor(i / num_col) ) / num_col ;
-              var y = -0.5 + (i % num_row) / num_row ;
+              var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
+              var y = -0.5 + (i % num_cell) / num_cell ;
               return [x, y];
             };
 
 
-offset_array = Array(num_row * num_col)
+offset_array = Array(num_cell * num_cell)
           .fill()
           .map(offset_function);
 
@@ -67,15 +66,16 @@ var blend_info = {
   };
 
 // // bottom half
-var bottom_half = [[1/num_col, 0.0],
-  [0.0, 0.0],
-  [0.0, 1/num_row]];
+var bottom_half = [
+  [1/num_cell, 0.0],
+  [0.0,       0.0],
+  [0.0,       1/num_cell]];
 
 // top half
 var top_half = [
-  [1/num_col, 0.0 ],
-  [1/num_row, 1/num_col],
-  [0.0, 1/num_row]
+  [1/num_cell, 0.0 ],
+  [1/num_cell, 1/num_cell],
+  [0.0,       1/num_cell]
   ];
 
 var vert_string = `
@@ -108,7 +108,6 @@ var frag_string = `
   void main() {
 
     // using var_opacity value
-    // gl_FragColor = vec4(1, 0, 0, var_opacity);
     gl_FragColor = vec4(inst_color, var_opacity);
 
   }`;
@@ -136,9 +135,9 @@ const draw_bottom = regl({
   count: 3,
   uniforms: {
     zoom: zoom_function,
-    inst_color: [0,0,1],
+    inst_color: [1,0,0],
   },
-  instances: num_row * num_col,
+  instances: num_cell * num_cell,
 });
 
 const draw_top = regl({
@@ -162,9 +161,9 @@ const draw_top = regl({
   count: 3,
   uniforms: {
     zoom: zoom_function,
-    inst_color: [0,0,1],
+    inst_color: [1,0,0],
   },
-  instances: num_row * num_col,
+  instances: num_cell * num_cell,
 });
 
 regl.frame(function () {
