@@ -19,12 +19,15 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_tri = 10;
+var num_row = 1e2;
+var num_col = 1e2;
 
 var angle = []
-for (var i = 0; i < num_tri * num_tri; i++) {
+for (var i = 0; i < num_row * num_col; i++) {
   angle[i] = Math.random();
 }
+
+console.log(angle.length)
 
 // This buffer stores the angles of all
 // the instanced triangles.
@@ -39,42 +42,29 @@ angle_buffer(angle);
 
 // set up offset array for buffer
 function offset_function(_, i){
-              // var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1;
-              var x = -1 +  Math.floor(i / num_tri) / num_tri + 0.1;
-              var y = -1 + (i % num_tri) / num_tri + 0.1;
+              var x = -0.5 +  Math.floor(i / num_row) / num_row + 0.1;
+              var y = -0.5 + (i % num_col) / num_col + 0.1;
               return [x, y];
             };
 
 
-var offset_array = Array(num_tri * num_tri)
+var offset_array = Array(num_row * num_col)
           .fill()
           .map(offset_function);
 
-// set up color array for buffer
-function color_function(_, i){
-              var r = Math.floor(i / num_tri) / num_tri;
-              var g = (i % num_tri) / num_tri;
-              // return [r, g, r * g + 0.2];
-              return [1, 0, 0, 1];
-            };
-
-var color_array = Array(num_tri * num_tri)
-          .fill()
-          .map(color_function);
-
-  var blend_info = {
-      enable: true,
-      func: {
-        srcRGB: 'src alpha',
-        srcAlpha: 'src color',
-        dstRGB: 'one',
-        dstAlpha: 'one',
-        // src: 'one',
-        // dst: 'one'
-      },
-      equation: 'add',
-      color: [0, 0, 0, 0]
-    };
+var blend_info = {
+    enable: true,
+    func: {
+      srcRGB: 'src alpha',
+      srcAlpha: 'src color',
+      dstRGB: 'one',
+      dstAlpha: 'one',
+      // src: 'one',
+      // dst: 'one'
+    },
+    equation: 'add',
+    color: [0, 0, 0, 0]
+  };
 
 const draw = regl({
 
@@ -116,19 +106,14 @@ const draw = regl({
 
   attributes: {
     position: [
-      [0.1, 0.0],
+      [1/num_row, 0.0],
       [0.0, 0.0],
-      [0.0, 0.1],
+      [0.0, 1/num_row],
       ],
 
     offset: {
       buffer: regl.buffer(offset_array),
       divisor: 1 // one separate offset for every triangle.
-    },
-
-    color_att: {
-      buffer: regl.buffer(color_array),
-      divisor: 1 // one separate color for every triangle
     },
 
     angle: {
@@ -153,7 +138,7 @@ const draw = regl({
     inst_color: [0,0,1],
   },
 
-  instances: num_tri * num_tri,
+  instances: num_row * num_row,
 
 })
 
