@@ -25,7 +25,10 @@ var num_col = 10;
 var opacity = []
 for (var i = 0; i < num_row * num_col; i++) {
   opacity[i] = Math.random();
+  // opacity[i] = 0.2; //Math.random();
 }
+
+console.log(opacity.length)
 
 // This buffer stores the opacities
 const opacity_buffer = regl.buffer({
@@ -39,13 +42,13 @@ opacity_buffer(opacity);
 
 // set up offset array for buffer
 function offset_function(_, i){
-              var x = -0.5 +  Math.floor(i / num_col) / num_col + 0.1;
-              var y = -0.5 + (i % num_row) / num_row + 0.1;
+              var x = -0.5 +  ( Math.floor(i / num_col) ) / num_col ;
+              var y = -0.5 + (i % num_row) / num_row ;
               return [x, y];
             };
 
 
-var offset_array = Array(num_row * num_col)
+offset_array = Array(num_row * num_col)
           .fill()
           .map(offset_function);
 
@@ -65,14 +68,14 @@ var blend_info = {
 
 // // bottom half
 var bottom_half = [[1/num_col, 0.0],
-[0.0, 0.0],
-[0.0, 1/num_row]];
+  [0.0, 0.0],
+  [0.0, 1/num_row]];
 
 // top half
 var top_half = [
-  [-1/num_col, 0.0],
-  [0.0, 0.0],
-  [0.0, -1/num_row]
+  [1/num_col, 0.0 ],
+  [1/num_row, 1/num_col],
+  [0.0, 1/num_row]
   ];
 
 var vert_string = `
