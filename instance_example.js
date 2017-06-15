@@ -20,12 +20,12 @@ var zoom_function = function(context){
 window.addEventListener('resize', camera.resize);
 
 // N triangles on the width, N triangles on the height.
-var num_tri = 10
+var num_tri = 10;
 
 var angle = []
 for (var i = 0; i < num_tri * num_tri; i++) {
   // generate random initial angle.
-  angle[i] = 0;//Math.random() * (2 * Math.PI)
+  angle[i] = Math.random();
 }
 
 // This buffer stores the angles of all
@@ -35,6 +35,9 @@ const angle_buffer = regl.buffer({
   type: 'float',
   usage: 'dynamic'
 })
+
+// initialize buffer (previously used subdata)
+angle_buffer(angle);
 
 // set up offset array for buffer
 function offset_function(_, i){
@@ -107,14 +110,14 @@ vert_string = `
   void main() {
 
     gl_Position = zoom * vec4(
-      cos(angle) * position.x + sin(angle) * position.y + offset.x,
-        -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
+      position.x + position.y + offset.x,
+        - position.x + position.y + offset.y, 0, 1);
 
     // pass color_att attribute in vert to inst_color varying in frag
     inst_color = color_att;
 
     // pass angle attribute in vert to opacity varying in frag
-    opacity = sin(angle);
+    opacity = sin(angle) + 0.1;
 
   }`;
 
@@ -162,25 +165,15 @@ const draw = regl({
 
 })
 
-// draw the scene
 regl.frame(function () {
 
   camera.draw( () => {
-
     // clear the background
     regl.clear({
       color: [0, 0, 0, 0]
     });
-
-    // rotate all triangles every frame.
-    for (var i = 0; i < num_tri * num_tri; i++) {
-      angle[i] += 0.002/num_tri * i;
-    }
-
-    // re-initialize buffer (previously used subdata)
-    angle_buffer(angle);
-
+    // draw
     draw();
-
   });
+
 })
