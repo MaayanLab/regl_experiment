@@ -19,8 +19,8 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_row = 1e2;
-var num_col = 1e2;
+var num_row = 10;
+var num_col = 10;
 
 var angle = []
 for (var i = 0; i < num_row * num_col; i++) {
@@ -42,8 +42,8 @@ angle_buffer(angle);
 
 // set up offset array for buffer
 function offset_function(_, i){
-              var x = -0.5 +  Math.floor(i / num_row) / num_row + 0.1;
-              var y = -0.5 + (i % num_col) / num_col + 0.1;
+              var x = -0.5 +  Math.floor(i / num_col) / num_col + 0.1;
+              var y = -0.5 + (i % num_row) / num_row + 0.1;
               return [x, y];
             };
 
@@ -106,9 +106,17 @@ const draw = regl({
 
   attributes: {
     position: [
-      [1/num_row, 0.0],
+
+      // // bottom half
+      // [1/num_col, 0.0],
+      // [0.0, 0.0],
+      // [0.0, 1/num_row],
+
+      // top half
+      [-1/num_col, 0.0],
       [0.0, 0.0],
-      [0.0, 1/num_row],
+      [0.0, -1/num_row],
+
       ],
 
     offset: {
@@ -138,7 +146,7 @@ const draw = regl({
     inst_color: [0,0,1],
   },
 
-  instances: num_row * num_row,
+  instances: num_row * num_col,
 
 })
 
