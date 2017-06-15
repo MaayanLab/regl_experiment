@@ -22,23 +22,21 @@ window.addEventListener('resize', camera.resize);
 var num_row = 10;
 var num_col = 10;
 
-var angle = []
+var opacity = []
 for (var i = 0; i < num_row * num_col; i++) {
-  angle[i] = Math.random();
+  opacity[i] = Math.random();
 }
-
-console.log(angle.length)
 
 // This buffer stores the angles of all
 // the instanced triangles.
-const angle_buffer = regl.buffer({
-  length: angle.length * 4,
+const opacity_buffer = regl.buffer({
+  length: opacity.length * 4,
   type: 'float',
   usage: 'dynamic'
 })
 
 // initialize buffer (previously used subdata)
-angle_buffer(angle);
+opacity_buffer(opacity);
 
 // set up offset array for buffer
 function offset_function(_, i){
@@ -96,7 +94,6 @@ var vert_string = `
 
     gl_Position = zoom * vec4( position.x + offset.x, position.y + offset.y, 0, 1);
 
-
     // pass angle attribute in vert to opacity varying in frag
     opacity = sin(angle) + 0.1;
 
@@ -126,7 +123,7 @@ const draw_bottom = regl({
       divisor: 1 // one separate offset for every triangle.
     },
     angle: {
-      buffer: angle_buffer,
+      buffer: opacity_buffer,
       divisor: 1 // one separate angle for every triangle
       }
   },
@@ -153,7 +150,7 @@ const draw_top = regl({
       divisor: 1 // one separate offset for every triangle.
     },
     angle: {
-      buffer: angle_buffer,
+      buffer: opacity_buffer,
       divisor: 1 // one separate angle for every triangle
       }
   },
@@ -177,7 +174,7 @@ regl.frame(function () {
     regl.clear({
       color: [0, 0, 0, 0]
     });
-    // draw
+    // draw two parts of the matrix cell
     draw_top();
     draw_bottom();
   });
