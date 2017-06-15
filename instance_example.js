@@ -9,9 +9,13 @@
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 const camera = require('./camera-2d')(regl, {
-  xrange: [-5, 5],
-  yrange: [-5, 5]
+  xrange: [-1, 1],
+  yrange: [-1, 1]
 });
+
+var zoom_function = function(context){
+  return context.view;
+}
 
 window.addEventListener('resize', camera.resize);
 
@@ -94,6 +98,7 @@ vert_string = `
   attribute vec3 color_att;
   attribute vec2 offset;
   attribute float angle;
+  uniform mat4 zoom;
 
   // pass varying variables to fragment from vector
   varying vec3 inst_color;
@@ -101,7 +106,7 @@ vert_string = `
 
   void main() {
 
-    gl_Position = vec4(
+    gl_Position = zoom * vec4(
       cos(angle) * position.x + sin(angle) * position.y + offset.x,
         -sin(angle) * position.x + cos(angle) * position.y + offset.y, 0, 1);
 
@@ -149,6 +154,10 @@ const draw = regl({
   // through instancing.
   count: 3,
 
+  uniforms: {
+    zoom: zoom_function,
+  },
+
   instances: num_tri * num_tri,
 
 })
@@ -156,7 +165,7 @@ const draw = regl({
 // draw the scene
 regl.frame(function () {
 
-  // camera.draw( () => {
+  camera.draw( () => {
 
     // clear the background
     regl.clear({
@@ -173,5 +182,5 @@ regl.frame(function () {
 
     draw();
 
-  // });
+  });
 })
