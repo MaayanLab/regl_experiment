@@ -19,12 +19,10 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-// N triangles on the width, N triangles on the height.
 var num_tri = 10;
 
 var angle = []
 for (var i = 0; i < num_tri * num_tri; i++) {
-  // generate random initial angle.
   angle[i] = Math.random();
 }
 
@@ -41,8 +39,9 @@ angle_buffer(angle);
 
 // set up offset array for buffer
 function offset_function(_, i){
-              var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1;
-              var y = -1 + 2 * (i % num_tri) / num_tri + 0.1;
+              // var x = -1 + 2 * Math.floor(i / num_tri) / num_tri + 0.1;
+              var x = -1 +  Math.floor(i / num_tri) / num_tri + 0.1;
+              var y = -1 + (i % num_tri) / num_tri + 0.1;
               return [x, y];
             };
 
@@ -91,15 +90,12 @@ const draw = regl({
   uniform mat4 zoom;
 
   // pass varying variables to fragment from vector
-  varying vec3 inst_color;
   varying float opacity;
 
   void main() {
 
-    gl_Position = zoom * vec4( position.x + position.y + offset.x, - position.x + position.y + offset.y, 0, 1);
+    gl_Position = zoom * vec4( position.x + offset.x, position.y + offset.y, 0, 1);
 
-    // pass color_att attribute in vert to inst_color varying in frag
-    inst_color = color_att;
 
     // pass angle attribute in vert to opacity varying in frag
     opacity = sin(angle) + 0.1;
@@ -108,21 +104,22 @@ const draw = regl({
 
   frag: `
       precision highp float;
-
-      varying vec3 inst_color;
       varying float opacity;
-
+      uniform vec3 inst_color;
       void main() {
 
-        // gl_FragColor = vec4(inst_color, 1.0);
-
         // using opacity value
-        gl_FragColor = vec4(1, 0, 0, opacity);
+        // gl_FragColor = vec4(1, 0, 0, opacity);
+        gl_FragColor = vec4(inst_color, opacity);
 
       }`,
 
   attributes: {
-    position: [[0.0, -0.1], [-0.1, 0.0], [0.0, 0.1]],
+    position: [
+      [0.1, 0.0],
+      [0.0, 0.0],
+      [0.0, 0.1],
+      ],
 
     offset: {
       buffer: regl.buffer(offset_array),
@@ -153,6 +150,7 @@ const draw = regl({
 
   uniforms: {
     zoom: zoom_function,
+    inst_color: [0,0,1],
   },
 
   instances: num_tri * num_tri,
