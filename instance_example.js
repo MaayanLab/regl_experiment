@@ -77,22 +77,9 @@ var color_array = Array(num_tri * num_tri)
       color: [0, 0, 0, 0]
     };
 
-var frag_string = `
-  precision highp float;
+const draw = regl({
 
-  varying vec3 inst_color;
-  varying float opacity;
-
-  void main() {
-
-    // gl_FragColor = vec4(inst_color, 1.0);
-
-    // using opacity value
-    gl_FragColor = vec4(1, 0, 0, opacity);
-
-  }`;
-
-vert_string = `
+  vert: `
   precision highp float;
 
   attribute vec2 position;
@@ -109,9 +96,7 @@ vert_string = `
 
   void main() {
 
-    gl_Position = zoom * vec4(
-      position.x + position.y + offset.x,
-        - position.x + position.y + offset.y, 0, 1);
+    gl_Position = zoom * vec4( position.x + position.y + offset.x, - position.x + position.y + offset.y, 0, 1);
 
     // pass color_att attribute in vert to inst_color varying in frag
     inst_color = color_att;
@@ -119,16 +104,25 @@ vert_string = `
     // pass angle attribute in vert to opacity varying in frag
     opacity = sin(angle) + 0.1;
 
-  }`;
+  }`,
 
-const draw = regl({
+  frag: `
+      precision highp float;
 
-  frag: frag_string,
+      varying vec3 inst_color;
+      varying float opacity;
 
-  vert: vert_string,
+      void main() {
+
+        // gl_FragColor = vec4(inst_color, 1.0);
+
+        // using opacity value
+        gl_FragColor = vec4(1, 0, 0, opacity);
+
+      }`,
 
   attributes: {
-    position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
+    position: [[0.0, -0.1], [-0.1, 0.0], [0.0, 0.1]],
 
     offset: {
       buffer: regl.buffer(offset_array),
