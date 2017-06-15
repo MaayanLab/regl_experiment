@@ -27,8 +27,7 @@ for (var i = 0; i < num_row * num_col; i++) {
   opacity[i] = Math.random();
 }
 
-// This buffer stores the angles of all
-// the instanced triangles.
+// This buffer stores the opacities
 const opacity_buffer = regl.buffer({
   length: opacity.length * 4,
   type: 'float',
@@ -84,30 +83,30 @@ var vert_string = `
   // These three are instanced attributes.
   attribute vec3 color_att;
   attribute vec2 offset;
-  attribute float angle;
+  attribute float opacity_att;
   uniform mat4 zoom;
 
   // pass varying variables to fragment from vector
-  varying float opacity;
+  varying float var_opacity;
 
   void main() {
 
     gl_Position = zoom * vec4( position.x + offset.x, position.y + offset.y, 0, 1);
 
-    // pass angle attribute in vert to opacity varying in frag
-    opacity = sin(angle) + 0.1;
+    // pass attribute (in vert) to varying in frag
+    var_opacity = sin(opacity_att) + 0.1;
 
   }`;
 
 var frag_string = `
   precision highp float;
-  varying float opacity;
+  varying float var_opacity;
   uniform vec3 inst_color;
   void main() {
 
-    // using opacity value
-    // gl_FragColor = vec4(1, 0, 0, opacity);
-    gl_FragColor = vec4(inst_color, opacity);
+    // using var_opacity value
+    // gl_FragColor = vec4(1, 0, 0, var_opacity);
+    gl_FragColor = vec4(inst_color, var_opacity);
 
   }`;
 
@@ -120,18 +119,17 @@ const draw_bottom = regl({
     position: bottom_half,
     offset: {
       buffer: regl.buffer(offset_array),
-      divisor: 1 // one separate offset for every triangle.
+      divisor: 1
     },
-    angle: {
+    opacity_att: {
       buffer: opacity_buffer,
-      divisor: 1 // one separate angle for every triangle
+      divisor: 1
       }
   },
   depth: {
     enable: false
   },
   blend: blend_info,
-  // Every triangle is just three vertices.
   count: 3,
   uniforms: {
     zoom: zoom_function,
@@ -147,18 +145,17 @@ const draw_top = regl({
     position: top_half,
     offset: {
       buffer: regl.buffer(offset_array),
-      divisor: 1 // one separate offset for every triangle.
+      divisor: 1
     },
-    angle: {
+    opacity_att: {
       buffer: opacity_buffer,
-      divisor: 1 // one separate angle for every triangle
+      divisor: 1
       }
   },
   depth: {
     enable: false
   },
   blend: blend_info,
-  // Every triangle is just three vertices.
   count: 3,
   uniforms: {
     zoom: zoom_function,
