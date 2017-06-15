@@ -114,11 +114,40 @@ var frag_string = `
 
   }`;
 
-const draw = regl({
+var inst_half = bottom_half;
+
+const draw_bottom = regl({
   vert: vert_string,
   frag: frag_string,
   attributes: {
     position: bottom_half,
+    offset: {
+      buffer: regl.buffer(offset_array),
+      divisor: 1 // one separate offset for every triangle.
+    },
+    angle: {
+      buffer: angle_buffer,
+      divisor: 1 // one separate angle for every triangle
+      }
+  },
+  depth: {
+    enable: false
+  },
+  blend: blend_info,
+  // Every triangle is just three vertices.
+  count: 3,
+  uniforms: {
+    zoom: zoom_function,
+    inst_color: [0,0,1],
+  },
+  instances: num_row * num_col,
+});
+
+const draw_top = regl({
+  vert: vert_string,
+  frag: frag_string,
+  attributes: {
+    position: top_half,
     offset: {
       buffer: regl.buffer(offset_array),
       divisor: 1 // one separate offset for every triangle.
@@ -149,7 +178,8 @@ regl.frame(function () {
       color: [0, 0, 0, 0]
     });
     // draw
-    draw();
+    draw_top();
+    draw_bottom();
   });
 
 })
