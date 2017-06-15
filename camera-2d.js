@@ -1,3 +1,4 @@
+// © 2016 Ricky Reusser. MIT License.
 'use strict';
 
 var interactionEvents = require('interaction-events');

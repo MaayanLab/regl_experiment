@@ -1,64 +1,62 @@
-//////////////////////////////////////////
-// triangle
-//////////////////////////////////////////
-// Again, we start out by requiring regl
-var regl = require('regl')()
+const regl = require('regl')();
 
-// Next, we create a new command.
-//
-// To do this, we call the main regl function and pass it an object giving a
-// description of the rendering command and its properties:
-//
-var drawTriangle = regl({
-  //
-  // First we define a vertex shader.  This is a program which tells the GPU
-  // where to draw the vertices.
-  //
+const camera = require('./camera-2d')(regl, {
+  xrange: [-1, 1],
+  yrange: [-1, 1]
+});
+
+var zoom_function = function(context){
+  return context.view;
+}
+
+window.addEventListener('resize', camera.resize);
+
+const draw = regl({
+
   vert: `
-    // This is a simple vertex shader that just passes the position through
-
-    // get the attribute (defined below) position_data and pass it to the vertex
-    // shader
-    attribute vec2 position_data;
+    precision highp float;
+    attribute vec2 position;
+    varying vec2 uv;
+    uniform mat4 zoom;
     void main () {
-      gl_Position = vec4(position_data, 0, 1);
+
+      // zoom multiplication does zoom
+      gl_Position = zoom * vec4(position, 0, 1);
+
     }
   `,
 
-  //
-  // Next, we define a fragment shader to tell the GPU what color to draw.
-  //
   frag: `
-    // This is program just colors the triangle white
+
+    // color triangle red
     void main () {
       gl_FragColor = vec4(1, 0, 0, 1);
     }
+
   `,
 
-  // Finally we need to give the vertices to the GPU
   attributes: {
-    position_data: [
+    position: [
       [0.4, 0],
       [0, 1],
       [-1, -1]
     ]
   },
 
-  // And also tell it how many vertices to draw
+  uniforms: {
+    zoom: zoom_function,
+  },
+
   count: 3
-})
 
-// Now that our command is defined, we hook a callback to draw it each frame:
-regl.frame( function (){
+});
 
-  // First we clear the color and depth buffers like before
-  // (does not appear to be necessary)
+regl.frame(function(){
+
   regl.clear({
-    color: [0, 0, 0, 1],
-    depth: 1
+    color: [0,0,0,1]
   })
 
-  // Then we call the command that we just defined
-  drawTriangle()
+  camera.draw(draw);
 
-})
+});
