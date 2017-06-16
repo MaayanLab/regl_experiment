@@ -3,15 +3,26 @@
 
  */
 
-const regl = require('regl')()
+const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-const textMesh = vectorizeText('nick!', {
+const textMesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle'
 })
+
+var num_instances = 20;
+
+function offset_function(_, i){
+              return i/num_instances;
+            };
+
+offset_array = Array(num_instances)
+          .fill()
+          .map(offset_function);
+
 
 const drawText = regl({
   frag: `
@@ -24,12 +35,19 @@ const drawText = regl({
   vert: `
   attribute vec2 position;
   uniform mat4 projection, view;
+  attribute float offset;
+
   void main () {
-    gl_Position = projection * view * vec4(position, 0, 1);
+    // gl_Position = projection * view * vec4(position, 0, 1);
+    gl_Position = projection * view * vec4(position.x + offset, position.y, 0, 1);
   }`,
 
   attributes: {
-    position: textMesh.positions
+    position: textMesh.positions,
+    offset: {
+      buffer: regl.buffer(offset_array),
+      divisor: 1
+    }
   },
 
   elements: textMesh.edges,
@@ -40,7 +58,7 @@ const drawText = regl({
     view: ({tick}) => {
       const t = 0.01 * tick
       return lookAt([],
-        [5 * Math.sin(t), 0, -5 * Math.cos(t)],
+        [0 , 0, -5 ],
         [0, 0, 0],
         [0, -1, 0])
     },
@@ -53,9 +71,10 @@ const drawText = regl({
         1000)
   },
 
-  depth: {enable: false}
+  depth: {enable: false},
+  instances: num_instances,
 })
 
 regl.frame(() => {
-  drawText()
+  drawText();
 })
