@@ -1,3 +1,21 @@
+2D label Notes
+==============
+Nicolas Fernandez @cornhundred 11:55
+Is the way text is rendered in the text.js example from the gallery (using vectorize-text) a good way to render a lot of text (e.g. thousands of labels) or is there a more optimal way? I tried using instancing to make thousands of labels and zooming became less responsive around 10 thousand labels (https://github.com/MaayanLab/regl_experiment/blob/master/text_example.js).
+
+Josh Groves @grovesNL 12:04
+If you're trying to draw thousands of labels it's probably better to draw billboards (2d textures with glyphs) rather than meshes of the 3d text
+it depends if you need to render 3d labels I guess
+The approach I mentioned earlier (bitmap or sdf glyphs rendererd as instanced quads) should be reasonably fast
+If the labels are all static and there aren't that many different kinds of labels, then you could use a texture atlas with instanced quads
+
+Josh Groves @grovesNL 12:14
+let me know if this isn't clear, I spent a lot of time on a similar problem a while ago
+
+Nicolas Fernandez @cornhundred 12:39
+thanks @grovesNL, I'll look these things up. Also, I don't need 3D labels
+
+
 instancing notes
 ===================
   gitter info
