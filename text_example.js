@@ -11,12 +11,23 @@ const lookAt = require('gl-mat4/lookAt')
 const textMesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle'
-})
+});
 
-var num_instances = 20;
+const camera = require('./camera-2d')(regl, {
+  xrange: [-2, 2],
+  yrange: [-2, 2]
+});
+
+window.addEventListener('resize', camera.resize);
+
+var zoom_function = function(context){
+  return context.view;
+}
+
+var num_instances = 10;
 
 function offset_function(_, i){
-              return i/num_instances;
+              return 2*(i/num_instances);
             };
 
 offset_array = Array(num_instances)
@@ -36,10 +47,11 @@ const drawText = regl({
   attribute vec2 position;
   uniform mat4 projection, view;
   attribute float offset;
+  uniform mat4 zoom;
 
   void main () {
     // gl_Position = projection * view * vec4(position, 0, 1);
-    gl_Position = projection * view * vec4(position.x + offset, position.y, 0, 1);
+    gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
   }`,
 
   attributes: {
@@ -68,7 +80,9 @@ const drawText = regl({
         Math.PI / 4,
         viewportWidth / viewportHeight,
         0.01,
-        1000)
+        1000),
+
+    zoom: zoom_function
   },
 
   depth: {enable: false},
@@ -76,5 +90,8 @@ const drawText = regl({
 })
 
 regl.frame(() => {
-  drawText();
+
+  camera.draw( () => {
+    drawText();
+  })
 })
