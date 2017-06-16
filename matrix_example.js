@@ -19,7 +19,7 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_cell = 100;
+var num_cell = 5000;
 
 var opacity = []
 for (var i = 0; i < num_cell * num_cell; i++) {
@@ -212,13 +212,14 @@ const draw_top_cells = regl({
 regl.frame(function () {
 
   camera.draw( () => {
+
     // clear the background
     regl.clear({
       color: [0, 0, 0, 0]
     });
 
     // draw two parts of the matrix cell
-    draw_background();
+    // draw_background();
     draw_top_cells();
     draw_bot_cells();
 
