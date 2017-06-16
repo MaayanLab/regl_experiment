@@ -19,12 +19,11 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_cell = 1000;
+var num_cell = 100;
 
 var opacity = []
 for (var i = 0; i < num_cell * num_cell; i++) {
   opacity[i] = Math.random();
-  // opacity[i] = 0.2; //Math.random();
 }
 
 console.log(opacity.length)
@@ -39,17 +38,6 @@ const opacity_buffer = regl.buffer({
 // initialize buffer (previously used subdata)
 opacity_buffer(opacity);
 
-// set up offset array for buffer
-function offset_function(_, i){
-              var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
-              var y = -0.5 + (i % num_cell) / num_cell ;
-              return [x, y];
-            };
-
-
-offset_array = Array(num_cell * num_cell)
-          .fill()
-          .map(offset_function);
 
 var blend_info = {
     enable: true,
@@ -65,7 +53,62 @@ var blend_info = {
     color: [0, 0, 0, 0]
   };
 
-// // bottom half
+// draw background
+const draw_background = regl({
+
+  vert: `
+    precision highp float;
+    attribute vec2 position;
+    varying vec2 uv;
+    uniform mat4 zoom;
+    void main () {
+
+      // zoom multiplication does zoom
+      gl_Position = zoom * vec4(position, 0, 1);
+
+    }
+  `,
+
+  frag: `
+
+    // color triangle red
+    void main () {
+      gl_FragColor = vec4(0, 0, 0, 1);
+    }
+
+  `,
+
+  attributes: {
+    position: [
+      [-0.5, 0.5],
+      [-0.5, -0.5],
+      [0.5, -0.5],
+    ]
+  },
+
+  // blend: blend_info,
+  uniforms: {
+    zoom: zoom_function,
+  },
+
+  count: 3
+
+});
+
+// draw matrix cells
+/////////////////////////////////////////
+// set up offset array for buffer
+function offset_function(_, i){
+              var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
+              var y = -0.5 + (i % num_cell) / num_cell ;
+              return [x, y];
+            };
+
+offset_array = Array(num_cell * num_cell)
+          .fill()
+          .map(offset_function);
+
+// bottom half
 var bottom_half = [
   [1/num_cell, 0.0],
   [0.0,       0.0],
@@ -114,7 +157,7 @@ var frag_string = `
 
 var inst_half = bottom_half;
 
-const draw_bottom = regl({
+const draw_bot_cells = regl({
   vert: vert_string,
   frag: frag_string,
   attributes: {
@@ -140,7 +183,7 @@ const draw_bottom = regl({
   instances: num_cell * num_cell,
 });
 
-const draw_top = regl({
+const draw_top_cells = regl({
   vert: vert_string,
   frag: frag_string,
   attributes: {
@@ -173,9 +216,12 @@ regl.frame(function () {
     regl.clear({
       color: [0, 0, 0, 0]
     });
+
     // draw two parts of the matrix cell
-    draw_top();
-    draw_bottom();
+    draw_background();
+    draw_top_cells();
+    draw_bot_cells();
+
   });
 
 })
