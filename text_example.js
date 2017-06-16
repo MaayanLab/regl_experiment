@@ -8,6 +8,8 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
+var num_instances = 1000;
+
 const textMesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle'
@@ -24,7 +26,6 @@ var zoom_function = function(context){
   return context.view;
 }
 
-var num_instances = 10;
 
 function offset_function(_, i){
               return 2*(i/num_instances);
@@ -39,8 +40,9 @@ const drawText = regl({
   frag: `
   precision mediump float;
   uniform float t;
+  varying float text_color;
   void main () {
-    gl_FragColor = vec4(1, 0, 0, 1);
+    gl_FragColor = vec4(1, 0, text_color, 1);
   }`,
 
   vert: `
@@ -48,10 +50,12 @@ const drawText = regl({
   uniform mat4 projection, view;
   attribute float offset;
   uniform mat4 zoom;
+  varying float text_color;
 
   void main () {
     // gl_Position = projection * view * vec4(position, 0, 1);
     gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
+    text_color = offset;
   }`,
 
   attributes: {
