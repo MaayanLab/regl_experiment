@@ -19,7 +19,7 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_cell = 5000;
+var num_cell = 500;
 
 var opacity = []
 for (var i = 0; i < num_cell * num_cell; i++) {
