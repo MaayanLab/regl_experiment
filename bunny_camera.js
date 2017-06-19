@@ -6,7 +6,17 @@
 
 const regl = require('regl')()
 
-const bunny = require('bunny')
+const vectorizeText = require('vectorize-text')
+text_vect = vectorizeText('something!', {
+  textAlign: 'center',
+  textBaseline: 'middle',
+  triangles:true
+});
+
+// bunny = require('bunny')
+
+bunny = text_vect;
+
 const normals = require('angle-normals')
 
 const camera = require('./camera')(regl, {
@@ -27,7 +37,7 @@ const drawBunny = regl({
     precision mediump float;
     varying vec3 vnormal;
     void main () {
-      gl_FragColor = vec4(abs(vnormal), 1.0);
+      gl_FragColor = vec4(1, 0, 0, 1.0);
     }`,
   attributes: {
     position: bunny.positions,
