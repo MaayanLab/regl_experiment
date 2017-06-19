@@ -13,7 +13,7 @@ var num_instances = 10;
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
-  triangles:true
+  // triangles:true
 });
 
 const camera = require('./camera-2d')(regl, {

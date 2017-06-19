@@ -1,64 +1,100 @@
-//////////////////////////////////////////
-// trying to render vectorized text using triangles
-//////////////////////////////////////////
-// Again, we start out by requiring regl
-var regl = require('regl')()
+/*
+  tags: instancing, basic
 
-// Next, we create a new command.
-//
-// To do this, we call the main regl function and pass it an object giving a
-// description of the rendering command and its properties:
-//
-var drawTriangle = regl({
-  //
-  // First we define a vertex shader.  This is a program which tells the GPU
-  // where to draw the vertices.
-  //
-  vert: `
-    // This is a simple vertex shader that just passes the position through
+  <p> In this example, it is shown how you can draw a bunch of triangles using the
+  instancing feature of regl. </p>
+ */
+const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-    // get the attribute (defined below) position_data and pass it to the vertex
-    // shader
-    attribute vec2 position_data;
-    void main () {
-      gl_Position = vec4(position_data, 0, 1);
-    }
-  `,
+var N = 10 // N triangles on the width, N triangles on the height.
 
-  //
-  // Next, we define a fragment shader to tell the GPU what color to draw.
-  //
-  frag: `
-    // This is program just colors the triangle white
-    void main () {
-      gl_FragColor = vec4(1, 0, 0, 1);
-    }
-  `,
+var angle = []
+for (var i = 0; i < N * N; i++) {
+  // generate random initial angle.
+  angle[i] = Math.random() * (2 * Math.PI)
+}
 
-  // Finally we need to give the vertices to the GPU
-  attributes: {
-    position_data: [
-      [0.4, 0],
-      [0, 1],
-      [-1, -1]
-    ]
-  },
-
-  // And also tell it how many vertices to draw
-  count: 3
+// This buffer stores the angles of all
+// the instanced triangles.
+const angleBuffer = regl.buffer({
+  length: angle.length * 4,
+  type: 'float',
+  usage: 'dynamic'
 })
 
-// Now that our command is defined, we hook a callback to draw it each frame:
-regl.frame( function (){
+const draw = regl({
+  frag: `
+  precision mediump float;
 
-  // First we clear the color and depth buffers like before
-  // (does not appear to be necessary)
+  varying vec3 vColor;
+  void main() {
+    gl_FragColor = vec4(vColor, 1.0);
+  }`,
+
+  vert: `
+  precision mediump float;
+
+  attribute vec2 position;
+
+  // These three are instanced attributes.
+  attribute vec3 color;
+  attribute vec2 offset;
+
+  varying vec3 vColor;
+
+  void main() {
+    gl_Position = vec4(
+         position.x + position.y + offset.x,
+        -position.x + position.y + offset.y, 0, 1);
+    vColor = color;
+  }`,
+
+  attributes: {
+    position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
+
+    offset: {
+      buffer: regl.buffer(
+        Array(N * N).fill().map((_, i) => {
+          var x = -1 + 2 * Math.floor(i / N) / N + 0.1
+          var y = -1 + 2 * (i % N) / N + 0.1
+          return [x, y]
+        })),
+      divisor: 1 // one separate offset for every triangle.
+    },
+
+    color: {
+      buffer: regl.buffer(
+        Array(N * N).fill().map((_, i) => {
+          var r = Math.floor(i / N) / N
+          var g = (i % N) / N
+          return [r, g, r * g + 0.2]
+        })),
+      divisor: 1 // one separate color for every triangle
+    },
+
+  },
+
+  depth: {
+    enable: false
+  },
+
+  // Every triangle is just three vertices.
+  // However, every such triangle are drawn N * N times,
+  // through instancing.
+  count: 3,
+  instances: N * N
+})
+
+regl.frame(function () {
   regl.clear({
-    color: [0, 0, 0, 1],
-    depth: 1
+    color: [0, 0, 0, 1]
   })
 
-  // Then we call the command that we just defined
-  drawTriangle()
+  // rotate the triangles every frame.
+  for (var i = 0; i < N * N; i++) {
+    angle[i] += 0.01
+  }
+  angleBuffer.subdata(angle)
 
+  draw()
 })

@@ -14,12 +14,6 @@ const camera = require('./camera')(regl, {
 })
 
 const drawBunny = regl({
-  frag: `
-    precision mediump float;
-    varying vec3 vnormal;
-    void main () {
-      gl_FragColor = vec4(abs(vnormal), 1.0);
-    }`,
   vert: `
     precision mediump float;
     uniform mat4 projection, view;
@@ -28,6 +22,12 @@ const drawBunny = regl({
     void main () {
       vnormal = normal;
       gl_Position = projection * view * vec4(position, 1.0);
+    }`,
+  frag: `
+    precision mediump float;
+    varying vec3 vnormal;
+    void main () {
+      gl_FragColor = vec4(abs(vnormal), 1.0);
     }`,
   attributes: {
     position: bunny.positions,
