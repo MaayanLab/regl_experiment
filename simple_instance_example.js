@@ -8,17 +8,15 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 var N = 10 // N triangles on the width, N triangles on the height.
 
+offset_array = Array(N * N).fill().map((_, i) => {
+          var x = -1 + 2 * Math.floor(i / N) / N + 0.1
+          var y = -1 + 2 * (i % N) / N + 0.1
+          return [x, y]
+        })
+
 const draw = regl({
-  frag: `
-  precision mediump float;
-
-  void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-  }`,
-
   vert: `
   precision mediump float;
-
   attribute vec2 position;
 
   // These three are instanced attributes.
@@ -32,16 +30,18 @@ const draw = regl({
         -position.x + position.y + offset.y, 0, 1);
   }`,
 
+  frag: `
+  precision mediump float;
+
+  void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  }`,
+
   attributes: {
     position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
 
     offset: {
-      buffer: regl.buffer(
-        Array(N * N).fill().map((_, i) => {
-          var x = -1 + 2 * Math.floor(i / N) / N + 0.1
-          var y = -1 + 2 * (i % N) / N + 0.1
-          return [x, y]
-        })),
+      buffer: regl.buffer(offset_array),
       divisor: 1 // one separate offset for every triangle.
     },
 

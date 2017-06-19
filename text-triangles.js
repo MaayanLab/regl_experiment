@@ -41,8 +41,8 @@ const draw = regl({
 
   void main() {
     gl_Position = vec4(
-         position[0] + position[1],
-        -position[0] + position[1],
+        -0.1 - offset[0],
+        position[1] - offset[1],
         0,
         1);
   }`,
@@ -56,17 +56,19 @@ const draw = regl({
 
   attributes: {
 
-    position: [[0.0, -0.05], [-0.05, 0.0], [0.05, 0.05]],
+    // position: [[0.0, 1.0], [0.0, 0.0], [1, 0]],
+    position: tri_verts[1],
 
     // position: {
     //   buffer: regl.buffer(tri_verts),
     //   divisor: 1 //
-    // },
+    // // },
 
-    // offset: {
-    //   buffer: regl.buffer(text_vect.positions),
-    //   divisor: 1 // one separate offset for every triangle.
-    // },
+    offset: {
+      // buffer: regl.buffer(text_vect.positions),
+      buffer: regl.buffer(tri_verts),
+      divisor: 1 // one separate offset for every triangle.
+    },
 
   },
 
@@ -86,5 +88,5 @@ regl.frame(function () {
     color: [0, 0, 0, 1]
   })
 
-  draw()
+  draw();
 })
