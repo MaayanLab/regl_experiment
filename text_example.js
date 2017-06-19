@@ -8,11 +8,12 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-var num_instances = 100;
+var num_instances = 10;
 
-const textMesh = vectorizeText('something!', {
+textMesh = vectorizeText('something!', {
   textAlign: 'center',
-  textBaseline: 'middle'
+  textBaseline: 'middle',
+  triangles:true
 });
 
 const camera = require('./camera-2d')(regl, {

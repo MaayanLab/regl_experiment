@@ -9,11 +9,11 @@ const regl = require('regl')();
 const mat4 = require('gl-mat4');
 const glsl = require('glslify');
 
-const position = generatePlane(100, 100);
+const positions = generatePlane(100, 100);
 
 const drawPlane = regl({
 
-  vert: glsl`
+  vert: `
     precision mediump float;
     attribute vec3 position;
     uniform mat4 view, projection;
@@ -23,7 +23,7 @@ const drawPlane = regl({
     }
   `,
 
-  frag: glsl`
+  frag: `
     precision mediump float;
     void main(){
       gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
@@ -56,25 +56,26 @@ const drawPlane = regl({
 });
 
 
-function generatePlane (segmentsX, segmentsZ){
-
+function generatePlane (segmentsX, segmentsZ) {
   const positions = []
   const widthX = 1 / segmentsX
-  const widthZ = 1 /segmentsZ
-  for (let x = 0; x < segmentsX; x++){
-    for (let z = 0; z < segmentsZ; z++){
+  const widthZ = 1 / segmentsZ
+  for (let x = 0; x < segmentsX; x++) {
+    for (let z = 0; z < segmentsZ; z++) {
       const x0 = x * widthX - 0.5
-      const x1 = x * (x + 1) * widthX - 0.5
+      const x1 = (x + 1) * widthX - 0.5
       const z0 = z * widthZ - 0.5
       const z1 = (z + 1) * widthZ - 0.5
 
       // Build 2 triangles
       //
-      //    (x0, z1)      (x1, z1)
-      //         *------*
-      //         | A   / |
-      //         |    /
-      //  ...
+      //       (x0, z1)       (x1, z1)
+      //              *-------*
+      //              | A   / |
+      //              |   /   |
+      //              | /   B |
+      //              *-------*
+      //       (x0, z0)       (x1, z0)
 
       // Triangle A
       positions.push([x0, 0, z0])
@@ -85,13 +86,11 @@ function generatePlane (segmentsX, segmentsZ){
       positions.push([x1, 0, z1])
       positions.push([x1, 0, z0])
       positions.push([x0, 0, z0])
-
     }
   }
-
-return positions;
-
+  return positions
 }
+
 
 // run the draw code on every frame update at 60fps.
 regl.frame(() => {
