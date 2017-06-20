@@ -7,6 +7,15 @@ const regl = require('regl')()
 
 const vectorizeText = require('vectorize-text')
 
+const camera = require('./camera-2d')(regl, {
+  xrange: [-1, 1],
+  yrange: [-1, 1]
+});
+
+var zoom_function = function(context){
+  return context.view;
+}
+
 text_vect = vectorizeText('Something!', {
   textAlign: 'center',
   textBaseline: 'middle',
@@ -17,9 +26,10 @@ const draw_text = regl({
   vert: `
     precision highp float;
     attribute vec2 position;
+    uniform mat4 zoom;
 
     void main () {
-      gl_Position = vec4(position, 0.0, 1.0);
+      gl_Position = zoom * vec4(position, 0.0, 1.0);
     }`,
   frag: `
     precision highp float;
@@ -29,12 +39,19 @@ const draw_text = regl({
   attributes: {
     position: text_vect.positions,
   },
-  elements: text_vect.cells
+  elements: text_vect.cells,
+  uniforms: {
+    zoom: zoom_function,
+  }
 })
 
 regl.frame(() => {
-  regl.clear({
-    color: [0, 0, 0, 1]
+
+  camera.draw( () => {
+    regl.clear({
+      color: [0, 0, 0, 1]
+    })
+    draw_text()
   })
-  draw_text()
+
 })
