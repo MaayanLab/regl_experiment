@@ -37,7 +37,7 @@ const drawPlane = regl({
 
 });
 
-
+// The triangle positions are implicit in the batch run
 function generatePlane (segmentsX, segmentsZ) {
   const positions = []
   const widthX = 1 / segmentsX
