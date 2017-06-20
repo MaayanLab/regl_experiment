@@ -8,7 +8,7 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-var num_instances = 10;
+var num_instances = 1000;
 
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
