@@ -19,14 +19,12 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_cell = 500;
+var num_cell = 800;
 
 var opacity = []
 for (var i = 0; i < num_cell * num_cell; i++) {
   opacity[i] = Math.random();
 }
-
-console.log(opacity.length)
 
 // This buffer stores the opacities
 const opacity_buffer = regl.buffer({
@@ -35,9 +33,8 @@ const opacity_buffer = regl.buffer({
   usage: 'dynamic'
 })
 
-// initialize buffer (previously used subdata)
+// initialize buffer
 opacity_buffer(opacity);
-
 
 var blend_info = {
     enable: true,
@@ -157,33 +154,7 @@ var frag_string = `
 
 var inst_half = bottom_half;
 
-const draw_bot_cells = regl({
-  vert: vert_string,
-  frag: frag_string,
-  attributes: {
-    position: bottom_half,
-    offset: {
-      buffer: regl.buffer(offset_array),
-      divisor: 1
-    },
-    opacity_att: {
-      buffer: opacity_buffer,
-      divisor: 1
-      }
-  },
-  depth: {
-    enable: false
-  },
-  blend: blend_info,
-  count: 3,
-  uniforms: {
-    zoom: zoom_function,
-    inst_color: [1,0,0],
-  },
-  instances: num_cell * num_cell,
-});
-
-const draw_top_cells = regl({
+regl_props = {
   vert: vert_string,
   frag: frag_string,
   attributes: {
@@ -207,7 +178,19 @@ const draw_top_cells = regl({
     inst_color: [1,0,0],
   },
   instances: num_cell * num_cell,
-});
+};
+
+
+bot_props = regl_props;
+bot_props.attributes.position = bottom_half;
+
+const draw_bot_cells = regl(bot_props)
+
+top_props = regl_props;
+top_props.attributes.position = top_half;
+
+const draw_top_cells = regl(top_props);
+
 
 regl.frame(function () {
 
@@ -219,7 +202,7 @@ regl.frame(function () {
     });
 
     // draw two parts of the matrix cell
-    // draw_background();
+    draw_background();
     draw_top_cells();
     draw_bot_cells();
 
