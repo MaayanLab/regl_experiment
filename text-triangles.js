@@ -45,7 +45,6 @@ const drawText = regl({
   varying float text_color;
 
   void main () {
-    // gl_Position = projection * view * vec4(position, 0, 1);
     gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
     text_color = offset;
   }`,
