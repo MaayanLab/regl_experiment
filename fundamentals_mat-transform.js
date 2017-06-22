@@ -32,7 +32,9 @@ m3 = {
   },
 };
 
-mat_scale = m3.scaling(2,3)
+mat_rotate = m3.scaling(2,2)
+
+console.log(mat_rotate)
 
 // Next, we create a new command.
 //
@@ -50,9 +52,16 @@ var drawTriangle = regl({
     // get the attribute (defined below) position_data and pass it to the vertex
     // shader
     attribute vec3 position_data;
-    attribute mat3 mat_scale;
+    varying vec3 position_data2;
+    uniform mat3 mat_rotate;
+
     void main () {
-      gl_Position = vec4(position_data, 1);
+      // gl_Position = vec4( mat_rotate * position_data, 1);
+
+      position_data2 = position_data * mat_rotate;
+      // position_data2 = position_data;
+
+      gl_Position = vec4( position_data2, 1);
     }
   `,
 
@@ -61,6 +70,7 @@ var drawTriangle = regl({
   //
   frag: `
     // This is program just colors the triangle white
+
     void main () {
       gl_FragColor = vec4(1, 0, 0, 1);
     }
@@ -73,11 +83,13 @@ var drawTriangle = regl({
       [0.3, 0, 0],
       [0, 0.15, 0]
     ],
-    mat_scale: mat_scale
   },
 
   // And also tell it how many vertices to draw
-  count: 3
+  count: 3,
+  uniforms: {
+    mat_rotate: mat_rotate
+  }
 })
 
 // Now that our command is defined, we hook a callback to draw it each frame:
