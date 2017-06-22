@@ -32,10 +32,11 @@ m3 = {
   },
 };
 
-mat_translate = m3.translation(0, 0);
+mat_scale = m3.scaling(0.5, 0.5);
 mat_rotate = m3.rotation(1.6);
-
-console.log(mat_rotate)
+mat_translate = m3.translation(10, 10);
+// mat_translate = m3.scaling(1, 1);
+vec_translate = [0.5, 0.5, 0.0];
 
 // Next, we create a new command.
 //
@@ -55,11 +56,12 @@ var drawTriangle = regl({
     attribute vec3 position_ini;
     varying vec3 position_new;
     uniform mat3 mat_rotate;
-    uniform mat3 mat_translate;
+    uniform mat3 mat_scale;
+    uniform vec3 vec_translate;
 
     void main () {
 
-      position_new = position_ini * mat_rotate;
+      position_new = (mat_rotate * mat_scale * position_ini + vec_translate);
 
       gl_Position = vec4( position_new, 1);
     }
@@ -79,9 +81,9 @@ var drawTriangle = regl({
   // Finally we need to give the vertices to the GPU
   attributes: {
     position_ini: [
-      [0, 0, 0],
-      [0.3, 0, 0],
-      [0, 0.15, 0]
+      [0.0,  0.0, 0.0],
+      [0.3,  0.0, 1.0],
+      [0.0, 0.15, 1.0]
     ],
   },
 
@@ -89,12 +91,13 @@ var drawTriangle = regl({
   count: 3,
   uniforms: {
     mat_rotate: mat_rotate,
-    mat_translate: mat_translate
+    mat_scale: mat_scale,
+    vec_translate: vec_translate
   }
 })
 
 // Now that our command is defined, we hook a callback to draw it each frame:
-regl.frame( function (){
+// regl.frame( function (){
 
   // First we clear the color and depth buffers like before
   // (does not appear to be necessary)
@@ -106,4 +109,4 @@ regl.frame( function (){
   // Then we call the command that we just defined
   drawTriangle()
 
-})
+// })
