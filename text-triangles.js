@@ -7,8 +7,12 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
+var m4 = require('./mat4_transform');
 
-var num_instances = 20;
+var num_instances = 5;
+
+mat_scale = m4.scaling(1, 1);
+mat_rotate = m4.rotation(-Math.PI/2);
 
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
@@ -43,9 +47,11 @@ const drawText = regl({
   attribute float offset;
   uniform mat4 zoom;
   varying float text_color;
+  uniform mat4 mat_scale;
+  uniform mat4 mat_rotate;
 
   void main () {
-    gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
+    gl_Position = mat_rotate * zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
     text_color = offset;
   }`,
 
@@ -77,6 +83,9 @@ const drawText = regl({
         [0, 0, 0],
         [0, -1, 0])
     },
+
+    mat_scale: mat_scale,
+    mat_rotate: mat_rotate,
 
     projection: ({viewportWidth, viewportHeight}) =>
       perspective([],

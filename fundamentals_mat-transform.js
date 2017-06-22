@@ -4,33 +4,7 @@
 // Again, we start out by requiring regl
 var regl = require('regl')()
 
-m3 = {
-  translation: function(tx, ty) {
-    return [
-      1, 0, 0,
-      0, 1, 0,
-      tx, ty, 1,
-    ];
-  },
-
-  rotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
-    return [
-      c,-s, 0,
-      s, c, 0,
-      0, 0, 1,
-    ];
-  },
-
-  scaling: function(sx, sy) {
-    return [
-      sx, 0, 0,
-      0, sy, 0,
-      0, 0, 1,
-    ];
-  },
-};
+var m3 = require('./mat3_transform');
 
 mat_scale = m3.scaling(0.5, 0.5);
 mat_rotate = m3.rotation(1.6);
@@ -97,7 +71,7 @@ var drawTriangle = regl({
 })
 
 // Now that our command is defined, we hook a callback to draw it each frame:
-// regl.frame( function (){
+regl.frame( function (){
 
   // First we clear the color and depth buffers like before
   // (does not appear to be necessary)
@@ -109,4 +83,4 @@ var drawTriangle = regl({
   // Then we call the command that we just defined
   drawTriangle()
 
-// })
+})
