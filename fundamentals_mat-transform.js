@@ -32,7 +32,8 @@ m3 = {
   },
 };
 
-mat_rotate = m3.scaling(2,2)
+mat_translate = m3.translation(0, 0);
+mat_rotate = m3.rotation(1.6);
 
 console.log(mat_rotate)
 
@@ -49,19 +50,18 @@ var drawTriangle = regl({
   vert: `
     // This is a simple vertex shader that just passes the position through
 
-    // get the attribute (defined below) position_data and pass it to the vertex
+    // get the attribute (defined below) position_ini and pass it to the vertex
     // shader
-    attribute vec3 position_data;
-    varying vec3 position_data2;
+    attribute vec3 position_ini;
+    varying vec3 position_new;
     uniform mat3 mat_rotate;
+    uniform mat3 mat_translate;
 
     void main () {
-      // gl_Position = vec4( mat_rotate * position_data, 1);
 
-      position_data2 = position_data * mat_rotate;
-      // position_data2 = position_data;
+      position_new = position_ini * mat_rotate;
 
-      gl_Position = vec4( position_data2, 1);
+      gl_Position = vec4( position_new, 1);
     }
   `,
 
@@ -78,7 +78,7 @@ var drawTriangle = regl({
 
   // Finally we need to give the vertices to the GPU
   attributes: {
-    position_data: [
+    position_ini: [
       [0, 0, 0],
       [0.3, 0, 0],
       [0, 0.15, 0]
@@ -88,7 +88,8 @@ var drawTriangle = regl({
   // And also tell it how many vertices to draw
   count: 3,
   uniforms: {
-    mat_rotate: mat_rotate
+    mat_rotate: mat_rotate,
+    mat_translate: mat_translate
   }
 })
 
