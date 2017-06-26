@@ -8,9 +8,11 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
+var m3 = require('./mat3_transform');
+
 const camera = require('./camera-2d')(regl, {
-  xrange: [-1, 1],
-  yrange: [-1, 1]
+  xrange: [-1.5, 1.5],
+  yrange: [-1.5, 1.5]
 });
 
 var zoom_function = function(context){
@@ -19,7 +21,13 @@ var zoom_function = function(context){
 
 window.addEventListener('resize', camera.resize);
 
-var num_cell = 800;
+var num_cell = 10;
+
+mat_scale = m3.scaling(0.1/num_cell, 0.1/num_cell);
+mat_rotate = m3.rotation(Math.PI/4);
+vec_translate = [-0.5, 0.5, 0.0];
+
+console.log(num_cell * num_cell)
 
 var opacity = []
 for (var i = 0; i < num_cell * num_cell; i++) {
@@ -56,12 +64,22 @@ const draw_background = regl({
   vert: `
     precision highp float;
     attribute vec2 position;
-    varying vec2 uv;
+    varying vec3 new_position;
+    uniform mat3 mat_rotate;
+    uniform mat3 mat_scale;
+    uniform vec3 vec_translate;
     uniform mat4 zoom;
+
     void main () {
 
       // zoom multiplication does zoom
-      gl_Position = zoom * vec4(position, 0, 1);
+
+      new_position = vec3(position, 0);
+
+      // rotate, zoom and then translate
+      new_position = mat_rotate * mat_scale * new_position + vec_translate;
+
+      gl_Position = zoom * vec4(new_position, 1);
 
     }
   `,
@@ -86,6 +104,9 @@ const draw_background = regl({
   // blend: blend_info,
   uniforms: {
     zoom: zoom_function,
+    mat_rotate: mat_rotate,
+    mat_scale: mat_scale,
+    vec_translate: vec_translate
   },
 
   count: 3

@@ -17,9 +17,9 @@ var zoom_function = function(context){
 
 mat_scale = m3.scaling(1.0, 1.0);
 mat_rotate = m3.rotation(Math.PI/2);
-mat_translate = m3.translation(10, 10);
-// mat_translate = m3.scaling(1, 1);
 vec_translate = [-0.5, 0, 0.0];
+// mat_translate = m3.translation(10, 10);
+// mat_translate = m3.scaling(1, 1);
 
 // Next, we create a new command.
 //
@@ -37,7 +37,7 @@ var drawTriangle = regl({
     // get the attribute (defined below) position_ini and pass it to the vertex
     // shader
     attribute vec3 position_ini;
-    varying vec3 position_new;
+    varying vec3 new_position;
     uniform mat3 mat_rotate;
     uniform mat3 mat_scale;
     uniform vec3 vec_translate;
@@ -45,9 +45,9 @@ var drawTriangle = regl({
 
     void main () {
 
-      position_new = (mat_rotate * mat_scale * position_ini + vec_translate);
+      new_position = mat_rotate * mat_scale * position_ini + vec_translate;
 
-      gl_Position = zoom * vec4( position_new, 1);
+      gl_Position = zoom * vec4( new_position, 1);
     }
   `,
 
