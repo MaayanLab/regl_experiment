@@ -2,7 +2,6 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var m3 = require('./mat3_transform');
 
 var draw_rows_fun = require('./draw_rows_fun');
-
 var draw_rows = draw_rows_fun(regl);
 
 const camera = require('./camera-2d')(regl, {

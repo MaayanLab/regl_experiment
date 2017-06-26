@@ -10,7 +10,7 @@ module.exports = function(regl){
 
   mat_scale = m3.scaling(0.1, 0.1);
   mat_rotate = m3.rotation(Math.PI/4);
-  vec_translate = [-0.5, 0.5, 0.0];
+  vec_translate = [-0.5, 0.43, 0.0];
 
   // draw background
   const draw_rows = regl({
