@@ -59,7 +59,7 @@ var blend_info = {
   };
 
 // draw background
-const draw_background = regl({
+const draw_rows = regl({
 
   vert: `
     precision highp float;
@@ -223,7 +223,7 @@ regl.frame(function () {
     });
 
     // draw two parts of the matrix cell
-    draw_background();
+    draw_rows();
     draw_top_cells();
     draw_bot_cells();
 
