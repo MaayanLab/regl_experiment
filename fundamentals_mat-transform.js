@@ -6,11 +6,20 @@ var regl = require('regl')()
 
 var m3 = require('./mat3_transform');
 
-mat_scale = m3.scaling(0.5, 0.5);
-mat_rotate = m3.rotation(1.6);
+const camera = require('./camera-2d')(regl, {
+  xrange: [-1, 1],
+  yrange: [-1, 1]
+});
+
+var zoom_function = function(context){
+  return context.view;
+}
+
+mat_scale = m3.scaling(1.0, 1.0);
+mat_rotate = m3.rotation(Math.PI/2);
 mat_translate = m3.translation(10, 10);
 // mat_translate = m3.scaling(1, 1);
-vec_translate = [0.5, 0.5, 0.0];
+vec_translate = [-0.5, 0, 0.0];
 
 // Next, we create a new command.
 //
@@ -32,12 +41,13 @@ var drawTriangle = regl({
     uniform mat3 mat_rotate;
     uniform mat3 mat_scale;
     uniform vec3 vec_translate;
+    uniform mat4 zoom;
 
     void main () {
 
       position_new = (mat_rotate * mat_scale * position_ini + vec_translate);
 
-      gl_Position = vec4( position_new, 1);
+      gl_Position = zoom * vec4( position_new, 1);
     }
   `,
 
@@ -66,21 +76,25 @@ var drawTriangle = regl({
   uniforms: {
     mat_rotate: mat_rotate,
     mat_scale: mat_scale,
-    vec_translate: vec_translate
+    vec_translate: vec_translate,
+    zoom: zoom_function
   }
 })
 
 // Now that our command is defined, we hook a callback to draw it each frame:
 regl.frame( function (){
 
-  // First we clear the color and depth buffers like before
-  // (does not appear to be necessary)
-  regl.clear({
-    color: [0, 0, 0, 1],
-    depth: 1
-  })
+  camera.draw( () => {
+    // First we clear the color and depth buffers like before
+    // (does not appear to be necessary)
+    regl.clear({
+      color: [0, 0, 0, 1],
+      depth: 1
+    })
 
-  // Then we call the command that we just defined
-  drawTriangle()
+    // Then we call the command that we just defined
+    drawTriangle()
+
+  })
 
 })
