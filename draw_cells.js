@@ -1,8 +1,4 @@
-module.exports = function(regl){
-
-  var num_cell = 10;
-
-  console.log(num_cell * num_cell)
+module.exports = function(regl, num_cell){
 
   var opacity = []
   for (var i = 0; i < num_cell * num_cell; i++) {
@@ -124,7 +120,6 @@ module.exports = function(regl){
     },
     instances: num_cell * num_cell,
   };
-
 
   bot_props = regl_props;
   bot_props.attributes.position = bottom_half;

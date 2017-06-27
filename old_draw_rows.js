@@ -1,14 +1,5 @@
-/*
-  Making an interactive matrix using instancing.
-
- */
-
-const regl = require('regl')({extensions: ['angle_instanced_arrays']})
-
-var num_cell = 10;
-
-var draw_rows = require('./draw_rows')(regl, num_cell);
-var draw_cells = require('./draw_cells')(regl, num_cell);
+const regl = require('regl')({extensions: ['angle_instanced_arrays']});
+var draw_rows = require('./draw_rows_fun')(regl);
 
 const camera = require('./camera-2d')(regl, {
   xrange: [-1.5, 1.5],
@@ -28,8 +19,6 @@ regl.frame(function () {
 
     // draw two parts of the matrix cell
     draw_rows();
-    draw_cells.top();
-    draw_cells.bot();
 
   });
 

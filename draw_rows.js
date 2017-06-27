@@ -1,25 +1,68 @@
-const regl = require('regl')({extensions: ['angle_instanced_arrays']});
-var draw_rows = require('./draw_rows_fun')(regl);
+module.exports = function(regl, num_cell){
 
-const camera = require('./camera-2d')(regl, {
-  xrange: [-1.5, 1.5],
-  yrange: [-1.5, 1.5]
-});
+  var cell_width = 1/num_cell;
 
-window.addEventListener('resize', camera.resize);
+  var m3 = require('./mat3_transform');
 
-regl.frame(function () {
+  var zoom_function = function(context){
+    return context.view;
+  }
 
-  camera.draw( () => {
+  mat_scale = m3.scaling(0.1, 0.1);
+  mat_rotate = m3.rotation(Math.PI/4);
+  // mat_rotate = m3.rotation(0);
+  vec_translate = [-0.55, 0.05, 0.0];
 
-    // clear the background
-    regl.clear({
-      color: [0, 0, 0, 0]
-    });
+  // draw background
+  const draw_rows = regl({
 
-    // draw two parts of the matrix cell
-    draw_rows();
+    vert: `
+      precision highp float;
+      attribute vec2 position;
+      varying vec3 new_position;
+      uniform mat3 mat_rotate;
+      uniform mat3 mat_scale;
+      uniform vec3 vec_translate;
+      uniform mat4 zoom;
+
+      void main () {
+
+        new_position = vec3(position, 0);
+        new_position = mat_rotate * mat_scale * new_position + vec_translate;
+
+        gl_Position = zoom * vec4(new_position, 1);
+
+      }
+    `,
+
+    frag: `
+
+      // color triangle red
+      void main () {
+        gl_FragColor = vec4(0, 0, 0, 1);
+      }
+
+    `,
+
+    attributes: {
+      position: [
+        [0.0, 1/Math.sqrt(2.0)],
+        [0.0, 0.0],
+        [1.0/Math.sqrt((2.0)), 0.0],
+      ]
+    },
+
+    uniforms: {
+      zoom: zoom_function,
+      mat_rotate: mat_rotate,
+      mat_scale: mat_scale,
+      vec_translate: vec_translate
+    },
+
+    count: 3
 
   });
 
-})
+  return draw_rows;
+
+};
