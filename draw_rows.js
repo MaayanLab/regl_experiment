@@ -8,10 +8,13 @@ module.exports = function(regl, num_cell){
     return context.view;
   }
 
-  mat_scale = m3.scaling(0.1, 0.1);
-  mat_rotate = m3.rotation(Math.PI/4);
-  // mat_rotate = m3.rotation(0);
-  vec_translate = [-0.55, 0.05, 0.0];
+  var x_offset = -0.55;
+  var y_offset = (1/num_cell)/2;
+
+  mat_scale = m3.scaling(1, 1);
+  // mat_rotate = m3.rotation(Math.PI/4);
+  mat_rotate = m3.rotation(0);
+  vec_translate = [x_offset, y_offset, 0.0];
 
   // draw background
   const draw_rows = regl({
@@ -46,9 +49,9 @@ module.exports = function(regl, num_cell){
 
     attributes: {
       position: [
-        [0.0, 1/Math.sqrt(2.0)],
-        [0.0, 0.0],
-        [1.0/Math.sqrt((2.0)), 0.0],
+        [0.1,  0.1],
+        [0.0,  0.0],
+        [0.1, -0.1],
       ]
     },
 
