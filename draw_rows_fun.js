@@ -2,7 +2,6 @@ module.exports = function(regl){
 
   var m3 = require('./mat3_transform');
 
-
   var zoom_function = function(context){
     return context.view;
   }
@@ -25,7 +24,6 @@ module.exports = function(regl){
       uniform mat4 zoom;
 
       void main () {
-
 
         new_position = vec3(position, 0);
 
