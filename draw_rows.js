@@ -1,7 +1,7 @@
 module.exports = function(regl, num_cell){
 
   var row_width = 0.05;
-  var row_height = 1/(2*num_cell)
+  var row_height = 1/(num_cell);
 
   var m3 = require('./mat3_transform');
 
@@ -9,8 +9,12 @@ module.exports = function(regl, num_cell){
     return context.view;
   }
 
+  /////////////////////////////////
+  // make buffer for row offsets
+  /////////////////////////////////
+
   var x_offset = -0.55;
-  var y_offset = 0.5 - (1/num_cell)/2 - 1*(1/num_cell);
+  var y_offset = 0.5 - row_height/2 - 1*row_height;
 
   mat_scale = m3.scaling(1, 1);
   // mat_rotate = m3.rotation(Math.PI/4);
@@ -50,9 +54,9 @@ module.exports = function(regl, num_cell){
 
     attributes: {
       position: [
-        [row_width,  row_height],
+        [row_width,  row_height/2],
         [0.00,  0.0],
-        [row_width, -row_height],
+        [row_width, -row_height/2],
       ]
     },
 

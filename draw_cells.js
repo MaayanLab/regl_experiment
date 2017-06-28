@@ -1,6 +1,6 @@
 module.exports = function(regl, num_cell){
 
-  var opacity = []
+  opacity = []
   for (var i = 0; i < num_cell * num_cell; i++) {
     opacity[i] = Math.random();
   }
