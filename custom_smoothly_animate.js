@@ -66,7 +66,10 @@ let max_nodes = 100000
 
 max_nodes = 0.5 * max_nodes
 
-let n = max_nodes
+// globally modified n can be used to modify visualization
+n = max_nodes
+
+
 let datasets = []
 let colorBasis
 let datasetPtr = 0
@@ -100,6 +103,7 @@ require('control-panel')([
   {type: 'range', min: 1, max: 10, label: 'radius', initial: pointRadius, step: 0.25},
   {type: 'range', min: 1000, max: max_nodes, label: 'n', initial: n, step: 1000}
 ], {width: 400}).on('input', (data) => {
+
   pointRadius = data.radius
   if (data.n !== n) {
     n = Math.round(data.n)
