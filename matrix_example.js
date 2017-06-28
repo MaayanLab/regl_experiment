@@ -5,10 +5,8 @@
 
 regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 10;
+num_cell = 10;
 
-var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
-var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
 var draw_cells = require('./draw_cells')(regl, num_cell);
 
 const camera = require('./camera-2d')(regl, {
@@ -20,7 +18,10 @@ window.addEventListener('resize', camera.resize);
 
 make_viz = function(){
 
-  regl.frame(function () {
+  regl.frame(function (context) {
+
+  var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
+  var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
 
     camera.draw(() => {
 
