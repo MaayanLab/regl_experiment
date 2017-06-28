@@ -42,7 +42,7 @@ module.exports = function(regl, num_cell){
                 return [x, y];
               };
 
-  offset_array = Array(num_cell * num_cell)
+  var offset_array = Array(num_cell * num_cell)
             .fill()
             .map(offset_function);
 
