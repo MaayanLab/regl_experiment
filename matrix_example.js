@@ -20,7 +20,7 @@ window.addEventListener('resize', camera.resize);
 
 regl.frame(function () {
 
-  camera.draw( () => {
+  camera.draw(() => {
 
     // clear the background
     regl.clear({
