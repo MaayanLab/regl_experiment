@@ -1,4 +1,4 @@
-module.exports = function(regl, num_rows){
+module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
 
   var row_width = 0.05;
   var row_height = 1/num_rows;
@@ -29,8 +29,15 @@ module.exports = function(regl, num_rows){
   y_offset_buffer(y_offset_array);
 
   mat_scale = m3.scaling(1, 1);
-  // mat_rotate = m3.rotation(Math.PI/4);
-  mat_rotate = m3.rotation(0);
+
+  var rotation_radians;
+  if (inst_rc === 'row'){
+    rotation_radians = 0;
+  } else if (inst_rc === 'col'){
+    rotation_radians = Math.PI/2;
+  }
+
+  mat_rotate = m3.rotation(rotation_radians);
 
   // draw background
   const draw_rows = regl({
@@ -54,7 +61,8 @@ module.exports = function(regl, num_rows){
 
         vec_translate = vec3(x_offset, y_offset_att, 0);
 
-        new_position = mat_rotate * mat_scale * new_position + vec_translate;
+        // new_position = mat_rotate * mat_scale * new_position + vec_translate;
+        new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
         gl_Position = zoom * vec4(new_position, 1);
 
@@ -65,7 +73,7 @@ module.exports = function(regl, num_rows){
 
       // color triangle red
       void main () {
-        gl_FragColor = vec4(0, 0, 0, 1);
+        gl_FragColor = vec4(0.5, 0.5, 0.5, 1);
       }
 
     `,

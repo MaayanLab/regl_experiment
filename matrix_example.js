@@ -7,7 +7,8 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 var num_cell = 10;
 
-var draw_rows = require('./draw_rows')(regl, num_cell);
+var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
+var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
 var draw_cells = require('./draw_cells')(regl, num_cell);
 
 const camera = require('./camera-2d')(regl, {
@@ -27,9 +28,10 @@ regl.frame(function () {
     });
 
     // draw two parts of the matrix cell
-    draw_rows();
     draw_cells.top();
     draw_cells.bot();
+    draw_mat_rows();
+    draw_mat_cols();
 
   });
 
