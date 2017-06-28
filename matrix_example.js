@@ -3,7 +3,7 @@
 
  */
 
-const regl = require('regl')({extensions: ['angle_instanced_arrays']})
+regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 var num_cell = 10;
 
@@ -18,21 +18,27 @@ const camera = require('./camera-2d')(regl, {
 
 window.addEventListener('resize', camera.resize);
 
-regl.frame(function () {
+make_viz = function(){
 
-  camera.draw(() => {
+  regl.frame(function () {
 
-    // clear the background
-    regl.clear({
-      color: [0, 0, 0, 0]
+    camera.draw(() => {
+
+      // clear the background
+      regl.clear({
+        color: [0, 0, 0, 0]
+      });
+
+      // draw two parts of the matrix cell
+      draw_cells.top();
+      draw_cells.bot();
+      draw_mat_rows();
+      draw_mat_cols();
+
     });
 
-    // draw two parts of the matrix cell
-    draw_cells.top();
-    draw_cells.bot();
-    draw_mat_rows();
-    draw_mat_cols();
+  })
 
-  });
+}
 
-})
+make_viz()
