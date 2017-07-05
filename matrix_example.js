@@ -5,7 +5,10 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 10;
+num_cell = 20;
+
+old_num_cell = num_cell;
+
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
 var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
@@ -26,6 +29,17 @@ regl.frame(function () {
     regl.clear({
       color: [0, 0, 0, 0]
     });
+
+    // check if num cell is updated
+    if (old_num_cell != num_cell){
+      console.log('updating num_cell')
+      old_num_cell = num_cell;
+
+      draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
+      draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
+      draw_cells = require('./draw_cells')(regl, num_cell);
+
+    }
 
     // draw two parts of the matrix cell
     draw_cells.top();
