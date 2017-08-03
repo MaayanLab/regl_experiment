@@ -101,6 +101,8 @@ module.exports = function makeCamera2D (regl, opts) {
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
 
+      console.log('here')
+
       ev.preventDefault();
 
       //dViewport[0] = ev.dsx * c;
@@ -129,6 +131,7 @@ module.exports = function makeCamera2D (regl, opts) {
       mat4.multiply(dViewport, dViewport, mViewport);
       mat4.multiply(dViewport, mInvViewport, dViewport);
       mat4.multiply(mView, dViewport, mView);
+
       dirty = true;
     }
 
