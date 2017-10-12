@@ -5,7 +5,7 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-num_cell = 100;
+num_cell = 20;
 
 old_num_cell = num_cell;
 
