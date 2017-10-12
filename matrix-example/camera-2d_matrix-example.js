@@ -28,12 +28,12 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 }
 
 module.exports = function makeCamera2D (regl, opts) {
+
   opts = opts || {};
 
   var options = extend({
     element: opts.element || regl._gl.canvas,
   }, opts || {});
-
 
   var element = options.element;
   var dirty = true;
@@ -64,16 +64,15 @@ module.exports = function makeCamera2D (regl, opts) {
   mView[12] = -xcen / xrng;
   mView[13] = -ycen / yrng;
 
+
+  var mView_simple = mat4.identity([]);
+  mView_simple[0] = 1 / xrng;
+  mView_simple[5] = 1 / yrng;
+  mView_simple[12] = -xcen / xrng;
+  mView_simple[13] = -ycen / yrng;
+
   var mViewport = mat4.identity([]);
   var mInvViewport = mat4.identity([]);
-
-  function computeViewport () {
-    width = getWidth();
-    height = getHeight();
-
-    mat4.viewport(mViewport, 0, height, width, -height, 0, 1);
-    mat4.invert(mInvViewport, mViewport);
-  }
 
   computeViewport();
 
@@ -97,38 +96,45 @@ module.exports = function makeCamera2D (regl, opts) {
 
   return {
     draw: function (cb) {
-      setProps({
-        view: mView,
-      }, function () {
-        cb({
-          dirty: dirty
-        });
-      });
-      dirty = false;
+      setProps(
+        // { view: mView },
+        { view: mView_simple },
+        function(){cb()}
+      );
     },
-    on: function (eventName, callback) {
-      emitter.on(eventName, callback);
-    },
-    off: function (eventName, callback) {
-      emitter.off(eventName, callback);
-    },
-    taint: function () {
-      dirty = true;
-    },
-    resize: function () {
-      computeViewport();
 
-      // Reapply the aspect ratio:
-      mView[5] = mView[0] * aspectRatio * width / height
-      dirty = true;
-    }
+    ///////////////////////////
+    // disabling
+    ///////////////////////////
+
+    // on: function (eventName, callback) {
+    //   emitter.on(eventName, callback);
+    // },
+    // off: function (eventName, callback) {
+    //   emitter.off(eventName, callback);
+    // },
+    // taint: function () {
+    //   dirty = true;
+    // },
+    // resize: function () {
+    //   computeViewport();
+
+    //   // Reapply the aspect ratio:
+    //   mView[5] = mView[0] * aspectRatio * width / height
+    //   dirty = true;
+    // }
+
   };
 
-  function scroll_zoom(ev) {
+  function computeViewport () {
+    width = getWidth();
+    height = getHeight();
 
-    //ev.dtheta = 0;
-    //var c = Math.cos(ev.dtheta);
-    //var s = Math.sin(ev.dtheta);
+    mat4.viewport(mViewport, 0, height, width, -height, 0, 1);
+    mat4.invert(mInvViewport, mViewport);
+  }
+
+  function scroll_zoom(ev) {
 
     switch (ev.type) {
       case 'wheel':
@@ -138,6 +144,8 @@ module.exports = function makeCamera2D (regl, opts) {
     }
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
+
+      console.log('interacting')
 
       ev.preventDefault();
 
