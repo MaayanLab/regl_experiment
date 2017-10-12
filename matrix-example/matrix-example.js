@@ -1,11 +1,10 @@
 /*
   Making an interactive matrix using instancing.
-
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-num_cell = 10;
+num_cell = 20;
 
 old_num_cell = num_cell;
 
@@ -43,7 +42,6 @@ require('control-panel')(
 regl.frame(function () {
 
   camera.draw(() => {
-
 
     // clear the background
     regl.clear({
