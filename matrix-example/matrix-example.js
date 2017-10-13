@@ -41,6 +41,7 @@ require('control-panel')(
   })
 
 tot_zoom = 1;
+prev_tot_zoom = 0;
 
 // Interaction Events
 interactionEvents()
@@ -77,13 +78,12 @@ interactionEvents()
       // change the number of cells with instantaneous zoom
       /////////////////////////////////////////////////////
       tot_zoom = tot_zoom * ev.dsx
-      console.log(tot_zoom)
 
-      tmp = tot_zoom * 10 + 5
-      if (tmp > 1000) {
-        tmp = 1000;
-      }
-      num_cell = Math.round(tmp)
+      // tmp = tot_zoom * 10 + 5
+      // if (tmp > 1000) {
+      //   tmp = 1000;
+      // }
+      // num_cell = Math.round(tmp)
 
 
     }
@@ -100,13 +100,16 @@ regl.frame(function () {
     });
 
     // check if num cell is updated
-    if (old_num_cell != num_cell){
-      console.log('updating num_cell')
+    // if (old_num_cell != num_cell){
+    if (prev_tot_zoom != tot_zoom){
+
+      prev_tot_zoom = tot_zoom;
+
       old_num_cell = num_cell;
 
       draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
       draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
-      draw_cells = require('./draw_cells')(regl, num_cell);
+      draw_cells = require('./draw_cells')(regl, num_cell, tot_zoom);
 
     }
 

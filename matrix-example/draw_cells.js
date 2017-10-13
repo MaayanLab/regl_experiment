@@ -1,5 +1,6 @@
+module.exports = function(regl, num_cell, tot_zoom){
 
-module.exports = function(regl, num_cell){
+  console.log(tot_zoom)
 
   opacity = []
   for (var i = 0; i < num_cell * num_cell; i++) {
@@ -39,7 +40,9 @@ module.exports = function(regl, num_cell){
   // set up offset array for buffer
   function offset_function(_, i){
                 var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
+                x = tot_zoom * x;
                 var y = -0.5 + (i % num_cell) / num_cell ;
+                y = tot_zoom * y
                 return [x, y];
               };
 
