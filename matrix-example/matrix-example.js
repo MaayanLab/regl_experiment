@@ -3,6 +3,7 @@
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
+var interactionEvents = require('interaction-events');
 
 num_cell = 20;
 
@@ -37,6 +38,12 @@ require('control-panel')(
     //   createDatasets()
     // }
 
+  })
+
+interactionEvents()
+  .on('interaction', function(ev){
+    console.log('here')
+    console.log(ev)
   })
 
 regl.frame(function () {

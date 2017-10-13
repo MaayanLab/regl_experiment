@@ -1,10 +1,8 @@
 // © 2016 Ricky Reusser. MIT License.
 'use strict';
 
-var interactionEvents = require('interaction-events');
 var extend = require('xtend/mutable');
 var mat4 = require('gl-mat4');
-var vec4 = require('gl-vec4');
 
 module.exports = function makeCamera2D (regl, opts) {
 
