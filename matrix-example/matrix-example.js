@@ -40,6 +40,8 @@ require('control-panel')(
 
   })
 
+tot_zoom = 1;
+
 // Interaction Events
 interactionEvents()
   .on('interactionstart', function (ev) {
@@ -61,13 +63,29 @@ interactionEvents()
 
       ev.preventDefault();
 
-      console.log('scroll x', ev.dsx)
-      console.log('scroll y', ev.dsy)
-      tmp = ev.dsx * 10 + 5
+      // console.log('scroll x', ev.dsx)
+      // console.log('scroll y', ev.dsy)
+
+      // // change the number of cells with instantaneous zoom
+      // /////////////////////////////////////////////////////
+      // tmp = ev.dsx * 10 + 5
+      // if (tmp > 1000) {
+      //   tmp = 1000;
+      // }
+      // num_cell = Math.round(tmp)
+
+      // change the number of cells with instantaneous zoom
+      /////////////////////////////////////////////////////
+      tot_zoom = tot_zoom * ev.dsx
+      console.log(tot_zoom)
+
+      tmp = tot_zoom * 10 + 5
       if (tmp > 1000) {
         tmp = 1000;
       }
       num_cell = Math.round(tmp)
+
+
     }
 
   });
