@@ -12,12 +12,18 @@ old_num_cell = num_cell;
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
 var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
-var draw_cells = require('./draw_cells')(regl, num_cell);
 
 const camera = require('./camera-2d_matrix-example')(regl, {
   xrange: [-1.5, 1.5],
   yrange: [-1.5, 1.5]
 });
+
+var opacity = []
+  for (var i = 0; i < num_cell * num_cell; i++) {
+    opacity[i] = Math.random();
+  }
+
+var draw_cells = require('./draw_cells')(regl, num_cell, 1, opacity);
 
 window.addEventListener('resize', camera.resize);
 
@@ -109,7 +115,8 @@ regl.frame(function () {
 
       draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
       draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
-      draw_cells = require('./draw_cells')(regl, num_cell, tot_zoom);
+      console.log('requiring draw_cells')
+      draw_cells = require('./draw_cells')(regl, num_cell, tot_zoom, opacity);
 
     }
 

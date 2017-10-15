@@ -1,11 +1,16 @@
-module.exports = function(regl, num_cell, tot_zoom){
+module.exports = function(regl, num_cell, tot_zoom, opacity){
 
   console.log(tot_zoom)
 
-  opacity = []
-  for (var i = 0; i < num_cell * num_cell; i++) {
-    opacity[i] = Math.random();
-  }
+  console.log('opacity')
+  console.log(opacity)
+
+
+
+  // opacity = []
+  // for (var i = 0; i < num_cell * num_cell; i++) {
+  //   opacity[i] = Math.random();
+  // }
 
   var zoom_function = function(context){
     return context.view;
