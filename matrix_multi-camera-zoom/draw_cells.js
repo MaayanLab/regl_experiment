@@ -1,4 +1,5 @@
-module.exports = function(regl, num_cell, opacity_data){
+module.exports = function(regl, num_row, num_col, opacity_data){
+
 
   var zoom_function = function(context){
     return context.view;
@@ -32,26 +33,26 @@ module.exports = function(regl, num_cell, opacity_data){
   /////////////////////////////////////////
   // set up offset array for buffer
   function offset_function(_, i){
-                var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
-                var y = -0.5 + (i % num_cell) / num_cell ;
+                var x = -0.5 +  ( Math.floor(i / num_row) ) / num_row ;
+                var y = -0.5 + (i % num_col) / num_col ;
                 return [x, y];
               };
 
-  var offset_array = Array(num_cell * num_cell)
+  var offset_array = Array(num_row * num_col)
             .fill()
             .map(offset_function);
 
   // bottom half
   var bottom_half = [
-    [1/num_cell, 0.0],
+    [1/num_row, 0.0],
     [0.0,       0.0],
-    [0.0,       1/num_cell]];
+    [0.0,       1/num_col]];
 
   // top half
   var top_half = [
-    [1/num_cell, 0.0 ],
-    [1/num_cell, 1/num_cell],
-    [0.0,       1/num_cell]
+    [1/num_row, 0.0 ],
+    [1/num_row, 1/num_col],
+    [0.0,       1/num_col]
     ];
 
   var vert_string = `
@@ -113,7 +114,7 @@ module.exports = function(regl, num_cell, opacity_data){
       zoom: zoom_function,
       inst_color: [1,0,0],
     },
-    instances: num_cell * num_cell,
+    instances: num_row * num_col,
   };
 
   bot_props = regl_props;
