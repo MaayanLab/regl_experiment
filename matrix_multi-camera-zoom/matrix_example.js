@@ -5,7 +5,7 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 20;
+var num_cell = 100;
 
 console.log('two-part zooming')
 
