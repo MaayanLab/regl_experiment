@@ -5,13 +5,20 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 100;
+var num_cell = 500;
 
-console.log('two-part zooming')
+console.log('multi-camera-zooming, passing in opacity')
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
 var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');
-var draw_cells = require('./draw_cells')(regl, num_cell);
+
+opacity_data = []
+  for (var i = 0; i < num_cell * num_cell; i++) {
+    opacity_data[i] = Math.random();
+  }
+
+
+var draw_cells = require('./draw_cells')(regl, num_cell, opacity_data);
 
 const camera_1 = require('./camera_1')(regl, {
   xrange: [-1.5, 1.5],

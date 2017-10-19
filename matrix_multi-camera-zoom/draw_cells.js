@@ -1,9 +1,4 @@
-module.exports = function(regl, num_cell){
-
-  opacity = []
-  for (var i = 0; i < num_cell * num_cell; i++) {
-    opacity[i] = Math.random();
-  }
+module.exports = function(regl, num_cell, opacity_data){
 
   var zoom_function = function(context){
     return context.view;
@@ -11,13 +6,13 @@ module.exports = function(regl, num_cell){
 
   // This buffer stores the opacities
   const opacity_buffer = regl.buffer({
-    length: opacity.length * 4,
+    length: opacity_data.length * 4,
     type: 'float',
     usage: 'dynamic'
   })
 
   // initialize buffer
-  opacity_buffer(opacity);
+  opacity_buffer(opacity_data);
 
   var blend_info = {
       enable: true,
