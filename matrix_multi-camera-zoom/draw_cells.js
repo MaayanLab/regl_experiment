@@ -1,5 +1,10 @@
-module.exports = function(regl, num_row, num_col, opacity_data){
+module.exports = function(regl, mat_data){
 
+  num_row = mat_data.length;
+  num_col = mat_data[0].length;
+
+  console.log('num_row: ' + String(num_row))
+  console.log('num_col: ' + String(num_col))
 
   var zoom_function = function(context){
     return context.view;
@@ -7,13 +12,13 @@ module.exports = function(regl, num_row, num_col, opacity_data){
 
   // This buffer stores the opacities
   const opacity_buffer = regl.buffer({
-    length: opacity_data.length * 4,
+    length: num_row * num_col * 2 ,
     type: 'float',
     usage: 'dynamic'
   })
 
   // initialize buffer
-  opacity_buffer(opacity_data);
+  opacity_buffer(mat_data);
 
   var blend_info = {
       enable: true,
