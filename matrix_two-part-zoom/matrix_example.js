@@ -5,7 +5,7 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 500;
+var num_cell = 20;
 
 console.log('two-part zooming')
 
@@ -23,8 +23,14 @@ const camera_2 = require('./camera_2')(regl, {
   yrange: [-1.5, 1.5]
 });
 
+const camera_3 = require('./camera_3')(regl, {
+  xrange: [-1.5, 1.5],
+  yrange: [-1.5, 1.5]
+});
+
 window.addEventListener('resize', camera_1.resize);
 window.addEventListener('resize', camera_2.resize);
+window.addEventListener('resize', camera_3.resize);
 
 regl.frame(function () {
 
@@ -41,10 +47,11 @@ regl.frame(function () {
 
   // draw command 2
   camera_2.draw(() => {
-
     draw_mat_rows();
-    draw_mat_cols();
+  });
 
+  camera_3.draw(() => {
+    draw_mat_cols();
   });
 
 })
