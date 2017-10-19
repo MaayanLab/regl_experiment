@@ -5,8 +5,9 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
-var num_cell = 1000;
-console.log('here')
+var num_cell = 500;
+
+console.log('normal zooming')
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');
 var draw_mat_cols = require('./draw_mat_labels')(regl, num_cell, 'col');

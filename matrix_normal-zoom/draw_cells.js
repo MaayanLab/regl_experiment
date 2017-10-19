@@ -1,9 +1,9 @@
-module.exports = function(regl, num_cell, tot_zoom, opacity){
+module.exports = function(regl, num_cell){
 
-  // opacity = []
-  // for (var i = 0; i < num_cell * num_cell; i++) {
-  //   opacity[i] = Math.random();
-  // }
+  opacity = []
+  for (var i = 0; i < num_cell * num_cell; i++) {
+    opacity[i] = Math.random();
+  }
 
   var zoom_function = function(context){
     return context.view;
@@ -38,9 +38,7 @@ module.exports = function(regl, num_cell, tot_zoom, opacity){
   // set up offset array for buffer
   function offset_function(_, i){
                 var x = -0.5 +  ( Math.floor(i / num_cell) ) / num_cell ;
-                x = tot_zoom * x;
                 var y = -0.5 + (i % num_cell) / num_cell ;
-                y = tot_zoom * y
                 return [x, y];
               };
 
@@ -48,19 +46,17 @@ module.exports = function(regl, num_cell, tot_zoom, opacity){
             .fill()
             .map(offset_function);
 
-  var tri_dim = (1/num_cell) * tot_zoom;
-
   // bottom half
   var bottom_half = [
-    [tri_dim, 0.0],
+    [1/num_cell, 0.0],
     [0.0,       0.0],
-    [0.0,       tri_dim]];
+    [0.0,       1/num_cell]];
 
   // top half
   var top_half = [
-    [tri_dim, 0.0 ],
-    [tri_dim, tri_dim],
-    [0.0,       tri_dim]
+    [1/num_cell, 0.0 ],
+    [1/num_cell, 1/num_cell],
+    [0.0,       1/num_cell]
     ];
 
   var vert_string = `

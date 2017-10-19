@@ -5,9 +5,11 @@
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var interactionEvents = require('interaction-events');
 
-num_cell = 100;
+num_cell = 500;
 
 old_num_cell = num_cell;
+
+console.log('redrawing zoom')
 
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_cell, 'row');

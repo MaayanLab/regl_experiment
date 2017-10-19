@@ -1,6 +1,6 @@
 module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
 
-  var row_width = 0.025;
+  var row_width = 0.05;
   var row_height = 1/num_rows;
 
   var m3 = require('./mat3_transform');
@@ -13,7 +13,7 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = -0.5 - row_width;
+  var x_offset = -0.55;
 
   y_offset_array = [];
   for (var i = 0; i < num_rows; i++){
