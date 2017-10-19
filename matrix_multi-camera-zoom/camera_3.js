@@ -116,7 +116,7 @@ module.exports = function makeCamera2D (regl, opts) {
       dViewport[10] = 1;
       dViewport[11] = 0;
       dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
-      dViewport[13] =          -ev.y0 + ev.y0 + ev.dy;
+      dViewport[13] =          -ev.y0 + ev.y0 //+ ev.dy;
       dViewport[14] = 0;
       dViewport[15] = 1;
 
