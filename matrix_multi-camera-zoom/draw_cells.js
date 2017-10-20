@@ -38,7 +38,7 @@ module.exports = function(regl, mat_data){
   /////////////////////////////////////////
   // set up offset array for buffer
   function offset_function(_, i){
-                var x = -0.5 +  ( Math.floor(i / num_row) ) / num_row ;
+                var x = -0.5 +  ( Math.floor(i / num_col) ) / num_row  ;
                 var y = -0.5 + (i % num_col) / num_col ;
                 return [x, y];
               };

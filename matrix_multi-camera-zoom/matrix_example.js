@@ -7,16 +7,16 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 console.log('multi-camera-zooming, passing in opacity')
 
-var num_row = 20;
-var num_col = 10;
+var num_row = 2000;
+var num_col = 100;
 
-var draw_mat_rows = require('./draw_mat_labels')(regl, num_col, 'row');
-var draw_mat_cols = require('./draw_mat_labels')(regl, num_row, 'col');
+var draw_mat_rows = require('./draw_mat_labels')(regl, num_row, 'row');
+var draw_mat_cols = require('./draw_mat_labels')(regl, num_col, 'col');
 
 mat_data = []
-for (var i=0; i < num_row; i++){
+for (var i=0; i < num_col; i++){
   mat_data[i] = []
-  for (var j=0; j < num_col; j++){
+  for (var j=0; j < num_row; j++){
     mat_data[i][j] = Math.random();
   }
 }
@@ -27,19 +27,19 @@ console.log(flat_mat.length)
 
 var draw_cells = require('./draw_cells')(regl, mat_data);
 
-const camera_1 = require('./camera_1')(regl, {
-  xrange: [-1.5, 1.5],
-  yrange: [-1.5, 1.5]
+const camera_1 = require('./camera_vert_zoom')(regl, {
+  xrange: [-1.0, 1.0],
+  yrange: [-1.0, 1.0]
 });
 
 const camera_2 = require('./camera_2')(regl, {
-  xrange: [-1.5, 1.5],
-  yrange: [-1.5, 1.5]
+  xrange: [-1.0, 1.0],
+  yrange: [-1.0, 1.0]
 });
 
 const camera_3 = require('./camera_3')(regl, {
-  xrange: [-1.5, 1.5],
-  yrange: [-1.5, 1.5]
+  xrange: [-1.0, 1.0],
+  yrange: [-1.0, 1.0]
 });
 
 window.addEventListener('resize', camera_1.resize);
@@ -64,8 +64,8 @@ regl.frame(function () {
     draw_mat_rows();
   });
 
-  camera_3.draw(() => {
-    draw_mat_cols();
-  });
+  // camera_3.draw(() => {
+  //   draw_mat_cols();
+  // });
 
 })
