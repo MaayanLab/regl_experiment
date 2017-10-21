@@ -37,9 +37,12 @@ module.exports = function(regl, mat_data){
   // draw matrix cells
   /////////////////////////////////////////
   // set up offset array for buffer
+  var offset = {};
+  offset.x = 0.5;
+  offset.y = 0.5;
   function offset_function(_, i){
-                var x = -0.5 +  ( Math.floor(i / num_col) ) / num_row  ;
-                var y = -0.5 + (i % num_col) / num_col ;
+                var x = -offset.x +  ( Math.floor(i / num_col) ) / num_row  ;
+                var y = -offset.y + (i % num_col) / num_col ;
                 return [x, y];
               };
 

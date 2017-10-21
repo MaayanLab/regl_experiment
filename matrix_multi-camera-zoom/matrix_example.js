@@ -7,8 +7,8 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 console.log('multi-camera-zooming, passing in opacity')
 
-var num_row = 5000;
-var num_col = 100;
+var num_row = 20;
+var num_col = 5;
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_row, 'row');
 var draw_mat_cols = require('./draw_mat_labels')(regl, num_col, 'col');
@@ -27,7 +27,7 @@ console.log(flat_mat.length)
 
 var draw_cells = require('./draw_cells')(regl, mat_data);
 
-var ini_scale = 0.75;
+var ini_scale = 1.0 ;
 const camera_1 = require('./camera_vert_zoom')(regl, {
   xrange: [-ini_scale, ini_scale],
   yrange: [-ini_scale, ini_scale]
