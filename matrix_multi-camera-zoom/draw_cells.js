@@ -41,8 +41,10 @@ module.exports = function(regl, mat_data){
   offset.x = 0.5;
   offset.y = 0.5;
   function offset_function(_, i){
+
                 var x = -offset.x +  ( Math.floor(i / num_col) ) / num_row  ;
                 var y = -offset.y + (i % num_col) / num_col ;
+
                 return [x, y];
               };
 
@@ -82,7 +84,7 @@ module.exports = function(regl, mat_data){
       gl_Position = zoom * vec4( position.x + offset.x, position.y + offset.y, 0, 1);
 
       // pass attribute (in vert) to varying in frag
-      var_opacity = sin(opacity_att) + 0.1;
+      var_opacity = opacity_att;
 
     }`;
 
@@ -90,10 +92,18 @@ module.exports = function(regl, mat_data){
     precision highp float;
     varying float var_opacity;
     uniform vec3 inst_color;
+    varying vec3 tmp_color;
     void main() {
 
+      // tmp_color = vec3(0, 0, 1);
+
       // using var_opacity value
-      gl_FragColor = vec4(inst_color, var_opacity);
+
+      if (var_opacity > 0.0){
+        gl_FragColor = vec4(1, 0, 0, abs(var_opacity));
+      } else {
+        gl_FragColor = vec4(0, 0, 1, abs(var_opacity));
+      }
 
     }`;
 
@@ -120,7 +130,7 @@ module.exports = function(regl, mat_data){
     count: 3,
     uniforms: {
       zoom: zoom_function,
-      inst_color: [1,0,0],
+      inst_color: [0,0,1],
     },
     instances: num_row * num_col,
   };
