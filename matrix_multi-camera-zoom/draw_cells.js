@@ -58,18 +58,13 @@ module.exports = function(regl, mat_data){
 
   // bottom half
   var bottom_half = [
-    // [1/num_row, 0.0],
     [1/num_col, 0.0],
     [0.0,       0.0],
-    // [0.0,       1/num_col]];
-    [0.0,       1/num_row]];
+    [0.0,       1/num_row]
+  ];
 
   // top half
   var top_half = [
-    // [1/num_row, 0.0 ],
-    // [1/num_row, 1/num_col],
-    // [0.0,       1/num_col]
-    // ];
     [1/num_col, 0.0 ],
     [1/num_col, 1/num_row],
     [0.0,       1/num_row]
@@ -106,8 +101,6 @@ module.exports = function(regl, mat_data){
     void main() {
 
       // tmp_color = vec3(0, 0, 1);
-
-      // using var_opacity value
 
       if (var_opacity > 0.0){
         gl_FragColor = vec4(1, 0, 0, abs(var_opacity));
