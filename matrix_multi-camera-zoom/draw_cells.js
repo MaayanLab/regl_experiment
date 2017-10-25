@@ -40,14 +40,15 @@ module.exports = function(regl, mat_data){
   var offset = {};
   offset.x = 0.5;
   offset.y = 0.5;
-  function offset_function(_, i){
-                console.log(i)
-                var y = -offset.x + 1 - ( Math.floor(i  / num_col) + 1 ) / num_row  ;
-                var x = -offset.y + (i % num_col) / num_col ;
-                console.log('y: ' + String(y))
 
-                return [x, y];
-              };
+  function offset_function(_, i){
+
+    var x =  (i % num_col) / num_col - offset.y;
+    var y =  offset.x - ( Math.floor(i  / num_col) + 1 ) / num_row ;
+
+    return [x, y];
+
+  };
 
   offset_array = Array(num_row * num_col)
             .fill()
