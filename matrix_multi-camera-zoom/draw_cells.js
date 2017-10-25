@@ -41,7 +41,9 @@ module.exports = function(regl, mat_data){
   offset.x = 0.5;
   offset.y = 0.5;
 
-  function offset_function(_, i){
+
+  //
+  function pos_xy_function(_, i){
 
     var x =  (i % num_col) / num_col - offset.y;
     var y =  offset.x - ( Math.floor(i  / num_col) + 1 ) / num_row ;
@@ -50,9 +52,9 @@ module.exports = function(regl, mat_data){
 
   };
 
-  offset_array = Array(num_row * num_col)
+  pos_xy_array = Array(num_row * num_col)
             .fill()
-            .map(offset_function);
+            .map(pos_xy_function);
 
 
 
@@ -77,7 +79,7 @@ module.exports = function(regl, mat_data){
 
     // These three are instanced attributes.
     attribute vec3 color_att;
-    attribute vec2 offset;
+    attribute vec2 inst_pos;
     attribute float opacity_att;
     uniform mat4 zoom;
 
@@ -86,7 +88,12 @@ module.exports = function(regl, mat_data){
 
     void main() {
 
-      gl_Position = zoom * vec4( position.x + offset.x, position.y + offset.y, 0, 1);
+      gl_Position = zoom *
+                    vec4( position.x + inst_pos.x,
+                          position.y + inst_pos.y,
+                          0,
+                          1
+                        );
 
       // pass attribute (in vert) to varying in frag
       var_opacity = opacity_att;
@@ -117,8 +124,8 @@ module.exports = function(regl, mat_data){
     frag: frag_string,
     attributes: {
       position: top_half,
-      offset: {
-        buffer: regl.buffer(offset_array),
+      inst_pos: {
+        buffer: regl.buffer(pos_xy_array),
         divisor: 1
       },
       opacity_att: {
