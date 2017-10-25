@@ -48,9 +48,11 @@ module.exports = function(regl, mat_data){
                 return [x, y];
               };
 
-  var offset_array = Array(num_row * num_col)
+  offset_array = Array(num_row * num_col)
             .fill()
             .map(offset_function);
+
+
 
   // bottom half
   var bottom_half = [
