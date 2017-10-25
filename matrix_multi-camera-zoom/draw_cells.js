@@ -42,8 +42,8 @@ module.exports = function(regl, mat_data){
   offset.y = 0.5;
   function offset_function(_, i){
 
-                var x = -offset.x +  ( Math.floor(i / num_col) ) / num_row  ;
-                var y = -offset.y + (i % num_col) / num_col ;
+                var y = -offset.x +  ( Math.floor(i / num_col) ) / num_row  ;
+                var x = -offset.y + (i % num_col) / num_col ;
 
                 return [x, y];
               };
@@ -56,15 +56,21 @@ module.exports = function(regl, mat_data){
 
   // bottom half
   var bottom_half = [
-    [1/num_row, 0.0],
+    // [1/num_row, 0.0],
+    [1/num_col, 0.0],
     [0.0,       0.0],
-    [0.0,       1/num_col]];
+    // [0.0,       1/num_col]];
+    [0.0,       1/num_row]];
 
   // top half
   var top_half = [
-    [1/num_row, 0.0 ],
-    [1/num_row, 1/num_col],
-    [0.0,       1/num_col]
+    // [1/num_row, 0.0 ],
+    // [1/num_row, 1/num_col],
+    // [0.0,       1/num_col]
+    // ];
+    [1/num_col, 0.0 ],
+    [1/num_col, 1/num_row],
+    [0.0,       1/num_row]
     ];
 
   var vert_string = `
