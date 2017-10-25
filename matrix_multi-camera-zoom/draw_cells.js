@@ -41,22 +41,27 @@ module.exports = function(regl, mat_data){
   offset.x = 0.5;
   offset.y = 0.5;
 
+  // generate x position array
+  x_arr = Array(num_col).fill().map(function(_, i){return i/num_col - offset.x })
+  y_arr = Array(num_row).fill().map(function(_, i){return i/num_row - offset.y })
 
-  //
+  // generate x and y positions
+  ////////////////////////////////
   function pos_xy_function(_, i){
 
-    var x =  (i % num_col) / num_col - offset.y;
-    var y =  offset.x - ( Math.floor(i  / num_col) + 1 ) / num_row ;
+    // var x =  (i % num_col) / num_col - offset.y;
+    // var y =  offset.x - ( Math.floor(i  / num_col) + 1 ) / num_row ;
+
+    // looking up x and y position
+    var x =  x_arr[i % num_col];
+    var y =  - y_arr[ Math.floor(i / num_col) ] - 1/num_row;
 
     return [x, y];
-
   };
 
   pos_xy_array = Array(num_row * num_col)
             .fill()
             .map(pos_xy_function);
-
-
 
   // bottom half
   var bottom_half = [
