@@ -41,9 +41,10 @@ module.exports = function(regl, mat_data){
   offset.x = 0.5;
   offset.y = 0.5;
   function offset_function(_, i){
-
-                var y = -offset.x +  ( Math.floor(i / num_col) ) / num_row  ;
+                console.log(i)
+                var y = -offset.x + 1 - ( Math.floor(i  / num_col) + 1 ) / num_row  ;
                 var x = -offset.y + (i % num_col) / num_col ;
+                console.log('y: ' + String(y))
 
                 return [x, y];
               };

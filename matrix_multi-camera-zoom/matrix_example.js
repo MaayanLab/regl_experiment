@@ -7,7 +7,7 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 
 console.log('multi-camera-zooming, passing in opacity')
 
-var num_row = 10;
+var num_row = 5;
 var num_col = 2;
 
 var draw_mat_rows = require('./draw_mat_labels')(regl, num_row, 'row');
@@ -21,7 +21,7 @@ for (var i=0; i < num_row; i++){
   for (var j=0; j < num_col; j++){
     // mat_data[i][j] = 2*Math.random() - 1;
     // mat_data[i][j] = 1/( i + j + 1) ;
-    mat_data[i][j] = (tmp / total) ;
+    mat_data[i][j] = (tmp / total) + 0.2;
     tmp = tmp + 1;
   }
 }
