@@ -101,6 +101,9 @@ module.exports = function makeCamera2D (regl, opts) {
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
 
+      console.log('events')
+
+
       ev.preventDefault();
 
       dViewport[0] = 1 //ev.dsx;

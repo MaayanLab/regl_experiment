@@ -12,7 +12,8 @@ console.log('multi-camera-zooming, passing in opacity')
 console.log(d3.version)
 
 
-var filename = 'data/mnist.json'
+// var filename = 'data/mnist.json'
+var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
@@ -81,6 +82,17 @@ function run_viz(regl, assets){
   window.addEventListener('resize', camera_1.resize);
   window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
+
+
+  // // working on setting up something to only re-render after interaction
+  // var options = extend(
+  //       {
+  //         element: opts.element || regl._gl.canvas,
+  //       },
+  //       opts || {}
+  //     );
+
+  // var element = options.element;
 
   regl.frame(function () {
 

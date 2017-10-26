@@ -6,6 +6,12 @@ module.exports = function(regl, network, mat_data){
   console.log('num_row: ' + String(num_row))
   console.log('num_col: ' + String(num_col))
 
+  flat_mat_data = [].concat.apply([], mat_data)
+
+  abs_max_val = _.max(flat_mat_data, function(d){
+    return Math.abs(d);
+  })
+
   var zoom_function = function(context){
     return context.view;
   }
@@ -17,8 +23,17 @@ module.exports = function(regl, network, mat_data){
     usage: 'dynamic'
   })
 
+  // flat_mat_data = _.each(flat_mat_data, function(d){
+  //   return d/abs_max_val;
+  // })
+
+  flat_mat_data = flat_mat_data.map(function(x) {
+    return 0.85 * (x*2.0/abs_max_val);
+  });
+
   // initialize buffer
-  opacity_buffer(mat_data);
+  // can use mat_data or flat_mat_data
+  opacity_buffer(flat_mat_data);
 
   var blend_info = {
       enable: true,
