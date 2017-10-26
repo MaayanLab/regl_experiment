@@ -55,8 +55,8 @@ console.log('multi-camera-zooming, passing in opacity')
 console.log(d3.version)
 
 
-// var filename = 'data/mnist.json'
-var filename = 'data/mult_view.json'
+var filename = 'data/mnist.json'
+// var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{

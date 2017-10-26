@@ -29,8 +29,8 @@ module.exports = function(regl, network, mat_data){
 
   opacity_scale = d3.scale.linear()
 
-  opacity_domain = abs_max_val * 0.55;
-  opacity_range = 0.80;
+  opacity_domain = abs_max_val /1.5;
+  opacity_range = 0.85;
 
   opacity_scale
     .domain([-opacity_domain, opacity_domain])
@@ -159,10 +159,12 @@ module.exports = function(regl, network, mat_data){
 
       // tmp_color = vec3(0, 0, 1);
 
+      // manually tweaking opacity range, will improve to match old version
+
       if (var_opacity > 0.0){
-        gl_FragColor = vec4(1, 0, 0, abs(var_opacity));
+        gl_FragColor = vec4(1, 0, 0, abs(var_opacity) + 0.12);
       } else {
-        gl_FragColor = vec4(0, 0, 1, abs(var_opacity));
+        gl_FragColor = vec4(0, 0, 1, abs(var_opacity) + 0.12);
       }
 
     }`;
