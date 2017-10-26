@@ -28,25 +28,27 @@ function run_viz(regl, assets){
 
   network = JSON.parse(assets['viz'])
 
-  // generate fake data
-  var num_row = 20;
-  var num_col = 5;
+  // // generate fake data
+  // //////////////////////////
+  // var num_row = 20;
+  // var num_col = 5;
 
-  mat_data = []
-  tmp = 1;
-  total = num_row * num_col;
-  for (var i=0; i < num_row; i++){
-    mat_data[i] = []
-    for (var j=0; j < num_col; j++){
-      // mat_data[i][j] = 2*Math.random() - 1;
-      // mat_data[i][j] = 1/( i + j + 1) ;
-      mat_data[i][j] = (tmp / total) + 0.2;
-      tmp = tmp + 1;
-    }
-  }
+  // mat_data = []
+  // tmp = 1;
+  // total = num_row * num_col;
+  // for (var i=0; i < num_row; i++){
+  //   mat_data[i] = []
+  //   for (var j=0; j < num_col; j++){
+  //     // mat_data[i][j] = 2*Math.random() - 1;
+  //     // mat_data[i][j] = 1/( i + j + 1) ;
+  //     mat_data[i][j] = (tmp / total) + 0.2;
+  //     tmp = tmp + 1;
+  //   }
+  // }
 
-  // // use data from network
-  // mat_data = network.mat
+  // use data from network
+  //////////////////////////
+  mat_data = network.mat
 
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
@@ -56,7 +58,7 @@ function run_viz(regl, assets){
 
   flat_mat = [].concat.apply([], mat_data);
 
-  var draw_cells = require('./draw_cells')(regl, mat_data);
+  var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
   var ini_scale = 1.0 ;
   const camera_1 = require('./camera_vert_zoom')(regl, {

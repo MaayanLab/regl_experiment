@@ -1,4 +1,4 @@
-module.exports = function(regl, mat_data){
+module.exports = function(regl, network, mat_data){
 
   num_row = mat_data.length;
   num_col = mat_data[0].length;
@@ -52,6 +52,11 @@ module.exports = function(regl, mat_data){
       return -i/num_row + offset.y - 1/num_row
     });
 
+
+  row_nodes = network.row_nodes;
+  col_nodes = network.col_nodes;
+
+
   // generate x and y positions
   ////////////////////////////////
   function pos_xy_function(_, i){
@@ -60,11 +65,16 @@ module.exports = function(regl, mat_data){
     // var y =  offset.x - ( Math.floor(i  / num_col) + 1 ) / num_row ;
 
     // looking up x and y position
-    var row_id = i % num_col;
-    var col_id = Math.floor(i / num_col);
+    var col_id = i % num_col;
+    var row_id = Math.floor(i / num_col);
 
-    var x = x_arr[ row_id ];
-    var y = y_arr[ col_id ];
+    row_order_id = row_nodes[row_id].clust
+    col_order_id = col_nodes[col_id].clust
+
+    // console.log(row_id)
+
+    var x = x_arr[ col_order_id ];
+    var y = y_arr[ row_order_id ];
 
     return [x, y];
   };
