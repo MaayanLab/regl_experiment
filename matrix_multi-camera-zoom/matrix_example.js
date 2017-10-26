@@ -20,6 +20,8 @@ var element = options.element;
 still_interacting = false;
 initialize_viz = true;
 
+interaction_types = ['wheel', 'touch', 'pinch'];
+
 interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -30,14 +32,22 @@ interactionEvents({
     // console.log('stopped')
   }).on('interaction', function (ev) {
 
-    if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
+    if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
       // console.log('interacting')
+
+      switch (ev.type) {
+        case 'wheel':
+          ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+          ev.dx = ev.dy = 0;
+          break;
+      }
+
+      console.log('scale x: ' + String(ev.dsx))
+      console.log('scale y: ' + String(ev.dsy))
 
       if (still_interacting == false){
 
         still_interacting = true;
-
-        // any interaction will make this false
 
         setTimeout(function(){
           // console.log('done')
@@ -55,8 +65,8 @@ console.log('multi-camera-zooming, passing in opacity')
 console.log(d3.version)
 
 
-var filename = 'data/mnist.json'
-// var filename = 'data/mult_view.json'
+// var filename = 'data/mnist.json'
+var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{

@@ -106,6 +106,7 @@ module.exports = function makeCamera2D (regl, opts) {
 
       ev.preventDefault();
 
+
       dViewport[0] = 1 //ev.dsx;
       dViewport[1] = 0;
       dViewport[2] = 0;
