@@ -31,7 +31,7 @@ interactionEvents({
   }).on('interaction', function (ev) {
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
-      console.log('interacting')
+      // console.log('interacting')
 
       if (still_interacting == false){
 
@@ -40,7 +40,7 @@ interactionEvents({
         // any interaction will make this false
 
         setTimeout(function(){
-          console.log('done')
+          // console.log('done')
           return still_interacting = false;
         }, 1000)
       }
@@ -128,7 +128,7 @@ function run_viz(regl, assets){
 
   function draw_commands(){
 
-    console.log('running draw commands')
+    // console.log('running draw commands')
     // draw command 1
     camera_1.draw(() => {
 

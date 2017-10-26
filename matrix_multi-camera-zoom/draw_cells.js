@@ -27,8 +27,18 @@ module.exports = function(regl, network, mat_data){
   //   return d/abs_max_val;
   // })
 
+  opacity_scale = d3.scale.linear()
+
+  opacity_domain = abs_max_val * 0.55;
+  opacity_range = 0.80;
+
+  opacity_scale
+    .domain([-opacity_domain, opacity_domain])
+    .range([-opacity_range, opacity_range])
+    .clamp(true);
+
   flat_mat_data = flat_mat_data.map(function(x) {
-    return 0.85 * (x*2.0/abs_max_val);
+    return opacity_scale(x)
   });
 
   // initialize buffer
