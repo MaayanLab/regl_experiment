@@ -4,7 +4,9 @@
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
+
 d3 = require('d3');
+_ = require('underscore')
 
 console.log('multi-camera-zooming, passing in opacity')
 console.log(d3.version)

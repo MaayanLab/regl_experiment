@@ -44,6 +44,8 @@
     "standard": "^9.0.1",
     "uglify-js": "^2.8.13",
     "vectorize-text": "^3.0.2",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "underscore": "1.8.3",
+    "resl": "^1.0.0"
   }
 }
