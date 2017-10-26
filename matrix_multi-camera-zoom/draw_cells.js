@@ -68,8 +68,8 @@ module.exports = function(regl, network, mat_data){
     var col_id = i % num_col;
     var row_id = Math.floor(i / num_col);
 
-    row_order_id = row_nodes[row_id].clust
-    col_order_id = col_nodes[col_id].clust
+    row_order_id = num_row - 1 - row_nodes[row_id].clust;
+    col_order_id = num_col - 1 - col_nodes[col_id].clust;
 
     // console.log(row_id)
 
