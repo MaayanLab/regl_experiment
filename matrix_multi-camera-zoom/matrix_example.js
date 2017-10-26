@@ -4,6 +4,49 @@
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
+var extend = require('xtend/mutable');
+var EventEmitter = require('event-emitter');
+var interactionEvents = require('interaction-events');
+
+var emitter = new EventEmitter();
+
+var opts = opts || {};
+var options = extend({
+    element: opts.element || regl._gl.canvas,
+  }, opts || {});
+
+var element = options.element;
+
+still_interacting = false;
+initialize_viz = true;
+
+interactionEvents({
+    element: element,
+  }).on('interactionstart', function (ev) {
+    // ev.preventDefault();
+
+  }).on('interactionend', function (ev) {
+    // ev.preventDefault();
+    // console.log('stopped')
+  }).on('interaction', function (ev) {
+
+    if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
+      console.log('interacting')
+
+      if (still_interacting == false){
+
+        still_interacting = true;
+
+        // any interaction will make this false
+
+        setTimeout(function(){
+          console.log('done')
+          return still_interacting = false;
+        }, 1000)
+      }
+    }
+
+  })
 
 d3 = require('d3');
 _ = require('underscore')
@@ -83,19 +126,9 @@ function run_viz(regl, assets){
   window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
 
+  function draw_commands(){
 
-  // // working on setting up something to only re-render after interaction
-  // var options = extend(
-  //       {
-  //         element: opts.element || regl._gl.canvas,
-  //       },
-  //       opts || {}
-  //     );
-
-  // var element = options.element;
-
-  regl.frame(function () {
-
+    console.log('running draw commands')
     // draw command 1
     camera_1.draw(() => {
 
@@ -116,6 +149,27 @@ function run_viz(regl, assets){
     //   draw_mat_cols();
     // });
 
+  }
+
+
+  // // working on setting up something to only re-render after interaction
+  // var options = extend(
+  //       {
+  //         element: opts.element || regl._gl.canvas,
+  //       },
+  //       opts || {}
+  //     );
+
+  // var element = options.element;
+
+  regl.frame(function () {
+
+    if (still_interacting == true || initialize_viz == true){
+      initialize_viz = false;
+      draw_commands();
+    }
+
   })
+
 
 }

@@ -109,3 +109,7 @@ Links from gitter
 https://threejs.org/examples/webgl_materials_blending_custom.html
 
 http://www.andersriggelsen.dk/glblendfunc.php
+
+
+Frame question
+using chrome developer tools to check performance regl.frame seems to use a lot of gpu resources even when rendering a static visualization (e.g. the user is not zooming or panning). Is there a way to get regl.frame to only run when the user is interacting?
