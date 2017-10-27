@@ -27,7 +27,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 }
 
-module.exports = function makeCamera2D (regl, opts, zoom_info) {
+module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom) {
   opts = opts || {};
 
   console.log('here')
@@ -126,7 +126,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_info) {
       dViewport[4] = 0;
       dViewport[5] = ev.dsy;
 
-      if (zoom_info.y <=2){
+      if (zoom_info.y <= max_zoom){
         dViewport[5] = ev.dsy;
       } else {
         dViewport[5] = 1;
@@ -157,7 +157,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_info) {
 
       // dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
 
-      if (zoom_info.y <= 2){
+      if (zoom_info.y <= max_zoom ){
         dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
       } else {
         dViewport[13] = ev.dy //-ev.dsy * ev.y0 + ev.y0 + ev.dy;

@@ -22,9 +22,11 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
-zoom_info = {};
+var zoom_info = {};
 zoom_info.x = 1;
 zoom_info.y = 1;
+
+var max_zoom = 10;
 
 interactionEvents({
     element: element,
@@ -134,7 +136,8 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info
+    zoom_info,
+    max_zoom
   );
 
   const camera_2 = require('./camera_2')(regl, {
@@ -151,15 +154,15 @@ function run_viz(regl, assets){
   window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
 
-  function draw_commands(inst_zoom){
+  function draw_commands(){
 
-    camera_vert_zoom.draw((inst_zoom) => {
+    camera_vert_zoom.draw(() => {
       regl.clear({ color: [0, 0, 0, 0] });
       draw_cells.top();
       draw_cells.bot();
     });
 
-    camera_2.draw(() => {
+    camera_vert_zoom.draw(() => {
       draw_mat_rows();
     });
 
@@ -180,7 +183,7 @@ function run_viz(regl, assets){
 
     if (still_interacting == true || initialize_viz == true){
       initialize_viz = false;
-      draw_commands(zoom_info);
+      draw_commands();
     }
 
   })
