@@ -22,9 +22,9 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
-tot_zoom = {};
-tot_zoom.x = 1;
-tot_zoom.y = 1;
+zoom_info = {};
+zoom_info.x = 1;
+zoom_info.y = 1;
 
 interactionEvents({
     element: element,
@@ -49,12 +49,11 @@ interactionEvents({
       // console.log('scale x: ' + String(ev.dsx))
       // console.log('scale y: ' + String(ev.dsy))
 
-      tot_zoom.x = tot_zoom.x * ev.dsx;
-      tot_zoom.y = tot_zoom.y * ev.dsy;
+      zoom_info.x = zoom_info.x * ev.dsx;
+      zoom_info.y = zoom_info.y * ev.dsy;
 
-      console.log('total zoom x: ' + String(tot_zoom.x))
-      console.log('total zoom y: ' + String(tot_zoom.y))
-
+      // console.log('total zoom x: ' + String(zoom_info.x))
+      // console.log('total zoom y: ' + String(zoom_info.y))
 
       if (still_interacting == false){
 
@@ -129,10 +128,14 @@ function run_viz(regl, assets){
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
   var ini_scale = 1.0 ;
-  const camera_vert_zoom = require('./camera_vert_zoom')(regl, {
-    xrange: [-ini_scale, ini_scale],
-    yrange: [-ini_scale, ini_scale]
-  });
+  const camera_vert_zoom = require('./camera_vert_zoom')(
+    regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info
+  );
 
   const camera_2 = require('./camera_2')(regl, {
     xrange: [-ini_scale, ini_scale],
@@ -148,28 +151,17 @@ function run_viz(regl, assets){
   window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
 
-  function draw_commands(){
+  function draw_commands(inst_zoom){
 
-    // console.log('running draw commands')
-    // draw command 1
-    camera_vert_zoom.draw(() => {
-
+    camera_vert_zoom.draw((inst_zoom) => {
       regl.clear({ color: [0, 0, 0, 0] });
-
-      // draw two parts of the matrix cell
       draw_cells.top();
       draw_cells.bot();
-
     });
 
-    // draw command 2
     camera_2.draw(() => {
       draw_mat_rows();
     });
-
-    // camera_3.draw(() => {
-    //   draw_mat_cols();
-    // });
 
   }
 
@@ -188,7 +180,7 @@ function run_viz(regl, assets){
 
     if (still_interacting == true || initialize_viz == true){
       initialize_viz = false;
-      draw_commands();
+      draw_commands(zoom_info);
     }
 
   })

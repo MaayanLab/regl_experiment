@@ -27,8 +27,12 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 }
 
-module.exports = function makeCamera2D (regl, opts) {
+module.exports = function makeCamera2D (regl, opts, zoom_info) {
   opts = opts || {};
+
+  console.log('here')
+  console.log(zoom_info)
+
 
   var options = extend({
     element: opts.element || regl._gl.canvas,
@@ -103,26 +107,64 @@ module.exports = function makeCamera2D (regl, opts) {
 
       // console.log('events')
 
+      console.log(zoom_info)
 
       ev.preventDefault();
 
 
-      // dViewport[0] = 1 //ev.dsx;
-      dViewport[0] = ev.dsx;
+      dViewport[0] = 1 //ev.dsx;
+
+      // if (zoom_info.x <=2){
+      //   dViewport[0] = ev.dsx;
+      // } else {
+      //   dViewport[0] = 1;
+      // }
+
       dViewport[1] = 0;
       dViewport[2] = 0;
       dViewport[3] = 0;
       dViewport[4] = 0;
       dViewport[5] = ev.dsy;
+
+      if (zoom_info.y <=2){
+        dViewport[5] = ev.dsy;
+      } else {
+        dViewport[5] = 1;
+      }
+
       dViewport[6] = 0;
       dViewport[7] = 0;
       dViewport[8] = 0;
       dViewport[9] = 0;
       dViewport[10] = 1;
       dViewport[11] = 0;
-      // dViewport[12] = ev.dx//-ev.dsx * ev.x0 + ev.x0 + ev.dx;
-      dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
-      dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
+
+      dViewport[12] = ev.dx//-ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      // dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
+
+      // if (zoom_info.x <=2){
+      //   dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      // } else{
+      //   dViewport[12] = -ev.dsx; // * ev.x0 + ev.x0 + ev.dx;
+      // }
+
+      // if (zoom_info.x <=2){
+      //   dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      // } else{
+      //   dViewport[12] = 0; // * ev.x0 + ev.x0 + ev.dx;
+      // }
+
+
+      // dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
+
+      if (zoom_info.y <= 2){
+        dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
+      } else {
+        dViewport[13] = ev.dy //-ev.dsy * ev.y0 + ev.y0 + ev.dy;
+      }
+
+
+
       dViewport[14] = 0;
       dViewport[15] = 1;
 
@@ -151,17 +193,23 @@ module.exports = function makeCamera2D (regl, opts) {
 
   var emitter = new EventEmitter();
 
-  return {
-    draw: function (cb) {
-      setProps({
+  function draw_function(cb){
+
+    setProps(
+      {
         view: mView,
-      }, function () {
-        cb({
-          dirty: dirty
-        });
-      });
-      dirty = false;
-    },
+      },
+      function () {
+        cb({ dirty: dirty });
+      }
+    );
+
+    dirty = false;
+
+  }
+
+  return {
+    draw: draw_function,
     on: function (eventName, callback) {
       emitter.on(eventName, callback);
     },
