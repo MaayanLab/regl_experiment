@@ -22,6 +22,10 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
+tot_zoom = {};
+tot_zoom.x = 1;
+tot_zoom.y = 1;
+
 interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -42,8 +46,15 @@ interactionEvents({
           break;
       }
 
-      console.log('scale x: ' + String(ev.dsx))
-      console.log('scale y: ' + String(ev.dsy))
+      // console.log('scale x: ' + String(ev.dsx))
+      // console.log('scale y: ' + String(ev.dsy))
+
+      tot_zoom.x = tot_zoom.x * ev.dsx;
+      tot_zoom.y = tot_zoom.y * ev.dsy;
+
+      console.log('total zoom x: ' + String(tot_zoom.x))
+      console.log('total zoom y: ' + String(tot_zoom.y))
+
 
       if (still_interacting == false){
 
@@ -53,6 +64,7 @@ interactionEvents({
           // console.log('done')
           return still_interacting = false;
         }, 1000)
+
       }
     }
 
@@ -117,7 +129,7 @@ function run_viz(regl, assets){
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
   var ini_scale = 1.0 ;
-  const camera_1 = require('./camera_vert_zoom')(regl, {
+  const camera_vert_zoom = require('./camera_vert_zoom')(regl, {
     xrange: [-ini_scale, ini_scale],
     yrange: [-ini_scale, ini_scale]
   });
@@ -132,7 +144,7 @@ function run_viz(regl, assets){
     yrange: [-ini_scale, ini_scale]
   });
 
-  window.addEventListener('resize', camera_1.resize);
+  window.addEventListener('resize', camera_vert_zoom.resize);
   window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
 
@@ -140,7 +152,7 @@ function run_viz(regl, assets){
 
     // console.log('running draw commands')
     // draw command 1
-    camera_1.draw(() => {
+    camera_vert_zoom.draw(() => {
 
       regl.clear({ color: [0, 0, 0, 0] });
 
