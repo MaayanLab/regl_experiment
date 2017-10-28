@@ -49,6 +49,15 @@ interactionEvents({
           break;
       }
 
+      zoom_info.dsx = ev.dsx;
+      zoom_info.dsy = ev.dsy;
+
+      zoom_info.dx = ev.dx;
+      zoom_info.dy = ev.dy;
+
+      zoom_info.tsx0 = ev.x0;
+      zoom_info.tsy0 = ev.y0;
+
       // X zooming rules
       //////////////////////
       // zooming within allowed range
@@ -96,14 +105,7 @@ interactionEvents({
 
       // zoom_info.tsy = zoom_info.tsy * ev.dsy;
 
-      zoom_info.dsx = ev.dsx;
-      zoom_info.dsy = ev.dsy;
 
-      zoom_info.dx = ev.dx;
-      zoom_info.dy = ev.dy;
-
-      zoom_info.tsx0 = ev.x0;
-      zoom_info.tsy0 = ev.y0;
 
       if (still_interacting == false){
 
