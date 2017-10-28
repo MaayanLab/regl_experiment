@@ -23,8 +23,8 @@ initialize_viz = true;
 interaction_types = ['wheel', 'touch', 'pinch'];
 
 var zoom_info = {};
-zoom_info.x = 1;
-zoom_info.y = 1;
+zoom_info.tsx = 1;
+zoom_info.tsy = 1;
 
 var max_zoom = 10;
 
@@ -48,17 +48,34 @@ interactionEvents({
           break;
       }
 
-      // console.log('scale x: ' + String(ev.dsx))
-      // console.log('scale y: ' + String(ev.dsy))
+      // limit max zooming
+      if (zoom_info.tsx < max_zoom){
+        zoom_info.tsx = zoom_info.tsx * ev.dsx;
+      } else {
+        if (zoom_info.dsx < 1){
+          zoom_info.tsx = zoom_info.tsx * ev.dsx;
+        }
+      }
 
-      zoom_info.x = zoom_info.x * ev.dsx;
-      zoom_info.y = zoom_info.y * ev.dsy;
+      // limit max zooming
+      if (zoom_info.tsy < max_zoom){
+        zoom_info.tsy = zoom_info.tsy * ev.dsy;
+      } else {
+        if (zoom_info.dsy < 1){
+          zoom_info.tsy = zoom_info.tsy * ev.dsy;
+        }
+      }
+
+      // zoom_info.tsy = zoom_info.tsy * ev.dsy;
 
       zoom_info.dsx = ev.dsx;
       zoom_info.dsy = ev.dsy;
 
-      // console.log('total zoom x: ' + String(zoom_info.x))
-      // console.log('total zoom y: ' + String(zoom_info.y))
+      zoom_info.dx = ev.dx;
+      zoom_info.dy = ev.dy;
+
+      zoom_info.tsx0 = ev.x0;
+      zoom_info.tsy0 = ev.y0;
 
       if (still_interacting == false){
 
