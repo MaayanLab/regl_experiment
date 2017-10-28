@@ -22,12 +22,12 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
-var zoom_info = {};
+zoom_info = {};
 zoom_info.tsx = 1;
 zoom_info.tsy = 1;
 
-var max_zoom = 20;
-var min_zoom = 0.05
+var max_zoom = 10;
+var min_zoom = 0.1
 
 interactionEvents({
     element: element,
@@ -73,24 +73,26 @@ interactionEvents({
       // zooming within allowed range
       if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
         zoom_info.tsy = zoom_info.tsy * ev.dsy;
-        console.log('in-range')
+        // console.log('in-range')
       }
-      else if (zoom_info.tsx >= max_zoom) {
-        console.log('above')
-        console.log(zoom_info.dsy)
+      else if (zoom_info.tsy >= max_zoom) {
+        // console.log('above')
+        zoom_info.tsy = max_zoom;
         if (zoom_info.dsy < 1){
-          zoom_info.tsy = max_zoom * ev.dsy;
+          zoom_info.tsy = zoom_info.tsy * ev.dsy;
         }
       }
       // below min zoom (can only go up)
       else if (zoom_info.tsy <= min_zoom){
-        console.log('below')
+       // console.log('below')
+        zoom_info.tsy = min_zoom;
         if (zoom_info.dsy > 1){
           zoom_info.tsy = zoom_info.tsy * ev.dsy;
         }
       }
 
-      console.log(zoom_info.tsy)
+      console.log('d: ' + String(zoom_info.dsy))
+      console.log('t: ' + String(zoom_info.tsy) + '\n\n')
 
       // zoom_info.tsy = zoom_info.tsy * ev.dsy;
 
