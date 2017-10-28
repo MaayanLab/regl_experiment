@@ -26,7 +26,8 @@ var zoom_info = {};
 zoom_info.tsx = 1;
 zoom_info.tsy = 1;
 
-var max_zoom = 10;
+var max_zoom = 20;
+var min_zoom = 0.05
 
 interactionEvents({
     element: element,
@@ -48,23 +49,48 @@ interactionEvents({
           break;
       }
 
-      // limit max zooming
-      if (zoom_info.tsx < max_zoom){
+      // X zooming rules
+      //////////////////////
+      // zooming within allowed range
+      if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
         zoom_info.tsx = zoom_info.tsx * ev.dsx;
-      } else {
+      }
+      // above max zoom (can only go down)
+      else if (zoom_info.tsx >= max_zoom) {
         if (zoom_info.dsx < 1){
           zoom_info.tsx = zoom_info.tsx * ev.dsx;
         }
       }
+      // below min zoom (can only go up)
+      else if (zoom_info.tsx <= min_zoom){
+        if (zoom_info.dsx > 1){
+          zoom_info.tsx = zoom_info.tsx * ev.dsx;
+        }
+      }
 
-      // limit max zooming
-      if (zoom_info.tsy < max_zoom){
+      // Y zooming rules
+      ////////////////////////////
+      // zooming within allowed range
+      if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
         zoom_info.tsy = zoom_info.tsy * ev.dsy;
-      } else {
+        console.log('in-range')
+      }
+      else if (zoom_info.tsx >= max_zoom) {
+        console.log('above')
+        console.log(zoom_info.dsy)
         if (zoom_info.dsy < 1){
+          zoom_info.tsy = max_zoom * ev.dsy;
+        }
+      }
+      // below min zoom (can only go up)
+      else if (zoom_info.tsy <= min_zoom){
+        console.log('below')
+        if (zoom_info.dsy > 1){
           zoom_info.tsy = zoom_info.tsy * ev.dsy;
         }
       }
+
+      console.log(zoom_info.tsy)
 
       // zoom_info.tsy = zoom_info.tsy * ev.dsy;
 
@@ -157,7 +183,8 @@ function run_viz(regl, assets){
       yrange: [-ini_scale, ini_scale]
     },
     zoom_info,
-    max_zoom
+    max_zoom,
+    min_zoom
   );
 
   const camera_2 = require('./camera_2')(regl, {
