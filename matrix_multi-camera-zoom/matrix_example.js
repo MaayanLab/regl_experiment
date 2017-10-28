@@ -54,6 +54,9 @@ interactionEvents({
       zoom_info.x = zoom_info.x * ev.dsx;
       zoom_info.y = zoom_info.y * ev.dsy;
 
+      zoom_info.dsx = ev.dsx;
+      zoom_info.dsy = ev.dsy;
+
       // console.log('total zoom x: ' + String(zoom_info.x))
       // console.log('total zoom y: ' + String(zoom_info.y))
 

@@ -30,9 +30,6 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom) {
   opts = opts || {};
 
-  console.log('here')
-  console.log(zoom_info)
-
 
   var options = extend({
     element: opts.element || regl._gl.canvas,
@@ -124,10 +121,13 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom) {
       dViewport[2] = 0;
       dViewport[3] = 0;
       dViewport[4] = 0;
-      dViewport[5] = ev.dsy;
+
+      // dViewport[5] = ev.dsy;
+      dViewport[5] = zoom_info.dsy;
 
       if (zoom_info.y <= max_zoom){
-        dViewport[5] = ev.dsy;
+        // dViewport[5] = ev.dsy;
+        dViewport[5] = zoom_info.dsy;
       } else {
         dViewport[5] = 1;
       }
@@ -139,7 +139,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom) {
       dViewport[10] = 1;
       dViewport[11] = 0;
 
-      dViewport[12] = ev.dx//-ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      dViewport[12] = ev.dx //-ev.dsx * ev.x0 + ev.x0 + ev.dx;
       // dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
 
       // if (zoom_info.x <=2){
@@ -158,7 +158,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom) {
       // dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
 
       if (zoom_info.y <= max_zoom ){
-        dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
+        dViewport[13] = -zoom_info.dsy * ev.y0 + ev.y0 + ev.dy;
       } else {
         dViewport[13] = ev.dy //-ev.dsy * ev.y0 + ev.y0 + ev.dy;
       }
