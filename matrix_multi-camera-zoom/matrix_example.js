@@ -86,9 +86,14 @@ interactionEvents({
       }
       else if (zoom_info.tsy >= max_zoom) {
         // console.log('above')
-        zoom_info.tsy = max_zoom;
+
+
         if (zoom_info.dsy < 1){
           zoom_info.tsy = zoom_info.tsy * ev.dsy;
+        } else {
+          zoom_info.dsy = max_zoom/zoom_info.tsy;
+          zoom_info.tsy = max_zoom;
+
         }
       }
       // below min zoom (can only go up)

@@ -124,12 +124,15 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
       // dViewport[5] = ev.dsy;
       dViewport[5] = zoom_info.dsy;
 
-      if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
-        // dViewport[5] = ev.dsy;
-        dViewport[5] = zoom_info.dsy;
-      } else {
-        dViewport[5] = 1;
-      }
+
+      dViewport[5] = zoom_info.dsy;
+      // // moving zoom logic outside
+      // if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
+      //   // dViewport[5] = ev.dsy;
+      //   dViewport[5] = zoom_info.dsy;
+      // } else {
+      //   dViewport[5] = 1;
+      // }
 
       dViewport[6] = 0;
       dViewport[7] = 0;
@@ -156,12 +159,16 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
 
       // dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
 
-      if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
-        dViewport[13] = -zoom_info.dsy * ev.y0 + ev.y0 + ev.dy;
-      } else {
-        console.log('out of bounds\n**************\n\n')
-        dViewport[13] = 0 ; // ev.dy //-ev.dsy * ev.y0 + ev.y0 + ev.dy;
-      }
+      // moving zoom logic outside
+      dViewport[13] = -zoom_info.dsy * ev.y0 + ev.y0 + ev.dy;
+
+      // // moving zoom logic outside
+      // if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
+      //   dViewport[13] = -zoom_info.dsy * ev.y0 + ev.y0 + ev.dy;
+      // } else {
+      //   console.log('out of bounds\n**************\n\n')
+      //   dViewport[13] = 0 ; // ev.dy //-ev.dsy * ev.y0 + ev.y0 + ev.dy;
+      // }
 
       dViewport[14] = 0;
       dViewport[15] = 1;
