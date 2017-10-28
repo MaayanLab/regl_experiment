@@ -85,8 +85,8 @@ interactionEvents({
         // console.log('in-range')
       }
       else if (zoom_info.tsy >= max_zoom) {
-        // console.log('above')
 
+        // console.log('above')
 
         if (zoom_info.dsy < 1){
           zoom_info.tsy = zoom_info.tsy * ev.dsy;
@@ -98,11 +98,16 @@ interactionEvents({
       }
       // below min zoom (can only go up)
       else if (zoom_info.tsy <= min_zoom){
+
        // console.log('below')
-        zoom_info.tsy = min_zoom;
+
         if (zoom_info.dsy > 1){
           zoom_info.tsy = zoom_info.tsy * ev.dsy;
+        } else {
+          zoom_info.dsy = min_zoom/zoom_info.tsy;
+          zoom_info.tsy = min_zoom;
         }
+
       }
 
       console.log('d: ' + String(zoom_info.dsy))
