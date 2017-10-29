@@ -1,14 +1,12 @@
 /*
   Making an interactive matrix using instancing.
-
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
-var EventEmitter = require('event-emitter');
-var interactionEvents = require('interaction-events');
 
-var emitter = new EventEmitter();
+d3 = require('d3');
+_ = require('underscore')
 
 var opts = opts || {};
 var options = extend({
@@ -29,114 +27,85 @@ zoom_info.tsy = 1;
 var max_zoom = 10;
 var min_zoom = 0.5;
 
+var interactionEvents = require('interaction-events');
 interactionEvents({
-    element: element,
-  }).on('interactionstart', function (ev) {
-    // ev.preventDefault();
+  element: element,
+}).on('interaction', function (ev) {
 
-  }).on('interactionend', function (ev) {
-    // ev.preventDefault();
-    // console.log('stopped')
-  }).on('interaction', function (ev) {
+  if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
-    if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
-      // console.log('interacting')
+    switch (ev.type) {
+      case 'wheel':
+        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+        ev.dx = ev.dy = 0;
+        break;
+    }
 
-      switch (ev.type) {
-        case 'wheel':
-          ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-          ev.dx = ev.dy = 0;
-          break;
-      }
+    zoom_info.dsx = ev.dsx;
+    zoom_info.dsy = ev.dsy;
+    zoom_info.dx = ev.dx;
+    zoom_info.dy = ev.dy;
+    zoom_info.x0 = ev.x0;
+    zoom_info.y0 = ev.y0;
 
-      zoom_info.dsx = ev.dsx;
-      zoom_info.dsy = ev.dsy;
-
-      zoom_info.dx = ev.dx;
-      zoom_info.dy = ev.dy;
-
-      zoom_info.x0 = ev.x0;
-      zoom_info.y0 = ev.y0;
-
-      // X zooming rules
-      //////////////////////
-      // zooming within allowed range
-      if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
+    // X zooming rules
+    //////////////////////
+    // zooming within allowed range
+    if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
+      zoom_info.tsx = zoom_info.tsx * ev.dsx;
+    }
+    // above max zoom (can only go down)
+    else if (zoom_info.tsx >= max_zoom) {
+      if (zoom_info.dsx < 1){
         zoom_info.tsx = zoom_info.tsx * ev.dsx;
       }
-      // above max zoom (can only go down)
-      else if (zoom_info.tsx >= max_zoom) {
-        if (zoom_info.dsx < 1){
-          zoom_info.tsx = zoom_info.tsx * ev.dsx;
-        }
-      }
-      // below min zoom (can only go up)
-      else if (zoom_info.tsx <= min_zoom){
-        if (zoom_info.dsx > 1){
-          zoom_info.tsx = zoom_info.tsx * ev.dsx;
-        }
-      }
-
-      // Y zooming rules
-      ////////////////////////////
-      // zooming within allowed range
-      if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
-        zoom_info.tsy = zoom_info.tsy * ev.dsy;
-        // console.log('in-range')
-      }
-      else if (zoom_info.tsy >= max_zoom) {
-
-        // console.log('above')
-
-        if (zoom_info.dsy < 1){
-          zoom_info.tsy = zoom_info.tsy * ev.dsy;
-        } else {
-          zoom_info.dsy = max_zoom/zoom_info.tsy;
-          zoom_info.tsy = max_zoom;
-
-        }
-      }
-      // below min zoom (can only go up)
-      else if (zoom_info.tsy <= min_zoom){
-
-       // console.log('below')
-
-        if (zoom_info.dsy > 1){
-          zoom_info.tsy = zoom_info.tsy * ev.dsy;
-        } else {
-          zoom_info.dsy = min_zoom/zoom_info.tsy;
-          zoom_info.tsy = min_zoom;
-        }
-
-      }
-
-      // console.log('d: ' + String(zoom_info.dsy))
-      // console.log('t: ' + String(zoom_info.tsy) + '\n\n')
-
-      // zoom_info.tsy = zoom_info.tsy * ev.dsy;
-
-
-
-      if (still_interacting == false){
-
-        still_interacting = true;
-
-        setTimeout(function(){
-          // console.log('done')
-          return still_interacting = false;
-        }, 1000)
-
+    }
+    // below min zoom (can only go up)
+    else if (zoom_info.tsx <= min_zoom){
+      if (zoom_info.dsx > 1){
+        zoom_info.tsx = zoom_info.tsx * ev.dsx;
       }
     }
 
-  })
+    // Y zooming rules
+    ////////////////////////////
+    // zooming within allowed range
+    if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
+      zoom_info.tsy = zoom_info.tsy * ev.dsy;
+    }
+    else if (zoom_info.tsy >= max_zoom) {
 
-d3 = require('d3');
-_ = require('underscore')
+      if (zoom_info.dsy < 1){
+        zoom_info.tsy = zoom_info.tsy * ev.dsy;
+      } else {
+        zoom_info.dsy = max_zoom/zoom_info.tsy;
+        zoom_info.tsy = max_zoom;
 
-console.log('multi-camera-zooming, passing in opacity')
-console.log(d3.version)
+      }
+    }
+    // below min zoom (can only go up)
+    else if (zoom_info.tsy <= min_zoom){
 
+      if (zoom_info.dsy > 1){
+        zoom_info.tsy = zoom_info.tsy * ev.dsy;
+      } else {
+        zoom_info.dsy = min_zoom/zoom_info.tsy;
+        zoom_info.tsy = min_zoom;
+      }
+
+    }
+
+    if (still_interacting == false){
+
+      still_interacting = true;
+
+      setTimeout(function(){
+        return still_interacting = false;
+      }, 1000)
+
+    }
+  }
+})
 
 // var filename = 'data/mnist.json'
 var filename = 'data/mult_view.json'
@@ -189,7 +158,7 @@ function run_viz(regl, assets){
 
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
-  var ini_scale = 1.0 ;
+  var ini_scale = 0.8 ;
   const camera_vert_zoom = require('./camera_vert_zoom')(
     regl,
     {
@@ -228,7 +197,6 @@ function run_viz(regl, assets){
     });
 
   }
-
 
   // // working on setting up something to only re-render after interaction
   // var options = extend(

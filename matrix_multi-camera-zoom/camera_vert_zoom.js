@@ -30,11 +30,9 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoom) {
   opts = opts || {};
 
-
   var options = extend({
     element: opts.element || regl._gl.canvas,
   }, opts || {});
-
 
   var element = options.element;
   var dirty = true;
@@ -122,8 +120,8 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
 
     // ev.x = xy[0];
     // ev.y = xy[1];
-
     // emitter.emit('move', ev);
+
   });
 
   var setProps = regl({
@@ -162,7 +160,6 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
     },
     resize: function () {
       computeViewport();
-
       // Reapply the aspect ratio:
       mView[5] = mView[0] * aspectRatio * width / height
       dirty = true;
