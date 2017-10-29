@@ -92,21 +92,18 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
     //var c = Math.cos(ev.dtheta);
     //var s = Math.sin(ev.dtheta);
 
-    switch (ev.type) {
-      case 'wheel':
-        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-        ev.dx = ev.dy = 0;
-        break;
-    }
-
+    // switch (ev.type) {
+    //   case 'wheel':
+    //     ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+    //     ev.dx = ev.dy = 0;
+    //     break;
+    // }
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
 
       // console.log('events')
 
-
       ev.preventDefault();
-
 
       dViewport[0] = 1 //ev.dsx;
 
@@ -141,7 +138,8 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
       dViewport[10] = 1;
       dViewport[11] = 0;
 
-      dViewport[12] = ev.dx //-ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      // dViewport[12] = ev.dx //-ev.dsx * ev.x0 + ev.x0 + ev.dx;
+      dViewport[12] = zoom_info.dx //-ev.dsx * ev.x0 + ev.x0 + ev.dx;
       // dViewport[12] = -ev.dsx * ev.x0 + ev.x0 + ev.dx;
 
       // if (zoom_info.tsx <=2){
@@ -160,7 +158,10 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoo
       // dViewport[13] = -ev.dsy * ev.y0 + ev.y0 + ev.dy;
 
       // moving zoom logic outside
-      dViewport[13] = -zoom_info.dsy * ev.y0 + ev.y0 + ev.dy;
+      dViewport[13] = -zoom_info.dsy * zoom_info.y0 + zoom_info.y0 + zoom_info.dy;
+
+      // console.log(ev.y0)
+      // console.log(zoom_info.y0)
 
       // // moving zoom logic outside
       // if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){

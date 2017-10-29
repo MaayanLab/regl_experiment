@@ -27,7 +27,7 @@ zoom_info.tsx = 1;
 zoom_info.tsy = 1;
 
 var max_zoom = 10;
-var min_zoom = 0.1
+var min_zoom = 0.5;
 
 interactionEvents({
     element: element,
@@ -55,8 +55,8 @@ interactionEvents({
       zoom_info.dx = ev.dx;
       zoom_info.dy = ev.dy;
 
-      zoom_info.tsx0 = ev.x0;
-      zoom_info.tsy0 = ev.y0;
+      zoom_info.x0 = ev.x0;
+      zoom_info.y0 = ev.y0;
 
       // X zooming rules
       //////////////////////
@@ -110,8 +110,8 @@ interactionEvents({
 
       }
 
-      console.log('d: ' + String(zoom_info.dsy))
-      console.log('t: ' + String(zoom_info.tsy) + '\n\n')
+      // console.log('d: ' + String(zoom_info.dsy))
+      // console.log('t: ' + String(zoom_info.tsy) + '\n\n')
 
       // zoom_info.tsy = zoom_info.tsy * ev.dsy;
 
