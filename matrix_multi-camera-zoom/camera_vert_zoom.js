@@ -27,7 +27,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 }
 
-module.exports = function makeCamera2D (regl, opts, zoom_info, max_zoom, min_zoom) {
+module.exports = function makeCamera2D (regl, opts, zoom_info) {
   opts = opts || {};
 
   var options = extend({

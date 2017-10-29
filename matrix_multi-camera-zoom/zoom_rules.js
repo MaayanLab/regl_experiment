@@ -2,22 +2,20 @@ var interactionEvents = require('interaction-events');
 var extend = require('xtend/mutable');
 
 module.exports = function(regl){
-  console.log('something')
 
+  var opts = opts || {};
+  var options = extend({
+      element: opts.element || regl._gl.canvas,
+    }, opts || {});
 
-var opts = opts || {};
-var options = extend({
-    element: opts.element || regl._gl.canvas,
-  }, opts || {});
+  var element = options.element;
 
-var element = options.element;
+  var zoom_info = {};
+  zoom_info.tsx = 1;
+  zoom_info.tsy = 1;
 
-var zoom_info = {};
-zoom_info.tsx = 1;
-zoom_info.tsy = 1;
-
-var max_zoom = 10;
-var min_zoom = 0.5;
+  var max_zoom = 10;
+  var min_zoom = 0.5;
 
   interactionEvents({
     element: element,
