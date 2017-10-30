@@ -101,12 +101,14 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
         scaled_dd = zoom_info[inst_dd]/zoom_info[inst_ds];
         zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+
       } else {
         zoom_info[inst_dd] = 0;
       }
-      if (inst_axis == 'x'){
-        // console.log('x: ' + String(zoom_info.tx))
-      }
+
+      // if (inst_axis == 'x'){
+      //   console.log('x: ' + String(zoom_info.tx))
+      // }
 
     });
 

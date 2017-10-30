@@ -115,14 +115,21 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
       dViewport[9] = 0;
       dViewport[10] = 1;
       dViewport[11] = 0;
-      dViewport[12] = -zoom_info.dsx * zoom_info.x0 + zoom_info.x0 + zoom_info.dx;
-      dViewport[13] = -zoom_info.dsy * zoom_info.y0 + zoom_info.y0 + zoom_info.dy;
+
+      // dViewport[12] = -zoom_info.dsx * zoom_info.x0 + zoom_info.x0 + zoom_info.dx;
+      dViewport[12] = (1 - zoom_info.dsx) * zoom_info.x0 + zoom_info.dx;
+
+      // dViewport[13] = -zoom_info.dsy * zoom_info.y0 + zoom_info.y0 + zoom_info.dy;
+      dViewport[13] = (1 - zoom_info.dsy) * zoom_info.y0 + zoom_info.dy;
+
       dViewport[14] = 0;
       dViewport[15] = 1;
 
-      // if (verbose){
-      //   console.log(dViewport[12])
-      // }
+      if (verbose){
+        console.log(zoom_info.dsx)
+        console.log(dViewport[12])
+        console.log('\n')
+      }
 
       mat4.multiply(dViewport, dViewport, mViewport);
       mat4.multiply(dViewport, mInvViewport, dViewport);
