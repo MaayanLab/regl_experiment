@@ -5,9 +5,9 @@
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 var zoom_rules = {};
-zoom_rules['mat'] = require('./zoom_rules_mat');
-zoom_rules['row-labels'] = require('./zoom_rules_row-labels');
-zoom_rules['col-labels'] = require('./zoom_rules_col-labels');
+zoom_rules['mat'] = require('./zoom_rules_general');
+zoom_rules['row-labels'] = require('./zoom_rules_general');
+zoom_rules['col-labels'] = require('./zoom_rules_general');
 
 d3 = require('d3');
 _ = require('underscore')
@@ -84,9 +84,9 @@ function run_viz(regl, assets){
   }
 
   var zoom_info = {}
-  zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict);
-  zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict);
-  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict);
+  zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
+  zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
+  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {}
   draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
