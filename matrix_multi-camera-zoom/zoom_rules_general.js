@@ -43,6 +43,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.y0 = 0;
   zoom_info.tx = 0;
   zoom_info.ty = 0;
+  // zoom_info.tpx = 0;
+  // zoom_info.tpy = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
@@ -69,8 +71,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.dx = ev.dx;
     zoom_info.dy = ev.dy;
     zoom_info.x0 = ev.x0;
-
-
     zoom_info.y0 = ev.y0;
 
     // console.log(zoom_info.y0)
@@ -130,8 +130,14 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // panning
       if (zoom_info[inst_td] + zoom_info[inst_dd] <=0){
 
-        scaled_dd = zoom_info[inst_dd]/zoom_info[inst_ds];
-        zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+
+        var drag_pan = zoom_info[inst_dd];
+        var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info.y0 - viz_dim.mat.min_x)
+        // console.log('ds: ' + String(zoom_info[inst_ds]))
+        // console.log('zoom_pan: ' + String(zoom_pan))
+        zoom_info[inst_td] = zoom_info[inst_td] + drag_pan // + zoom_pan;
+
+        // scaled_dd = zoom_info[inst_dd]/zoom_info[inst_ds];
 
       } else {
         zoom_info[inst_dd] = 0;
@@ -144,9 +150,12 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
       }
 
-      // if (inst_axis == 'x'){
-      //   console.log('x: ' + String(zoom_info.tx))
-      // }
+      // calc x pan room
+
+      if (inst_axis == 'x'){
+        // console.log('x: ' + String(zoom_info.tx))
+        console.log('zoom_pan: ' + String(zoom_pan))
+      }
 
     });
 

@@ -36,20 +36,6 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
 
   var element = options.element;
 
-  // var viz_dim = {};
-  // viz_dim.canvas = {};
-  // viz_dim.mat = {};
-
-  // _.each(['width', 'height'], function(inst_dim){
-  //   viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
-  //     .style(inst_dim).replace('px', ''));
-  // });
-
-  // console.log('canvas width: ' + String(viz_dim.canvas.width))
-  // console.log('canvas height: ' + String(viz_dim.canvas.height))
-
-
-
   var dirty = true;
 
   var getWidth = element === window ?
@@ -141,7 +127,6 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
       dViewport[15] = 1;
 
       // if (verbose){
-      //   console.log(zoom_info.dsx)
       //   console.log(dViewport[12])
       //   console.log('\n')
       // }
