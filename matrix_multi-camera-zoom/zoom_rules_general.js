@@ -41,12 +41,12 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
+    console.log(zoom_info.dx)
+
     // manually restrict dsx
     if (zoom_info.tsy < zoom_restrict.ratio_y){
-    // if (zoom_info.tsy < 2){
       zoom_info.dsx = 1;
     }
-
 
     // X and Y zooming rules
     _.each(['x', 'y'], function(inst_axis){

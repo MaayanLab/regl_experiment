@@ -88,7 +88,7 @@ function run_viz(regl, assets){
     zoom_restrict.ratio_x = num_col/num_row;
   }
 
-  var zoom_info = {}
+  zoom_info = {}
   zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
   zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
   zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
