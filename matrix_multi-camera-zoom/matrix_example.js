@@ -6,10 +6,12 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 var zoom_mat_rules = require('./zoom_mat_rules');
 var zoom_row_label_rules = require('./zoom_row_label_rules');
+var zoom_col_label_rules = require('./zoom_col_label_rules');
 
 zoom_info = {}
 zoom_info['mat'] = zoom_mat_rules(regl);
 zoom_info['row_labels'] = zoom_row_label_rules(regl);
+zoom_info['col_labels'] = zoom_col_label_rules(regl);
 
 d3 = require('d3');
 _ = require('underscore')
@@ -70,8 +72,9 @@ function run_viz(regl, assets){
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
 
-  var draw_mat_rows = require('./draw_mat_labels')(regl, num_row, 'row');
-  var draw_mat_cols = require('./draw_mat_labels')(regl, num_col, 'col');
+  var draw_labels = {}
+  draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
+  draw_labels['col'] = require('./draw_mat_labels')(regl, num_col, 'col');
 
   flat_mat = [].concat.apply([], mat_data);
 
@@ -88,13 +91,20 @@ function run_viz(regl, assets){
     zoom_info['mat']
   );
 
-console.log('something')
   camera['row_labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
     zoom_info['row_labels']
+  );
+
+  camera['col_labels'] = require('./camera_2d_general')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info['col_labels']
   );
 
   window.addEventListener('resize', camera['mat'].resize);
@@ -109,7 +119,11 @@ console.log('something')
     });
 
     camera['row_labels'].draw(() => {
-      draw_mat_rows();
+      draw_labels['row']();
+    });
+
+    camera['col_labels'].draw(() => {
+      draw_labels['col']();
     });
 
   }
