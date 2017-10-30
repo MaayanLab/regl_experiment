@@ -73,7 +73,7 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
 
       // color triangle red
       void main () {
-        gl_FragColor = vec4(0.5, 0.5, 0.5, 1);
+        gl_FragColor = vec4(0.6, 0.6, 0.6, 1);
       }
 
     `,

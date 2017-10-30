@@ -10,6 +10,32 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
   var element = options.element;
 
+  viz_dim = {};
+  viz_dim.canvas = {};
+  viz_dim.mat = {};
+
+  _.each(['width', 'height'], function(inst_dim){
+    viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
+      .style(inst_dim).replace('px', ''));
+  });
+
+  // square matrix size set by width of canvas
+  viz_dim.mat.width = viz_dim.canvas.width/2;
+  viz_dim.mat.height = viz_dim.canvas.width/2;
+
+  // min and max position of matrix
+  viz_dim.mat.min_x = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
+  viz_dim.mat.max_x = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
+
+  viz_dim.mat.min_y = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
+  viz_dim.mat.max_y = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
+
+  console.log(viz_dim.mat.left_x)
+
+  console.log('canvas width: ' + String(viz_dim.canvas.width))
+  console.log('canvas height: ' + String(viz_dim.canvas.height))
+
+
   var zoom_info = {};
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;
@@ -43,9 +69,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.dx = ev.dx;
     zoom_info.dy = ev.dy;
     zoom_info.x0 = ev.x0;
+
+
     zoom_info.y0 = ev.y0;
 
-    console.log(zoom_info.x0)
+    // console.log(zoom_info.y0)
 
     // // restrict x zooming
     // ///////////////////////
@@ -77,6 +105,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       var max_zoom = zoom_restrict['max_' + inst_axis];
       var min_zoom = zoom_restrict['min_' + inst_axis];
 
+
       // zooming within allowed range
       if (zoom_info[inst_ts] < max_zoom && zoom_info[inst_ts] > min_zoom){
         zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
@@ -106,6 +135,13 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       } else {
         zoom_info[inst_dd] = 0;
+      }
+
+      // restrict effective position of mouse
+      if (zoom_info[inst_axis+'0'] < viz_dim.mat['min_'+inst_axis]){
+        zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
+      } else if (zoom_info[inst_axis+'0'] > viz_dim.mat['max_'+inst_axis]){
+        zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
       }
 
       // if (inst_axis == 'x'){
