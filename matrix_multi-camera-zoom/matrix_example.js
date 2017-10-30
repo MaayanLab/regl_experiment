@@ -9,10 +9,16 @@ zoom_rules['mat'] = require('./zoom_rules_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_row-labels');
 zoom_rules['col-labels'] = require('./zoom_rules_col-labels');
 
-zoom_info = {}
-zoom_info['mat'] = zoom_rules['mat'](regl);
-zoom_info['row-labels'] = zoom_rules['row-labels'](regl);
-zoom_info['col-labels'] = zoom_rules['col-labels'](regl);
+var zoom_restrict = {};
+zoom_restrict.max_x = 10.0;
+zoom_restrict.max_y = 10.0;
+zoom_restrict.min_x = 1.0;
+zoom_restrict.min_y = 1.0;
+
+var zoom_info = {}
+zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict);
+zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict);
+zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict);
 
 d3 = require('d3');
 _ = require('underscore')

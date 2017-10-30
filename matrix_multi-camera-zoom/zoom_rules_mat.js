@@ -1,7 +1,7 @@
 var interactionEvents = require('interaction-events');
 var extend = require('xtend/mutable');
 
-module.exports = function(regl){
+module.exports = function(regl, zoom_restrict){
 
   var opts = opts || {};
   var options = extend({
@@ -15,9 +15,6 @@ module.exports = function(regl){
   zoom_info.tsy = 1;
   zoom_info.x0 = 0;
   zoom_info.y0 = 0;
-
-  var max_zoom = 10.0;
-  var min_zoom = 0.1;
 
   interactionEvents({
     element: element,
@@ -49,6 +46,9 @@ module.exports = function(regl){
 
       var inst_ts = 'ts' + inst_axis;
       var inst_ds = 'ds' + inst_axis;
+
+      var max_zoom = zoom_restrict['max_' + inst_axis];
+      var min_zoom = zoom_restrict['min_' + inst_axis];
 
       // zooming within allowed range
       if (zoom_info[inst_ts] < max_zoom && zoom_info[inst_ts] > min_zoom){
