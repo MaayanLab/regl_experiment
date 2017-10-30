@@ -15,6 +15,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.tsy = 1;
   zoom_info.x0 = 0;
   zoom_info.y0 = 0;
+  zoom_info.tx = 0;
+  zoom_info.ty = 0;
+
+  var interaction_types = ['wheel', 'touch', 'pinch'];
 
   interactionEvents({
     element: element,
@@ -41,8 +45,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
-    console.log(zoom_info.dx)
-
     // manually restrict dsx
     if (zoom_info.tsy < zoom_restrict.ratio_y){
       zoom_info.dsx = 1;
@@ -52,7 +54,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
     _.each(['x', 'y'], function(inst_axis){
 
       var inst_ts = 'ts' + inst_axis;
+      var inst_td = 't' + inst_axis;
+
       var inst_ds = 'ds' + inst_axis;
+      var inst_dd = 'd' + inst_axis;
 
       var max_zoom = zoom_restrict['max_' + inst_axis];
       var min_zoom = zoom_restrict['min_' + inst_axis];
@@ -77,6 +82,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
           zoom_info[inst_ts] = min_zoom;
         }
       }
+
+      // panning
+      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
 
     });
 

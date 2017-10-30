@@ -22,7 +22,6 @@ var element = options.element;
 still_interacting = false;
 initialize_viz = true;
 
-interaction_types = ['wheel', 'touch', 'pinch'];
 
 // var filename = 'data/mnist.json'
 var filename = 'data/mult_view.json'
