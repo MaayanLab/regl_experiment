@@ -4,9 +4,10 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
-var zoom_rules = require('./zoom_rules_no-rules');
+var zoom_rules = require('./zoom_mat_rules');
 
-zoom_info = zoom_rules(regl);
+zoom_info = {}
+zoom_info['mat'] = zoom_rules(regl);
 
 d3 = require('d3');
 _ = require('underscore')
@@ -84,7 +85,7 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info
+    zoom_info['mat']
   );
 
   const camera_1 = require('./camera_1')(regl,
@@ -92,7 +93,7 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info
+    zoom_info['mat']
   );
 
   const camera_3 = require('./camera_3')(regl, {
