@@ -24,8 +24,8 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
-var filename = 'data/mnist.json'
-// var filename = 'data/mult_view.json'
+// var filename = 'data/mnist.json'
+var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{

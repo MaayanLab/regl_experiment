@@ -42,7 +42,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.y0 = ev.y0;
 
     // manually restrict dsx
-    console.log(zoom_info.ratio_y)
     if (zoom_info.tsy < zoom_restrict.ratio_y){
     // if (zoom_info.tsy < 2){
       zoom_info.dsx = 1;
