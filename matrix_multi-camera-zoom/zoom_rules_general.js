@@ -45,9 +45,22 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
-    // manually restrict dsx
-    if (zoom_info.tsy < zoom_restrict.ratio_y){
-      zoom_info.dsx = 1;
+    // // restrict x zooming
+    // ///////////////////////
+    // if (zoom_info.tsy < zoom_restrict.ratio_y){
+    //   zoom_info.dsx = 1;
+    // }
+
+    // var in_range = false;
+    // if (zoom_info.x0 < 650 && zoom_info.y0 < 1000){
+    //   console.log('interacting in range')
+    //   in_range = true;
+    // }
+
+    // restrict x panning
+    if (zoom_info.tx > 0 && zoom_info.dx > 0){
+      zoom_info.dx = 0;
+      // zoom_info.tx = 0;
     }
 
     // X and Y zooming rules
@@ -84,7 +97,16 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
       // panning
-      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+      if (zoom_info[inst_td] + zoom_info[inst_dd] <=0){
+
+        scaled_dd = zoom_info[inst_dd]/zoom_info[inst_ds];
+        zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+      } else {
+        zoom_info[inst_dd] = 0;
+      }
+      if (inst_axis == 'x'){
+        // console.log('x: ' + String(zoom_info.tx))
+      }
 
     });
 

@@ -108,7 +108,8 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info['mat']
+    zoom_info['mat'],
+    'verbose'
   );
 
   camera['row-labels'] = require('./camera_2d_general')(regl,
