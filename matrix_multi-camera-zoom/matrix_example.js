@@ -9,17 +9,6 @@ zoom_rules['mat'] = require('./zoom_rules_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_row-labels');
 zoom_rules['col-labels'] = require('./zoom_rules_col-labels');
 
-var zoom_restrict = {};
-zoom_restrict.max_x = 10.0;
-zoom_restrict.max_y = 10.0;
-zoom_restrict.min_x = 1.0;
-zoom_restrict.min_y = 1.0;
-
-var zoom_info = {}
-zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict);
-zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict);
-zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict);
-
 d3 = require('d3');
 _ = require('underscore')
 
@@ -35,8 +24,8 @@ initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
 
-// var filename = 'data/mnist.json'
-var filename = 'data/mult_view.json'
+var filename = 'data/mnist.json'
+// var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
@@ -56,8 +45,8 @@ function run_viz(regl, assets){
 
   // // generate fake data
   // //////////////////////////
-  // var num_row = 20;
-  // var num_col = 5;
+  // var num_row = 30;
+  // var num_col = 29;
 
   // mat_data = []
   // tmp = 1;
@@ -65,12 +54,14 @@ function run_viz(regl, assets){
   // for (var i=0; i < num_row; i++){
   //   mat_data[i] = []
   //   for (var j=0; j < num_col; j++){
-  //     // mat_data[i][j] = 2*Math.random() - 1;
+  //     mat_data[i][j] = 2*Math.random() - 1;
   //     // mat_data[i][j] = 1/( i + j + 1) ;
-  //     mat_data[i][j] = (tmp / total) + 0.2;
+  //     // mat_data[i][j] = (tmp / total) + 0.2;
   //     tmp = tmp + 1;
   //   }
   // }
+
+  // need to generate fake row/col ordering data
 
   // use data from network
   //////////////////////////
@@ -78,6 +69,24 @@ function run_viz(regl, assets){
 
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
+
+  var zoom_restrict = {};
+  zoom_restrict.max_x = 10.0;
+  zoom_restrict.max_y = 10.0;
+  zoom_restrict.min_x = 1.0;
+  zoom_restrict.min_y = 1.0;
+
+  // increase max zoom in y or x direction
+  if (num_row > num_col){
+    zoom_restrict.max_y = zoom_restrict.max_y * ( num_row/num_col );
+  } else if (num_col < num_row) {
+    zoom_restrict.max_y = zoom_restrict.max_y * ( num_col/num_row );
+  }
+
+  var zoom_info = {}
+  zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict);
+  zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict);
+  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict);
 
   var draw_labels = {}
   draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');

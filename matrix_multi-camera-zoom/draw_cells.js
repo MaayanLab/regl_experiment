@@ -77,10 +77,9 @@ module.exports = function(regl, network, mat_data){
       return -i/num_row + offset.y - 1/num_row
     });
 
-
+  // pass along row and col node information
   row_nodes = network.row_nodes;
   col_nodes = network.col_nodes;
-
 
   // generate x and y positions
   ////////////////////////////////
