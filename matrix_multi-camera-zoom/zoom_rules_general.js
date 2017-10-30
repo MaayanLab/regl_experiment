@@ -45,6 +45,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
+    console.log(zoom_info.x0)
+
     // // restrict x zooming
     // ///////////////////////
     // if (zoom_info.tsy < zoom_restrict.ratio_y){

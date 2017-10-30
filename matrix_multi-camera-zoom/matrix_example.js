@@ -12,12 +12,6 @@ zoom_rules['col-labels'] = require('./zoom_rules_general');
 d3 = require('d3');
 _ = require('underscore')
 
-var opts = opts || {};
-var options = extend({
-    element: opts.element || regl._gl.canvas,
-  }, opts || {});
-
-var element = options.element;
 
 still_interacting = false;
 initialize_viz = true;
@@ -100,7 +94,7 @@ function run_viz(regl, assets){
 
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
-  var ini_scale = 0.8 ;
+  var ini_scale = 1.0 ;
 
   const camera = {}
   camera['mat'] = require('./camera_2d_general')(regl,
