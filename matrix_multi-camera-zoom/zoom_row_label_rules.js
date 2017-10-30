@@ -80,7 +80,12 @@ module.exports = function(regl){
       }, 1000)
     }
 
+    // do not allow zooming or panning along the x axis
+    zoom_info.dx = 0;
+    zoom_info.dsx = 1.0;
+
   }
+
 
   return zoom_info;
 

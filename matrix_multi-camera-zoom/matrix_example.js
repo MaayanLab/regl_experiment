@@ -4,10 +4,12 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
-var zoom_rules = require('./zoom_mat_rules');
+var zoom_mat_rules = require('./zoom_mat_rules');
+var zoom_row_label_rules = require('./zoom_row_label_rules');
 
 zoom_info = {}
-zoom_info['mat'] = zoom_rules(regl);
+zoom_info['mat'] = zoom_mat_rules(regl);
+zoom_info['row_labels'] = zoom_row_label_rules(regl);
 
 d3 = require('d3');
 _ = require('underscore')
@@ -23,9 +25,6 @@ still_interacting = false;
 initialize_viz = true;
 
 interaction_types = ['wheel', 'touch', 'pinch'];
-
-var max_zoom = 10;
-var min_zoom = 0.5;
 
 // var filename = 'data/mnist.json'
 var filename = 'data/mult_view.json'
@@ -79,8 +78,9 @@ function run_viz(regl, assets){
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
   var ini_scale = 0.8 ;
-  const camera_vert_zoom = require('./camera_vert_zoom')(
-    regl,
+
+  const camera = {}
+  camera['mat'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
@@ -88,36 +88,27 @@ function run_viz(regl, assets){
     zoom_info['mat']
   );
 
-  const camera_1 = require('./camera_1')(regl,
+console.log('something')
+  camera['row_labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info['mat']
+    zoom_info['row_labels']
   );
 
-  const camera_3 = require('./camera_3')(regl, {
-    xrange: [-ini_scale, ini_scale],
-    yrange: [-ini_scale, ini_scale]
-  });
-
-  window.addEventListener('resize', camera_vert_zoom.resize);
-  // window.addEventListener('resize', camera_2.resize);
-  window.addEventListener('resize', camera_3.resize);
+  window.addEventListener('resize', camera['mat'].resize);
+  window.addEventListener('resize', camera['row_labels'].resize);
 
   function draw_commands(){
 
-    camera_1.draw(() => {
+    camera['mat'].draw(() => {
       regl.clear({ color: [0, 0, 0, 0] });
       draw_cells.top();
       draw_cells.bot();
     });
 
-    // camera_vert_zoom.draw(() => {
-    //   draw_mat_rows();
-    // });
-
-    camera_1.draw(() => {
+    camera['row_labels'].draw(() => {
       draw_mat_rows();
     });
 
