@@ -4,14 +4,15 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
-var zoom_mat_rules = require('./zoom_mat_rules');
-var zoom_row_label_rules = require('./zoom_row_label_rules');
-var zoom_col_label_rules = require('./zoom_col_label_rules');
+var zoom_rules = {};
+zoom_rules['mat'] = require('./zoom_rules_mat');
+zoom_rules['row-labels'] = require('./zoom_rules_row-labels');
+zoom_rules['col-labels'] = require('./zoom_rules_col-labels');
 
 zoom_info = {}
-zoom_info['mat'] = zoom_mat_rules(regl);
-zoom_info['row_labels'] = zoom_row_label_rules(regl);
-zoom_info['col_labels'] = zoom_col_label_rules(regl);
+zoom_info['mat'] = zoom_rules['mat'](regl);
+zoom_info['row-labels'] = zoom_rules['row-labels'](regl);
+zoom_info['col-labels'] = zoom_rules['col-labels'](regl);
 
 d3 = require('d3');
 _ = require('underscore')
@@ -91,24 +92,24 @@ function run_viz(regl, assets){
     zoom_info['mat']
   );
 
-  camera['row_labels'] = require('./camera_2d_general')(regl,
+  camera['row-labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info['row_labels']
+    zoom_info['row-labels']
   );
 
-  camera['col_labels'] = require('./camera_2d_general')(regl,
+  camera['col-labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info['col_labels']
+    zoom_info['col-labels']
   );
 
   window.addEventListener('resize', camera['mat'].resize);
-  window.addEventListener('resize', camera['row_labels'].resize);
+  window.addEventListener('resize', camera['row-labels'].resize);
 
   function draw_commands(){
 
@@ -118,11 +119,11 @@ function run_viz(regl, assets){
       draw_cells.bot();
     });
 
-    camera['row_labels'].draw(() => {
+    camera['row-labels'].draw(() => {
       draw_labels['row']();
     });
 
-    camera['col_labels'].draw(() => {
+    camera['col-labels'].draw(() => {
       draw_labels['col']();
     });
 
