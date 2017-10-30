@@ -4,7 +4,7 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
-var zoom_rules = require('./zoom_rules');
+var zoom_rules = require('./zoom_rules_no-rules');
 
 zoom_info = zoom_rules(regl);
 
@@ -87,10 +87,13 @@ function run_viz(regl, assets){
     zoom_info
   );
 
-  const camera_2 = require('./camera_2')(regl, {
-    xrange: [-ini_scale, ini_scale],
-    yrange: [-ini_scale, ini_scale]
-  });
+  const camera_1 = require('./camera_1')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info
+  );
 
   const camera_3 = require('./camera_3')(regl, {
     xrange: [-ini_scale, ini_scale],
@@ -98,18 +101,22 @@ function run_viz(regl, assets){
   });
 
   window.addEventListener('resize', camera_vert_zoom.resize);
-  window.addEventListener('resize', camera_2.resize);
+  // window.addEventListener('resize', camera_2.resize);
   window.addEventListener('resize', camera_3.resize);
 
   function draw_commands(){
 
-    camera_vert_zoom.draw(() => {
+    camera_1.draw(() => {
       regl.clear({ color: [0, 0, 0, 0] });
       draw_cells.top();
       draw_cells.bot();
     });
 
-    camera_vert_zoom.draw(() => {
+    // camera_vert_zoom.draw(() => {
+    //   draw_mat_rows();
+    // });
+
+    camera_1.draw(() => {
       draw_mat_rows();
     });
 

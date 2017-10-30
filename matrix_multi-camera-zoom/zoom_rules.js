@@ -13,6 +13,8 @@ module.exports = function(regl){
   var zoom_info = {};
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;
+  zoom_info.x0 = 0;
+  zoom_info.y0 = 0;
 
   var max_zoom = 10;
   var min_zoom = 0.5;
