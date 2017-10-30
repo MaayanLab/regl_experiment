@@ -70,17 +70,22 @@ function run_viz(regl, assets){
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
 
-  var zoom_restrict = {};
+  zoom_restrict = {};
   zoom_restrict.max_x = 10.0;
   zoom_restrict.max_y = 10.0;
   zoom_restrict.min_x = 1.0;
   zoom_restrict.min_y = 1.0;
 
+  zoom_restrict.ratio_x = 1;
+  zoom_restrict.ratio_y = 1;
+
   // increase max zoom in y or x direction
   if (num_row > num_col){
     zoom_restrict.max_y = zoom_restrict.max_y * ( num_row/num_col );
+    zoom_restrict.ratio_y = num_row/num_col;
   } else if (num_col < num_row) {
-    zoom_restrict.max_y = zoom_restrict.max_y * ( num_col/num_row );
+    zoom_restrict.max_x = zoom_restrict.max_x * ( num_col/num_row );
+    zoom_restrict.ratio_x = num_col/num_row;
   }
 
   var zoom_info = {}

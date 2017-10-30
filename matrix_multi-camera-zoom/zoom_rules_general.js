@@ -41,6 +41,14 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
+    // manually restrict dsx
+    console.log(zoom_info.ratio_y)
+    if (zoom_info.tsy < zoom_restrict.ratio_y){
+    // if (zoom_info.tsy < 2){
+      zoom_info.dsx = 1;
+    }
+
+
     // X and Y zooming rules
     _.each(['x', 'y'], function(inst_axis){
 
@@ -80,6 +88,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }, 1000)
     }
 
+    // component specific zooming
     if (viz_component == 'col-labels'){
       // do not allow zooming or panning along the y axis
       zoom_info.dy = 0;
@@ -89,6 +98,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.dx = 0;
       zoom_info.dsx = 1.0;
     }
+
+
 
   }
 
