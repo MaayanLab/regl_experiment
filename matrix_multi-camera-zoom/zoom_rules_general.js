@@ -132,6 +132,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // make running total sum of zoom_pan
       var zoom_pan = 0;
 
+      // // divide panning by zoom
+      // zoom_info[inst_dd] = zoom_info[inst_dd]/zoom_info[inst_ts];
+
       // restrict drag_pan
       if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
         // zoom_info[inst_dd] = 0;
