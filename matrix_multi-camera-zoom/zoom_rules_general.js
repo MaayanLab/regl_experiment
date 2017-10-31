@@ -128,6 +128,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       var zoom_eff = 1 - zoom_info[inst_ds];
       var cursor_offset = zoom_info[inst_axis+'0'] - viz_dim.mat['min_'+inst_axis]
+      zoom_info.cursor_offset = cursor_offset
 
       // negative cursor offsets are set to zero (cannot zoom with cursor to
       // left of matrix)
@@ -147,29 +148,20 @@ module.exports = function(regl, zoom_restrict, viz_component){
         // console.log('total pan room: ' + String(zoom_info.prx) + '\n\n')
       }
 
-
-      // // make running total sum of zoom_pan
-      // var zoom_pan = 0;
-
-      // // divide panning by zoom
-      // zoom_info[inst_dd] = zoom_info[inst_dd]/zoom_info[inst_ts];
-
       // restrict drag_pan
       if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
-        // zoom_info[inst_dd] = 0;
         zoom_info[inst_dd] = 0;
       }
 
-      // divide panning by total zoom (do not overcount drag_pan when zoomed)
-      ///////////////////
-      // panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_info[inst_dd] + zoom_pan) /zoom_info[inst_ts];
+      var zoom_drag = zoom_info[inst_dd];
+
+      // total x and y panning
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) /zoom_info[inst_ts];
 
       if (inst_axis == 'x'){
         console.log('x: ' + String(zoom_info[inst_td]))
         // console.log('zoom_pan: ' + String(zoom_pan))
       }
-
 
       // restrict effective position of mouse
       if (zoom_info[inst_axis+'0'] < viz_dim.mat['min_'+inst_axis]){
@@ -178,7 +170,12 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
       }
 
-      // calc x pan room
+      // tell zooming to 'center' the visualization at the most left part if tx/ty > 0
+      if (zoom_info[inst_td]> 0){
+        console.log('########')
+        zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
+      }
+
 
     });
 
