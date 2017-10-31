@@ -118,11 +118,12 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
 
       dViewport[12] = -zoom_info.dsx * zoom_info.x0 + zoom_info.x0 + zoom_info.dx;
 
-      // prevent mat separation from labels
-      if (zoom_info.tx > 0){
-        console.log('*************')
-        // dViewport[12] = dViewport[12]/10;
-      }
+      // // prevent mat separation from labels
+      // if (zoom_info.tx > 10){
+      //   console.log('*************')
+      //   var tmp = 100
+      //   dViewport[12] = -zoom_info.dsx * (zoom_info.x0 - tmp) + (zoom_info.x0 - tmp) + zoom_info.dx;
+      // }
 
       // console.log('dViewport[12]: ' + String((1 - zoom_info.dsx) * zoom_info.x0))
 

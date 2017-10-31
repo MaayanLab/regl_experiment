@@ -155,14 +155,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       var zoom_drag = zoom_info[inst_dd];
 
-      // total x and y panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) /zoom_info[inst_ts];
-
-      if (inst_axis == 'x'){
-        console.log('x: ' + String(zoom_info[inst_td]))
-        // console.log('zoom_pan: ' + String(zoom_pan))
-      }
-
       // restrict effective position of mouse
       if (zoom_info[inst_axis+'0'] < viz_dim.mat['min_'+inst_axis]){
         zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
@@ -170,12 +162,22 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
       }
 
+      // total x and y panning
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) /zoom_info[inst_ts];
+
       // tell zooming to 'center' the visualization at the most left part if tx/ty > 0
-      if (zoom_info[inst_td]> 0){
+      if (zoom_info[inst_td] > 0){
+      // if (zoom_info[inst_td] > 0){
         console.log('########')
         zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
+        zoom_info[inst_td] = 0;
       }
 
+      // reporting values
+      if (inst_axis == 'x'){
+        // console.log('x: ' + String(zoom_info[inst_td]))
+        // console.log('zoom_pan: ' + String(zoom_pan))
+      }
 
     });
 
