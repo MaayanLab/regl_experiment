@@ -167,7 +167,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       // tell zooming to 'center' the visualization at the most left part if tx/ty > 0
       if (zoom_info[inst_td] > 0){
-      // if (zoom_info[inst_td] > 0){
         console.log('########')
         zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
         zoom_info[inst_td] = 0;
@@ -175,8 +174,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       // reporting values
       if (inst_axis == 'x'){
-        // console.log('x: ' + String(zoom_info[inst_td]))
-        // console.log('zoom_pan: ' + String(zoom_pan))
+        console.log('x: ' + String(zoom_info[inst_td]))
       }
 
     });
