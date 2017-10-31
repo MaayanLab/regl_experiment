@@ -141,8 +141,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info[inst_dd] = 0;
       }
 
+      // divide panning by total zoom (do not overcount drag_pan when zoomed)
+      ///////////////////
       // panning
-      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd] + zoom_pan;
+      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd]/zoom_info[inst_ts]  //  + zoom_pan;
 
       if (inst_axis == 'x'){
         console.log('x: ' + String(zoom_info[inst_td]))
