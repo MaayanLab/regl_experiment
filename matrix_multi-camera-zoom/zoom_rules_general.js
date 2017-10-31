@@ -75,8 +75,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
-    // console.log(zoom_info.y0)
-
     // // restrict x zooming
     // ///////////////////////
     // if (zoom_info.tsy < zoom_restrict.ratio_y){
@@ -137,7 +135,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
         cursor_offset = 0;
       }
 
-      var zoom_pan = zoom_eff * cursor_offset/ zoom_info['ts' + inst_axis] ;
+      var zoom_pan = zoom_eff * cursor_offset;
 
       // keep track of total pan room
       zoom_info['pr' + inst_axis] = zoom_info['pr' + inst_axis] + zoom_pan;
@@ -165,7 +163,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // divide panning by total zoom (do not overcount drag_pan when zoomed)
       ///////////////////
       // panning
-      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd]/zoom_info[inst_ts] + zoom_pan;
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_info[inst_dd] + zoom_pan) /zoom_info[inst_ts];
 
       if (inst_axis == 'x'){
         console.log('x: ' + String(zoom_info[inst_td]))
