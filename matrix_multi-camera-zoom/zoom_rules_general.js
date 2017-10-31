@@ -160,21 +160,21 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // total x and y panning
       zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
 
-      // tell zooming to 'center' the visualization at the most left part if tx/ty > 0
-      // causing offset when zoom in/out
-      if (zoom_info[inst_td] > 10){
-        // zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
-        // zoom_info[inst_td] = 0;
-        // zoom_info[inst_ds] = 1;
-        // debugger
-      }
 
       // save zdx and zdy values for zoom-panning values
       zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
+      // tell zooming to 'center' the visualization at the most left part
+      if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
+        // set zdx equal to the negative value of the current tx so that they will cancel out
+        zoom_info['zd' + inst_axis] = 0 // -zoom_info[inst_td];
+        // set total displacement to zero
+        zoom_info[inst_td] = 0;
+      }
+
       // reporting values
       if (inst_axis == 'x'){
-        console.log('x: ' + String(zoom_info[inst_td]) + ' zdx: ' + String(zoom_info['zdx']))
+        console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
       }
 
     });
