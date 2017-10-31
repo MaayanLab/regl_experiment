@@ -127,21 +127,21 @@ module.exports = function(regl, zoom_restrict, viz_component){
         }
       }
 
-      // panning
-      if (zoom_info[inst_td] + zoom_info[inst_dd] <=0){
+
+      var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info.x0 - viz_dim.mat.min_x)
 
 
-        var drag_pan = zoom_info[inst_dd];
-        var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info.y0 - viz_dim.mat.min_x)
-        // console.log('ds: ' + String(zoom_info[inst_ds]))
-        // console.log('zoom_pan: ' + String(zoom_pan))
-        zoom_info[inst_td] = zoom_info[inst_td] + drag_pan // + zoom_pan;
-
-        // scaled_dd = zoom_info[inst_dd]/zoom_info[inst_ds];
-
-      } else {
+      // restrict drag_pan
+      if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
+        // zoom_info[inst_dd] = 0;
         zoom_info[inst_dd] = 0;
       }
+
+      // panning
+      if (zoom_info[inst_td] + zoom_info[inst_dd] <= 0){
+        zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+      }
+
 
       // restrict effective position of mouse
       if (zoom_info[inst_axis+'0'] < viz_dim.mat['min_'+inst_axis]){
