@@ -90,7 +90,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // restrict x panning
     if (zoom_info.tx > 0 && zoom_info.dx > 0){
       zoom_info.dx = 0;
-      // zoom_info.tx = 0;
     }
 
     // X and Y zooming rules
@@ -128,8 +127,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
 
-      var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info.x0 - viz_dim.mat.min_x)
+      // var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info[inst_axis+'0'] - viz_dim.mat['min_'+inst_axis])
 
+      // make running total sum of zoom_pan
+      var zoom_pan = 0;
 
       // restrict drag_pan
       if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
@@ -138,8 +139,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
       // panning
-      if (zoom_info[inst_td] + zoom_info[inst_dd] <= 0){
-        zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd];
+      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd] + zoom_pan;
+
+      if (inst_axis == 'x'){
+        console.log('x: ' + String(zoom_info[inst_td]))
+        // console.log('zoom_pan: ' + String(zoom_pan))
       }
 
 
@@ -151,11 +155,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
       // calc x pan room
-
-      if (inst_axis == 'x'){
-        // console.log('x: ' + String(zoom_info.tx))
-        console.log('zoom_pan: ' + String(zoom_pan))
-      }
 
     });
 
