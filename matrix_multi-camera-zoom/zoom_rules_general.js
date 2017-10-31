@@ -143,15 +143,15 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info['pr' + inst_axis] = zoom_info['pr' + inst_axis] + zoom_pan;
 
       if (inst_axis == 'x'){
-        console.log('zoom_eff: ' + String(zoom_eff))
-        console.log('cursor_offset: ' + String(cursor_offset))
-        console.log('zoom_pan: ' + String(zoom_pan))
-        console.log('total pan room: ' + String(zoom_info.prx) + '\n\n')
+        // console.log('zoom_eff: ' + String(zoom_eff))
+        // console.log('cursor_offset: ' + String(cursor_offset))
+        // console.log('zoom_pan: ' + String(zoom_pan))
+        // console.log('total pan room: ' + String(zoom_info.prx) + '\n\n')
       }
 
 
-      // make running total sum of zoom_pan
-      var zoom_pan = 0;
+      // // make running total sum of zoom_pan
+      // var zoom_pan = 0;
 
       // // divide panning by zoom
       // zoom_info[inst_dd] = zoom_info[inst_dd]/zoom_info[inst_ts];
@@ -165,7 +165,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // divide panning by total zoom (do not overcount drag_pan when zoomed)
       ///////////////////
       // panning
-      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd]/zoom_info[inst_ts]  //  + zoom_pan;
+      zoom_info[inst_td] = zoom_info[inst_td] + zoom_info[inst_dd]/zoom_info[inst_ts] + zoom_pan;
 
       if (inst_axis == 'x'){
         console.log('x: ' + String(zoom_info[inst_td]))
