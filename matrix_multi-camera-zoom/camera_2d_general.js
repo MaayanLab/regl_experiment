@@ -120,6 +120,8 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
       // dViewport[12] = (1 - zoom_info.dsx) * zoom_info.x0 + zoom_info.dx;
       dViewport[12] = (1 - zoom_info.dsx) * zoom_info.x0 + zoom_info.dx;
 
+      // console.log('dViewport[12]: ' + String((1 - zoom_info.dsx) * zoom_info.x0))
+
       // dViewport[13] = -zoom_info.dsy * zoom_info.y0 + zoom_info.y0 + zoom_info.dy;
       dViewport[13] = (1 - zoom_info.dsy) * zoom_info.y0 + zoom_info.dy;
 

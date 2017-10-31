@@ -45,6 +45,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.ty = 0;
   // zoom_info.tpx = 0;
   // zoom_info.tpy = 0;
+  zoom_info.prx = 0;
+  zoom_info.pry = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
@@ -126,8 +128,27 @@ module.exports = function(regl, zoom_restrict, viz_component){
         }
       }
 
+      var zoom_eff = 1 - zoom_info[inst_ds];
+      var cursor_offset = zoom_info[inst_axis+'0'] - viz_dim.mat['min_'+inst_axis]
 
-      // var zoom_pan = (1 - zoom_info[inst_ds]) * (zoom_info[inst_axis+'0'] - viz_dim.mat['min_'+inst_axis])
+      // negative cursor offsets are set to zero (cannot zoom with cursor to
+      // left of matrix)
+      if (cursor_offset < 0){
+        cursor_offset = 0;
+      }
+
+      var zoom_pan = zoom_eff * cursor_offset/ zoom_info['ts' + inst_axis] ;
+
+      // keep track of total pan room
+      zoom_info['pr' + inst_axis] = zoom_info['pr' + inst_axis] + zoom_pan;
+
+      if (inst_axis == 'x'){
+        console.log('zoom_eff: ' + String(zoom_eff))
+        console.log('cursor_offset: ' + String(cursor_offset))
+        console.log('zoom_pan: ' + String(zoom_pan))
+        console.log('total pan room: ' + String(zoom_info.prx) + '\n\n')
+      }
+
 
       // make running total sum of zoom_pan
       var zoom_pan = 0;
