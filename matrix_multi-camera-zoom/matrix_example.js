@@ -137,9 +137,9 @@ function run_viz(regl, assets){
       draw_labels['row']();
     });
 
-    camera['col-labels'].draw(() => {
-      draw_labels['col']();
-    });
+    // camera['col-labels'].draw(() => {
+    //   draw_labels['col']();
+    // });
 
   }
 

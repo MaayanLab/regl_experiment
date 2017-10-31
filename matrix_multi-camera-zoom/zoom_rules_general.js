@@ -81,12 +81,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
     //   zoom_info.dsx = 1;
     // }
 
-    // var in_range = false;
-    // if (zoom_info.x0 < 650 && zoom_info.y0 < 1000){
-    //   console.log('interacting in range')
-    //   in_range = true;
-    // }
-
     // restrict x panning
     if (zoom_info.tx > 0 && zoom_info.dx > 0){
       zoom_info.dx = 0;
@@ -104,7 +98,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
       var max_zoom = zoom_restrict['max_' + inst_axis];
       var min_zoom = zoom_restrict['min_' + inst_axis];
 
-
       // zooming within allowed range
       if (zoom_info[inst_ts] < max_zoom && zoom_info[inst_ts] > min_zoom){
         zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
@@ -113,7 +106,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
         if (zoom_info[inst_ds] < 1){
           zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
         } else {
+          // bump zoom up to max
           zoom_info[inst_ds] = max_zoom/zoom_info[inst_ts];
+          // set zoom to max
           zoom_info[inst_ts] = max_zoom;
         }
       }
@@ -163,18 +158,23 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
       // total x and y panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) /zoom_info[inst_ts];
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
 
       // tell zooming to 'center' the visualization at the most left part if tx/ty > 0
-      if (zoom_info[inst_td] > 0){
-        console.log('########')
-        zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
-        zoom_info[inst_td] = 0;
+      // causing offset when zoom in/out
+      if (zoom_info[inst_td] > 10){
+        // zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
+        // zoom_info[inst_td] = 0;
+        // zoom_info[inst_ds] = 1;
+        // debugger
       }
+
+      // save zdx and zdy values for zoom-panning values
+      zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
       // reporting values
       if (inst_axis == 'x'){
-        console.log('x: ' + String(zoom_info[inst_td]))
+        console.log('x: ' + String(zoom_info[inst_td]) + ' zdx: ' + String(zoom_info['zdx']))
       }
 
     });
@@ -195,6 +195,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // do not allow zooming or panning along the x axis
       zoom_info.dx = 0;
       zoom_info.dsx = 1.0;
+      zoom_info.zdx = 0;
     }
 
 
