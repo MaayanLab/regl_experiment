@@ -45,8 +45,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.ty = 0;
   // zoom_info.tpx = 0;
   // zoom_info.tpy = 0;
-  zoom_info.prx = 0;
-  zoom_info.pry = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
@@ -133,14 +131,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       var zoom_pan = zoom_eff * cursor_offset;
 
-      // keep track of total pan room
-      zoom_info['pr' + inst_axis] = zoom_info['pr' + inst_axis] + zoom_pan;
-
       if (inst_axis == 'x'){
         // console.log('zoom_eff: ' + String(zoom_eff))
         // console.log('cursor_offset: ' + String(cursor_offset))
         // console.log('zoom_pan: ' + String(zoom_pan))
-        // console.log('total pan room: ' + String(zoom_info.prx) + '\n\n')
       }
 
       // restrict drag_pan
@@ -160,45 +154,39 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // save zdx and zdy values for zoom-panning values
       zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
+      // // sanitize zoom displacement
+      // if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
 
-      if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
+      //   // reporting values
+      //   if (inst_axis == 'x'){
+      //     console.log('\n\n\n')
+      //     console.log('before')
+      //     console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
+      //   }
 
-        // debugger
+      //   // // set zdx equal to the negative value of the current tx so that they will cancel out
+      //   zoom_info['zd' + inst_axis] = -zoom_info[inst_td];
+      //   // set total displacement to zero
+      //   zoom_info[inst_td] = 0;
 
-        // reporting values
-        if (inst_axis == 'x'){
-          console.log('\n\n\n')
-          console.log('before')
-          console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
-        }
+      //   // reporting values
+      //   if (inst_axis == 'x'){
+      //     console.log('-----')
+      //     console.log('after')
+      //     console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
+      //   }
 
-        // // set zdx equal to the negative value of the current tx so that they will cancel out
-        zoom_info['zd' + inst_axis] = -zoom_info[inst_td];
-        // set total displacement to zero
-        zoom_info[inst_td] = 0;
+      // } else {
 
-        // reporting values
-        if (inst_axis == 'x'){
-          console.log('-----')
-          console.log('after')
-          console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
-        }
+      // }
 
-      } else {
-
-        /////////////////////////////
-        /////////////////////////////
-        // need to improve order of execution
-        /////////////////////////////
-        /////////////////////////////
-        // tell zooming to 'center' the visualization at the most left part
-        // total x and y panning
-        zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
-
-      }
+      // update inst_td
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
 
       if (inst_axis == 'x'){
-        console.log('outside x: ' + String(zoom_info[inst_td]) )
+        console.log('x: ' + String(zoom_info[inst_td]) )
+        console.log('zoom_pan: ' + String(zoom_pan))
+        console.log('zdx: ' + String(zoom_info['zd' + inst_axis]))
       }
 
     });
