@@ -135,16 +135,21 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.x0 = viz_dim.mat.max_x;
     }
 
-    // save zdx and zdy values for zoom-panning values
-    zoom_info.zdx = zoom_eff * zoom_info.x0
 
-    // // sanitize zoom displacement
-    // if (zoom_info.tx + zoom_info.zdx >= 0){
-    //   // set zdx equal to the negative value of the current tx so that they will cancel out
-    //   zoom_info.zdx = -zoom_info.tx;
-    //   // set total displacement to zero
-    //   zoom_info.tx = 0;
-    // }
+    // sanitize zoom displacement
+    if (zoom_info.tx < 0){
+
+      // zoom from real cursor position
+      zoom_info.zdx = zoom_eff * zoom_info.x0
+
+    } else {
+
+      // zoom from cursor position on the left
+      zoom_info.zdx = zoom_eff * (viz_dim.mat.min_x)
+    }
+
+
+
 
     // update tsx with pan_by_ values in original (unzoomed) dimensions
 
@@ -152,6 +157,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    zoom_info.pan_by_drag / zoom_info.tsx  +
 
                    // pan and zoom work well when dividing by total zoom
+                   // 1. zoom in and out works well
+                   // 2. zoom and pan works well
                    zoom_info.pan_by_zoom / zoom_info.tsx ;
 
                    // // pan and zoom work well when dividing by total zoom
@@ -160,19 +167,21 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    // // zoom in and out works well with this
                    // zoom_info.pan_by_zoom ;
 
-    console.log(zoom_info.dsx)
+    // console.log(zoom_info.dsx)
 
     global_translate = global_translate + zoom_info.pan_by_zoom / zoom_info.tsx;
 
-    console.log('\n\n')
-    // console.log('cursor offset: ' + String(cursor_offset))
+    // // console.log('cursor offset: ' + String(cursor_offset))
     // console.log('tsx: ' + String(zoom_info.tsx))
-    // console.log('dsx: ' + String(zoom_info.dsx))
-    // console.log('zoom_eff: ' + String(zoom_eff))
+    // // console.log('dsx: ' + String(zoom_info.dsx))
+    // // console.log('zoom_eff: ' + String(zoom_eff))
     // console.log('pan_by_drag: ' + String(zoom_info.pan_by_drag))
     // console.log('pan_by_zoom: ' + String(zoom_info.pan_by_zoom))
-    console.log('global_translate: ' + String(global_translate))
+    // // console.log('global_translate: ' + String(global_translate))
+    // console.log('zdx: ' + String(zoom_info.zdx))
     console.log('tx: ' + String(zoom_info.tx))
+
+    // console.log('\n\n\n')
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
