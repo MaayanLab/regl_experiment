@@ -83,8 +83,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // X Zooming Rules
     ///////////////////////////////////////////////////////////////////////////////////
 
-    var max_zoom = zoom_restrict['max_x'];
-    var min_zoom = zoom_restrict['min_x'];
+    var max_zoom = zoom_restrict.max_x;
+    var min_zoom = zoom_restrict.min_x;
 
     // zooming within allowed range
     if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
@@ -110,7 +110,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
     var zoom_eff = 1 - zoom_info.dsx;
-    var cursor_offset = zoom_info['x0'] - viz_dim.mat['min_x']
+    // tracking cursor offset
+    var cursor_offset = zoom_info.x0 - viz_dim.mat.min_x
 
     // negative cursor offsets are set to zero (cannot zoom with cursor to
     // left of matrix)
@@ -118,7 +119,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       cursor_offset = 0;
     }
 
-    var pan_by_zoom = zoom_eff * cursor_offset;
+    zoom_info.pan_by_zoom = zoom_eff * cursor_offset;
 
     // restrict pan_by_drag
     if (zoom_info.tx + zoom_info.pan_by_drag >= 0){
@@ -126,14 +127,14 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
     // restrict effective position of mouse
-    if (zoom_info['x0'] < viz_dim.mat['min_x']){
-      zoom_info['x0'] = viz_dim.mat['min_x'];
-    } else if (zoom_info['x0'] > viz_dim.mat['max_x']){
-      zoom_info['x0'] = viz_dim.mat['max_x'];
+    if (zoom_info.x0 < viz_dim.mat.min_x){
+      zoom_info.x0 = viz_dim.mat.min_x;
+    } else if (zoom_info.x0 > viz_dim.mat.max_x){
+      zoom_info.x0 = viz_dim.mat.max_x;
     }
 
     // save zdx and zdy values for zoom-panning values
-    zoom_info.zdx = (1 - zoom_info.dsx) * zoom_info['x0']
+    zoom_info.zdx = zoom_eff * zoom_info.x0
 
     // // sanitize zoom displacement
     // if (zoom_info.tx + zoom_info.zdx >= 0){
@@ -145,8 +146,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
     // }
 
-    // update tsx
-    zoom_info.tx = zoom_info.tx + (zoom_info.pan_by_drag + pan_by_zoom) / zoom_info.tsx;
+    // update tsx with pan_by_ values in original (unzoomed) dimensions
+    zoom_info.tx = zoom_info.tx + (zoom_info.pan_by_drag + zoom_info.pan_by_zoom) / zoom_info.tsx;
 
     console.log('tx: ' + String(zoom_info.tx))
 
