@@ -72,6 +72,12 @@ function run_viz(regl, assets){
   zoom_restrict.ratio_x = 1;
   zoom_restrict.ratio_y = 1;
 
+
+  // run one fix of mat offset
+  fix_once = true
+
+
+
   // increase max zoom in y or x direction
   if (num_row > num_col){
     zoom_restrict.max_y = zoom_restrict.max_y * ( num_row/num_col );
@@ -84,7 +90,7 @@ function run_viz(regl, assets){
   zoom_info = {}
   zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
   zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
-  // zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
+  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {}
   draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
@@ -114,17 +120,18 @@ function run_viz(regl, assets){
     zoom_info['row-labels']
   );
 
-  // camera['col-labels'] = require('./camera_2d_general')(regl,
-  //   {
-  //     xrange: [-ini_scale, ini_scale],
-  //     yrange: [-ini_scale, ini_scale]
-  //   },
-  //   zoom_info['col-labels']
-  // );
+  camera['col-labels'] = require('./camera_2d_general')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info['col-labels']
+  );
 
   window.addEventListener('resize', camera['mat'].resize);
   // window.addEventListener('resize', camera['row-labels'].resize);
 
+  camera_type = 'mat'
   function draw_commands(){
 
     camera['mat'].draw(() => {
@@ -137,9 +144,9 @@ function run_viz(regl, assets){
       draw_labels['row']();
     });
 
-    // camera['col-labels'].draw(() => {
-    //   draw_labels['col']();
-    // });
+    camera['col-labels'].draw(() => {
+      draw_labels['col']();
+    });
 
   }
 

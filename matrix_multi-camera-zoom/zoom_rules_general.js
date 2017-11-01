@@ -38,6 +38,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
   global_translate = 0
   lock_left = false
 
+
   var zoom_info = {};
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;
@@ -69,18 +70,18 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
     // transfer data from event to zoom_info
     zoom_info.dsx = ev.dsx;
-    zoom_info.pan_by_drag = ev.dx;
+    zoom_info.pan_by_drag_x = ev.dx;
     zoom_info.x0 = ev.x0;
 
     zoom_info.dsy = ev.dsy;
-    zoom_info.dy = ev.dy;
+    zoom_info.pan_by_drag_y = ev.dy;
     zoom_info.y0 = ev.y0;
 
-    // // two-stage zooming
-    // ///////////////////////
-    // if (zoom_info.tsy < zoom_restrict.ratio_y){
-    //   zoom_info.dsx = 1;
-    // }
+    // two-stage zooming
+    ///////////////////////
+    if (zoom_info.tsy < zoom_restrict.ratio_y){
+      zoom_info.dsx = 1;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // X Zooming Rules
@@ -107,7 +108,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       if (zoom_info.dsx > 1){
         zoom_info.tsx = zoom_info.tsx * ev.dsx;
       } else {
-        zoom_info.dsx = min_zoom/zoom_info.tsx;
+        zoom_info.dsx =  min_zoom/zoom_info.tsx;
         zoom_info.tsx = min_zoom;
       }
     }
@@ -123,11 +124,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
       cursor_offset = 0;
     }
 
-    zoom_info.pan_by_zoom = zoom_eff * cursor_offset;
+    zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
     // restrict pan_by_drag
-    if (zoom_info.tx + zoom_info.pan_by_drag >= 0){
-      zoom_info.pan_by_drag = 0;
+    if (zoom_info.tx + zoom_info.pan_by_drag_x >= 0){
+      zoom_info.pan_by_drag_x = 0;
     }
 
     // restrict effective position of mouse
@@ -137,106 +138,77 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.x0 = viz_dim.mat.max_x;
     }
 
+    zoom_info.zdx = zoom_eff * zoom_info.x0
 
-    // zoom from real cursor position
-    // if (zoom_info.tx + zoom_eff * zoom_info.x0 < 0){
+    // track zoom displacement in original coordinate system
+    zoom_info.tx = zoom_info.tx +
+                   zoom_info.pan_by_drag_x / zoom_info.tsx  +
+                   zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    var tx_only = zoom_info.tx
-    var tx_and_pan_by_drag = zoom_info.tx + zoom_info.pan_by_drag * zoom_info.tsx;
-    var tx_and_zdx = zoom_info.tx + zoom_eff * zoom_info.x0 /10
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
-    if (tx_only  <= 0){
-      console.log('not locked')
-      console.log(zoom_eff)
-      zoom_info.zdx = zoom_eff * zoom_info.x0
+    ///////////////////////////////////////////////////////////////////////////
+    // Y Zooming Rules
+    ///////////////////////////////////////////////////////////////////////////
 
-      // track zoom displacement in original coordinate system
-      zoom_info.tx = zoom_info.tx +
-                     zoom_info.pan_by_drag / zoom_info.tsx  +
+    var max_zoom = zoom_restrict.max_y;
+    var min_zoom = zoom_restrict.min_y;
 
-                     // pan and zoom work well when dividing by total zoom
-                     // 1. zoom in and out works well
-                     // 2. zoom and pan works well
-                     zoom_info.pan_by_zoom / zoom_info.tsx ;
-
-                     // // pan and zoom work well when dividing by total zoom
-                     // zoom_info.pan_by_zoom * zoom_info.dsx
-
-                     // // zoom in and out works well with this
-                     // zoom_info.pan_by_zoom ;
-
-    } else {
-      console.log('Locked')
-      debugger
-
-      // // simple solution
-      // ////////////////////////////
-      // zoom_info.zdx = 0
-
-      // zoom_info.tx = 0
-      // console.log(zoom_info.zdx)
-
-
-      // zoom_info.zdx = zoom_eff * viz_dim.mat.min_x
-
-      // zoom_info.zdx = -zoom_info.tx
-
-      // zoom_info.pan_by_zoom = 0
+    // zooming within allowed range
+    if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
+      zoom_info.tsy = zoom_info.tsy * ev.dsy;
+    }
+    else if (zoom_info.tsy >= max_zoom) {
+      if (zoom_info.dsy < 1){
+        zoom_info.tsy = zoom_info.tsy * ev.dsy;
+      } else {
+        // bump zoom up to max
+        zoom_info.dsy = max_zoom/zoom_info.tsy;
+        // set zoom to max
+        zoom_info.tsy = max_zoom;
+      }
+    }
+    else if (zoom_info.tsy <= min_zoom){
+      if (zoom_info.dsy > 1){
+        zoom_info.tsy = zoom_info.tsy * ev.dsy;
+      } else {
+        zoom_info.dsy =  min_zoom/zoom_info.tsy;
+        zoom_info.tsy = min_zoom;
+      }
     }
 
+    var zoom_eff = 1 - zoom_info.dsy;
 
+    // tracking cursor offset (working)
+    var cursor_offset = zoom_info.y0 - viz_dim.mat.min_y
 
-    // // sanitize zoom displacement
-    // if (zoom_info.tx + zoom_info.zdx < 0){
+    // negative cursor offsets are set to zero
+    // (cannot zoom with cursor to left of matrix)
+    if (cursor_offset < 0){
+      cursor_offset = 0;
+    }
 
-    // } else {
+    zoom_info.pan_by_zoom_y = zoom_eff * cursor_offset;
 
-    //   // console.log('before correction')
-    //   // debugger
+    // restrict pan_by_drag
+    if (zoom_info.ty + zoom_info.pan_by_drag_y >= 0){
+      zoom_info.pan_by_drag_y = 0;
+    }
 
-    //   // might use
-    //   //////////////////
-    //   // // zoom from cursor position on the left
-    //   // zoom_info.zdx = zoom_eff * (viz_dim.mat.min_x)
-    //   // // zoom_info.pan_by_zoom = 0
-    //   // // zoom_info.tx = 0
+    // restrict effective position of mouse
+    if (zoom_info.y0 < viz_dim.mat.min_y){
+      zoom_info.y0 = viz_dim.mat.min_y;
+    } else if (zoom_info.y0 > viz_dim.mat.max_y){
+      zoom_info.y0 = viz_dim.mat.max_y;
+    }
 
-    //   // // bump matrix to zero
-    //   // if (zoom_info.tx < 0){
-    //   //   zoom_info.zdx = - zoom_info.tx;
-    //   // } else {
-    //   //   zoom_info.zdx = 0;
-    //   // }
+    zoom_info.zdy = zoom_eff * zoom_info.y0
 
-    //   // zoom_info.zdx = 0;
-
-    //   // zoom_info.tx = 0
-    //   // zoom_info.pan_by_zoom = 0
-
-    //   // console.log('after correction')
-    //   // debugger
-
-    // }
-
-
-
-
-
-    // console.log(zoom_info.dsx)
-
-    global_translate = global_translate + zoom_info.pan_by_zoom / zoom_info.tsx;
-
-    // // console.log('cursor offset: ' + String(cursor_offset))
-    // console.log('tsx: ' + String(zoom_info.tsx))
-    // // console.log('dsx: ' + String(zoom_info.dsx))
-    // // console.log('zoom_eff: ' + String(zoom_eff))
-    // console.log('pan_by_drag: ' + String(zoom_info.pan_by_drag))
-    // console.log('pan_by_zoom: ' + String(zoom_info.pan_by_zoom))
-    // console.log('GT: ' + String(global_translate))
-    // console.log('zdx: ' + String(zoom_info.zdx))
-    // console.log('tx: ' + String(zoom_info.tx))
-
-    // console.log('\n\n\n')
+    // track zoom displacement in original coordinate system
+    zoom_info.ty = zoom_info.ty +
+                   zoom_info.pan_by_drag_y / zoom_info.tsy  +
+                   zoom_info.pan_by_zoom_y / zoom_info.tsy ;
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
@@ -248,16 +220,17 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }, 1000)
     }
 
-    // // component specific zooming
-    // if (viz_component == 'col-labels'){
-    //   // do not allow zooming or panning along the y axis
-    //   zoom_info.dy = 0;
-    //   zoom_info.dsy = 1.0;
-    // }
+    // component specific zooming
+    if (viz_component == 'col-labels'){
+      // do not allow zooming or panning along the y axis
+      zoom_info.pan_by_drag_y = 0;
+      zoom_info.dsy = 1.0;
+      zoom_info.zdy = 0;
+    }
 
     if (viz_component == 'row-labels'){
       // do not allow zooming or panning along the x axis
-      zoom_info.pan_by_drag = 0;
+      zoom_info.pan_by_drag_x = 0;
       zoom_info.dsx = 1.0;
       zoom_info.zdx = 0;
     }
