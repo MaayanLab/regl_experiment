@@ -185,6 +185,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       }
 
+      /////////////////////////////
+      /////////////////////////////
+      // need to improve order of execution
+      /////////////////////////////
+      /////////////////////////////
       // tell zooming to 'center' the visualization at the most left part
       // total x and y panning
       zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
