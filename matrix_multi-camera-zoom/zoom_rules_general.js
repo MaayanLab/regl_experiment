@@ -79,9 +79,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
     //   zoom_info.dsx = 1;
     // }
 
-    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // X Zooming Rules
-    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     var max_zoom = zoom_restrict.max_x;
     var min_zoom = zoom_restrict.min_x;
@@ -110,11 +110,12 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
     var zoom_eff = 1 - zoom_info.dsx;
-    // tracking cursor offset
+
+    // tracking cursor offset (working)
     var cursor_offset = zoom_info.x0 - viz_dim.mat.min_x
 
-    // negative cursor offsets are set to zero (cannot zoom with cursor to
-    // left of matrix)
+    // negative cursor offsets are set to zero
+    // (cannot zoom with cursor to left of matrix)
     if (cursor_offset < 0){
       cursor_offset = 0;
     }
@@ -149,10 +150,16 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // update tsx with pan_by_ values in original (unzoomed) dimensions
     zoom_info.tx = zoom_info.tx + (zoom_info.pan_by_drag + zoom_info.pan_by_zoom) / zoom_info.tsx;
 
+    console.log('\n\n')
+    console.log('cursor offset: ' + String(cursor_offset))
+    console.log('tsx: ' + String(zoom_info.tsx))
+    console.log('dsx: ' + String(zoom_info.dsx))
+    console.log('zoom_eff: ' + String(zoom_eff))
+    console.log('pan_by_zoom: ' + String(zoom_info.pan_by_zoom))
     console.log('tx: ' + String(zoom_info.tx))
 
-    ///////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     if (still_interacting == false){
       still_interacting = true;
