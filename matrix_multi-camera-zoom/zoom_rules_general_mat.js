@@ -38,10 +38,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
   global_translate = 0
   lock_left = false
 
-
   var zoom_info = {};
   zoom_info.tsx = 1;
-  zoom_info.tsy = 1;
+  // zoom_info.tsy = 1;
   zoom_info.x0 = 0;
   zoom_info.y0 = 0;
   zoom_info.tx = 0;
@@ -90,28 +89,37 @@ module.exports = function(regl, zoom_restrict, viz_component){
     var max_zoom = zoom_restrict.max_x;
     var min_zoom = zoom_restrict.min_x;
 
+    // calc potential zoom, this is unsanitized
+    potential_tsx = zoom_info.tsx * zoom_info.dsx;
+
     // zooming within allowed range
-    if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
-      zoom_info.tsx = zoom_info.tsx * ev.dsx;
+    if (potential_tsx < max_zoom && potential_tsx > min_zoom){
+      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     }
-    else if (zoom_info.tsx >= max_zoom) {
+
+    // zoom above allowed range
+    else if (potential_tsx >= max_zoom) {
       if (zoom_info.dsx < 1){
-        zoom_info.tsx = zoom_info.tsx * ev.dsx;
+        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
       } else {
+        // console.log('DEBUGGER'); debugger;
         // bump zoom up to max
         zoom_info.dsx = max_zoom/zoom_info.tsx;
         // set zoom to max
         zoom_info.tsx = max_zoom;
       }
     }
-    else if (zoom_info.tsx <= min_zoom){
+    else if (potential_tsx <= min_zoom){
       if (zoom_info.dsx > 1){
-        zoom_info.tsx = zoom_info.tsx * ev.dsx;
+        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
       } else {
         zoom_info.dsx =  min_zoom/zoom_info.tsx;
         zoom_info.tsx = min_zoom;
       }
     }
+
+
+    console.log(zoom_info.tsx)
 
     var zoom_eff = 1 - zoom_info.dsx;
 
@@ -145,7 +153,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    console.log(zoom_info.tx)
+    // console.log(zoom_info.tx)
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
