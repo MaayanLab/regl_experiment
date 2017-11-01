@@ -5,7 +5,7 @@
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 var zoom_rules = {};
-zoom_rules['mat'] = require('./zoom_rules_general');
+zoom_rules['mat'] = require('./zoom_rules_general_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_general');
 zoom_rules['col-labels'] = require('./zoom_rules_general');
 
@@ -103,7 +103,7 @@ function run_viz(regl, assets){
   var ini_scale = 1.0 ;
 
   const camera = {}
-  camera['mat'] = require('./camera_2d_general')(regl,
+  camera['mat'] = require('./camera_2d_general_mat')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]

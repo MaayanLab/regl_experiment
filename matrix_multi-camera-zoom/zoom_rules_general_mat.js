@@ -145,70 +145,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Y Zooming Rules
-    ///////////////////////////////////////////////////////////////////////////
-
-    var max_zoom = zoom_restrict.max_y;
-    var min_zoom = zoom_restrict.min_y;
-
-    // zooming within allowed range
-    if (zoom_info.tsy < max_zoom && zoom_info.tsy > min_zoom){
-      zoom_info.tsy = zoom_info.tsy * ev.dsy;
-    }
-    else if (zoom_info.tsy >= max_zoom) {
-      if (zoom_info.dsy < 1){
-        zoom_info.tsy = zoom_info.tsy * ev.dsy;
-      } else {
-        // bump zoom up to max
-        zoom_info.dsy = max_zoom/zoom_info.tsy;
-        // set zoom to max
-        zoom_info.tsy = max_zoom;
-      }
-    }
-    else if (zoom_info.tsy <= min_zoom){
-      if (zoom_info.dsy > 1){
-        zoom_info.tsy = zoom_info.tsy * ev.dsy;
-      } else {
-        zoom_info.dsy =  min_zoom/zoom_info.tsy;
-        zoom_info.tsy = min_zoom;
-      }
-    }
-
-    var zoom_eff = 1 - zoom_info.dsy;
-
-    // tracking cursor offset (working)
-    var cursor_offset = zoom_info.y0 - viz_dim.mat.min_y
-
-    // negative cursor offsets are set to zero
-    // (cannot zoom with cursor to left of matrix)
-    if (cursor_offset < 0){
-      cursor_offset = 0;
-    }
-
-    zoom_info.pan_by_zoom_y = zoom_eff * cursor_offset;
-
-    // restrict pan_by_drag
-    if (zoom_info.ty + zoom_info.pan_by_drag_y >= 0){
-      zoom_info.pan_by_drag_y = 0;
-    }
-
-    // restrict effective position of mouse
-    if (zoom_info.y0 < viz_dim.mat.min_y){
-      zoom_info.y0 = viz_dim.mat.min_y;
-    } else if (zoom_info.y0 > viz_dim.mat.max_y){
-      zoom_info.y0 = viz_dim.mat.max_y;
-    }
-
-    zoom_info.zdy = zoom_eff * zoom_info.y0
-
-    // track zoom displacement in original coordinate system
-    zoom_info.ty = zoom_info.ty +
-                   zoom_info.pan_by_drag_y / zoom_info.tsy  +
-                   zoom_info.pan_by_zoom_y / zoom_info.tsy ;
+    console.log(zoom_info.tx)
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
