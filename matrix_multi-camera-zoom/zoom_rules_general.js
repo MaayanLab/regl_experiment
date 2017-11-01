@@ -84,87 +84,79 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.dx = 0;
     }
 
-    // X and Y zooming rules
-    _.each(['x'], function(inst_axis){
+    // X Zooming Rules
+    ///////////////////////////////////////////////////////////////////////////////////
 
-      var inst_ts = 'tsx'
-      var inst_td = 'tx'
+    var max_zoom = zoom_restrict['max_x'];
+    var min_zoom = zoom_restrict['min_x'];
 
-      var inst_ds = 'dsx';
-      var inst_dd = 'dx';
-
-      var max_zoom = zoom_restrict['max_x'];
-      var min_zoom = zoom_restrict['min_x'];
-
-      // zooming within allowed range
-      if (zoom_info[inst_ts] < max_zoom && zoom_info[inst_ts] > min_zoom){
-        zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
+    // zooming within allowed range
+    if (zoom_info.tsx < max_zoom && zoom_info.tsx > min_zoom){
+      zoom_info.tsx = zoom_info.tsx * ev.dsx;
+    }
+    else if (zoom_info.tsx >= max_zoom) {
+      if (zoom_info.dsx < 1){
+        zoom_info.tsx = zoom_info.tsx * ev.dsx;
+      } else {
+        // bump zoom up to max
+        zoom_info.dsx = max_zoom/zoom_info.tsx;
+        // set zoom to max
+        zoom_info.tsx = max_zoom;
       }
-      else if (zoom_info[inst_ts] >= max_zoom) {
-        if (zoom_info[inst_ds] < 1){
-          zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
-        } else {
-          // bump zoom up to max
-          zoom_info[inst_ds] = max_zoom/zoom_info[inst_ts];
-          // set zoom to max
-          zoom_info[inst_ts] = max_zoom;
-        }
+    }
+    else if (zoom_info.tsx <= min_zoom){
+      if (zoom_info.dsx > 1){
+        zoom_info.tsx = zoom_info.tsx * ev.dsx;
+      } else {
+        zoom_info.dsx = min_zoom/zoom_info.tsx;
+        zoom_info.tsx = min_zoom;
       }
-      else if (zoom_info[inst_ts] <= min_zoom){
-        if (zoom_info[inst_ds] > 1){
-          zoom_info[inst_ts] = zoom_info[inst_ts] * ev[inst_ds];
-        } else {
-          zoom_info[inst_ds] = min_zoom/zoom_info[inst_ts];
-          zoom_info[inst_ts] = min_zoom;
-        }
-      }
+    }
 
-      var zoom_eff = 1 - zoom_info[inst_ds];
-      var cursor_offset = zoom_info['x0'] - viz_dim.mat['min_x']
+    var zoom_eff = 1 - zoom_info.dsx;
+    var cursor_offset = zoom_info['x0'] - viz_dim.mat['min_x']
 
-      // negative cursor offsets are set to zero (cannot zoom with cursor to
-      // left of matrix)
-      if (cursor_offset < 0){
-        cursor_offset = 0;
-      }
+    // negative cursor offsets are set to zero (cannot zoom with cursor to
+    // left of matrix)
+    if (cursor_offset < 0){
+      cursor_offset = 0;
+    }
 
-      var zoom_pan = zoom_eff * cursor_offset;
+    var zoom_pan = zoom_eff * cursor_offset;
 
-      // restrict drag_pan
-      if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
-        zoom_info[inst_dd] = 0;
-      }
+    // restrict drag_pan
+    if (zoom_info.tx + zoom_info.dx > 0){
+      zoom_info.dx = 0;
+    }
 
-      var zoom_drag = zoom_info[inst_dd];
+    var zoom_drag = zoom_info.dx;
 
-      // restrict effective position of mouse
-      if (zoom_info['x0'] < viz_dim.mat['min_x']){
-        zoom_info['x0'] = viz_dim.mat['min_x'];
-      } else if (zoom_info['x0'] > viz_dim.mat['max_x']){
-        zoom_info['x0'] = viz_dim.mat['max_x'];
-      }
+    // restrict effective position of mouse
+    if (zoom_info['x0'] < viz_dim.mat['min_x']){
+      zoom_info['x0'] = viz_dim.mat['min_x'];
+    } else if (zoom_info['x0'] > viz_dim.mat['max_x']){
+      zoom_info['x0'] = viz_dim.mat['max_x'];
+    }
 
-      // save zdx and zdy values for zoom-panning values
-      zoom_info['zdx'] = (1 - zoom_info[inst_ds]) * zoom_info['x0']
+    // save zdx and zdy values for zoom-panning values
+    zoom_info['zdx'] = (1 - zoom_info.dsx) * zoom_info['x0']
 
-      // // sanitize zoom displacement
-      // if (zoom_info[inst_td] + zoom_info['zdx'] >= 0){
+    // // sanitize zoom displacement
+    // if (zoom_info.tx + zoom_info['zdx'] >= 0){
 
-        // // // set zdx equal to the negative value of the current tx so that they will cancel out
-        // zoom_info['zdx'] = -zoom_info[inst_td];
-        // // set total displacement to zero
-        // zoom_info[inst_td] = 0;
+      // // // set zdx equal to the negative value of the current tx so that they will cancel out
+      // zoom_info['zdx'] = -zoom_info.tx;
+      // // set total displacement to zero
+      // zoom_info.tx = 0;
 
-      // } else {
+    // } else {
 
-      // }
+    // }
 
-      // update inst_td
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+    // update tx
+    zoom_info.tx = zoom_info.tx + (zoom_drag + zoom_pan) / zoom_info.tsx;
 
-
-
-    });
+    ///////////////////////////////////////////////////////////////////////////////////
 
     if (still_interacting == false){
       still_interacting = true;
