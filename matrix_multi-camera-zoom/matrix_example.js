@@ -83,7 +83,7 @@ function run_viz(regl, assets){
 
   zoom_info = {}
   zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
-  // zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
+  zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
   // zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {}
@@ -106,13 +106,13 @@ function run_viz(regl, assets){
     'verbose'
   );
 
-  // camera['row-labels'] = require('./camera_2d_general')(regl,
-  //   {
-  //     xrange: [-ini_scale, ini_scale],
-  //     yrange: [-ini_scale, ini_scale]
-  //   },
-  //   zoom_info['row-labels']
-  // );
+  camera['row-labels'] = require('./camera_2d_general')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info['row-labels']
+  );
 
   // camera['col-labels'] = require('./camera_2d_general')(regl,
   //   {
@@ -123,7 +123,7 @@ function run_viz(regl, assets){
   // );
 
   window.addEventListener('resize', camera['mat'].resize);
-  // window.addEventListener('resize', camera['row-labels'].resize);
+  window.addEventListener('resize', camera['row-labels'].resize);
 
   function draw_commands(){
 
@@ -133,9 +133,9 @@ function run_viz(regl, assets){
       draw_cells.bot();
     });
 
-    // camera['row-labels'].draw(() => {
-    //   draw_labels['row']();
-    // });
+    camera['row-labels'].draw(() => {
+      draw_labels['row']();
+    });
 
     // camera['col-labels'].draw(() => {
     //   draw_labels['col']();

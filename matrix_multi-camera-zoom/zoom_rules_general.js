@@ -43,8 +43,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.y0 = 0;
   zoom_info.tx = 0;
   zoom_info.ty = 0;
-  // zoom_info.tpx = 0;
-  // zoom_info.tpy = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
@@ -66,11 +64,13 @@ module.exports = function(regl, zoom_restrict, viz_component){
         break;
     }
 
+    // transfer data from event to zoom_info
     zoom_info.dsx = ev.dsx;
-    zoom_info.dsy = ev.dsy;
     zoom_info.pan_by_drag = ev.dx;
-    zoom_info.dy = ev.dy;
     zoom_info.x0 = ev.x0;
+
+    zoom_info.dsy = ev.dsy;
+    zoom_info.dy = ev.dy;
     zoom_info.y0 = ev.y0;
 
     // // two-stage zooming
@@ -79,6 +79,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
     //   zoom_info.dsx = 1;
     // }
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // X Zooming Rules
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -147,6 +148,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // update tsx
     zoom_info.tx = zoom_info.tx + (zoom_info.pan_by_drag + pan_by_zoom) / zoom_info.tsx;
 
+    console.log('tx: ' + String(zoom_info.tx))
+
+    ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////
 
     if (still_interacting == false){
@@ -156,14 +160,16 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }, 1000)
     }
 
-    // component specific zooming
-    if (viz_component == 'col-labels'){
-      // do not allow zooming or panning along the y axis
-      zoom_info.dy = 0;
-      zoom_info.dsy = 1.0;
-    } else if (viz_component == 'row-labels'){
+    // // component specific zooming
+    // if (viz_component == 'col-labels'){
+    //   // do not allow zooming or panning along the y axis
+    //   zoom_info.dy = 0;
+    //   zoom_info.dsy = 1.0;
+    // }
+
+    if (viz_component == 'row-labels'){
       // do not allow zooming or panning along the x axis
-      zoom_info.dx = 0;
+      zoom_info.pan_by_drag = 0;
       zoom_info.dsx = 1.0;
       zoom_info.zdx = 0;
     }
