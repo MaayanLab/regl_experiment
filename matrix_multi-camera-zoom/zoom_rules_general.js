@@ -122,14 +122,14 @@ module.exports = function(regl, zoom_restrict, viz_component){
       cursor_offset = 0;
     }
 
-    var zoom_pan = zoom_eff * cursor_offset;
+    var pan_by_zoom = zoom_eff * cursor_offset;
 
-    // restrict drag_pan
-    if (zoom_info.tx + zoom_info.dx > 0){
-      zoom_info.dx = 0;
+    // restrict dx
+    if (zoom_info.tx + zoom_info.dx >= 0){
+      zoom_info.dx = -zoom_info.tx;
     }
 
-    var zoom_drag = zoom_info.dx;
+    var pan_by_drag = zoom_info.dx;
 
     // restrict effective position of mouse
     if (zoom_info['x0'] < viz_dim.mat['min_x']){
@@ -139,22 +139,20 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
     // save zdx and zdy values for zoom-panning values
-    zoom_info['zdx'] = (1 - zoom_info.dsx) * zoom_info['x0']
+    zoom_info.zdx = (1 - zoom_info.dsx) * zoom_info['x0']
 
     // // sanitize zoom displacement
-    // if (zoom_info.tx + zoom_info['zdx'] >= 0){
+    // if (zoom_info.tx + zoom_info.zdx >= 0){
 
-      // // // set zdx equal to the negative value of the current tx so that they will cancel out
-      // zoom_info['zdx'] = -zoom_info.tx;
-      // // set total displacement to zero
-      // zoom_info.tx = 0;
-
-    // } else {
+    //   // set zdx equal to the negative value of the current tx so that they will cancel out
+    //   zoom_info.zdx = -zoom_info.tx;
+    //   // set total displacement to zero
+    //   zoom_info.tx = 0;
 
     // }
 
-    // update tx
-    zoom_info.tx = zoom_info.tx + (zoom_drag + zoom_pan) / zoom_info.tsx;
+    // update tsx
+    zoom_info.tx = zoom_info.tx + (pan_by_drag + pan_by_zoom) / zoom_info.tsx;
 
     ///////////////////////////////////////////////////////////////////////////////////
 
