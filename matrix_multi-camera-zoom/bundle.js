@@ -545,8 +545,8 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 var zoom_rules = {};
 zoom_rules['mat'] = require('./zoom_rules_general');
-// zoom_rules['row-labels'] = require('./zoom_rules_general');
-// zoom_rules['col-labels'] = require('./zoom_rules_general');
+zoom_rules['row-labels'] = require('./zoom_rules_general');
+zoom_rules['col-labels'] = require('./zoom_rules_general');
 
 d3 = require('d3');
 _ = require('underscore')
@@ -622,8 +622,8 @@ function run_viz(regl, assets){
 
   zoom_info = {}
   zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
-  // zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
-  // zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
+  zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
+  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {}
   draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
@@ -645,21 +645,21 @@ function run_viz(regl, assets){
     'verbose'
   );
 
-  // camera['row-labels'] = require('./camera_2d_general')(regl,
-  //   {
-  //     xrange: [-ini_scale, ini_scale],
-  //     yrange: [-ini_scale, ini_scale]
-  //   },
-  //   zoom_info['row-labels']
-  // );
+  camera['row-labels'] = require('./camera_2d_general')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info['row-labels']
+  );
 
-  // camera['col-labels'] = require('./camera_2d_general')(regl,
-  //   {
-  //     xrange: [-ini_scale, ini_scale],
-  //     yrange: [-ini_scale, ini_scale]
-  //   },
-  //   zoom_info['col-labels']
-  // );
+  camera['col-labels'] = require('./camera_2d_general')(regl,
+    {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    },
+    zoom_info['col-labels']
+  );
 
   window.addEventListener('resize', camera['mat'].resize);
   // window.addEventListener('resize', camera['row-labels'].resize);
@@ -672,13 +672,13 @@ function run_viz(regl, assets){
       draw_cells.bot();
     });
 
-    // camera['row-labels'].draw(() => {
-    //   draw_labels['row']();
-    // });
+    camera['row-labels'].draw(() => {
+      draw_labels['row']();
+    });
 
-    // camera['col-labels'].draw(() => {
-    //   draw_labels['col']();
-    // });
+    camera['col-labels'].draw(() => {
+      draw_labels['col']();
+    });
 
   }
 
@@ -856,6 +856,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // save zdx and zdy values for zoom-panning values
       zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
+
       if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
 
         // debugger
@@ -879,11 +880,18 @@ module.exports = function(regl, zoom_restrict, viz_component){
           console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
         }
 
-      }
+      } else {
 
-      // tell zooming to 'center' the visualization at the most left part
-      // total x and y panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+        /////////////////////////////
+        /////////////////////////////
+        // need to improve order of execution
+        /////////////////////////////
+        /////////////////////////////
+        // tell zooming to 'center' the visualization at the most left part
+        // total x and y panning
+        zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+
+      }
 
       if (inst_axis == 'x'){
         console.log('outside x: ' + String(zoom_info[inst_td]) )

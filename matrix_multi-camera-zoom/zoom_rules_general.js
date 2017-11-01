@@ -160,6 +160,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // save zdx and zdy values for zoom-panning values
       zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
+
       if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
 
         // debugger
@@ -183,16 +184,18 @@ module.exports = function(regl, zoom_restrict, viz_component){
           console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
         }
 
-      }
+      } else {
 
-      /////////////////////////////
-      /////////////////////////////
-      // need to improve order of execution
-      /////////////////////////////
-      /////////////////////////////
-      // tell zooming to 'center' the visualization at the most left part
-      // total x and y panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+        /////////////////////////////
+        /////////////////////////////
+        // need to improve order of execution
+        /////////////////////////////
+        /////////////////////////////
+        // tell zooming to 'center' the visualization at the most left part
+        // total x and y panning
+        zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+
+      }
 
       if (inst_axis == 'x'){
         console.log('outside x: ' + String(zoom_info[inst_td]) )
