@@ -85,16 +85,16 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
     // X and Y zooming rules
-    _.each(['x', 'y'], function(inst_axis){
+    _.each(['x'], function(inst_axis){
 
-      var inst_ts = 'ts' + inst_axis;
-      var inst_td = 't' + inst_axis;
+      var inst_ts = 'tsx'
+      var inst_td = 'tx'
 
-      var inst_ds = 'ds' + inst_axis;
-      var inst_dd = 'd' + inst_axis;
+      var inst_ds = 'dsx';
+      var inst_dd = 'dx';
 
-      var max_zoom = zoom_restrict['max_' + inst_axis];
-      var min_zoom = zoom_restrict['min_' + inst_axis];
+      var max_zoom = zoom_restrict['max_x'];
+      var min_zoom = zoom_restrict['min_x'];
 
       // zooming within allowed range
       if (zoom_info[inst_ts] < max_zoom && zoom_info[inst_ts] > min_zoom){
@@ -120,8 +120,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
 
       var zoom_eff = 1 - zoom_info[inst_ds];
-      var cursor_offset = zoom_info[inst_axis+'0'] - viz_dim.mat['min_'+inst_axis]
-      zoom_info.cursor_offset = cursor_offset
+      var cursor_offset = zoom_info['x0'] - viz_dim.mat['min_x']
 
       // negative cursor offsets are set to zero (cannot zoom with cursor to
       // left of matrix)
