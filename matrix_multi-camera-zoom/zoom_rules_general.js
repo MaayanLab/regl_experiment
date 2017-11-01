@@ -157,24 +157,40 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
       }
 
-      // total x and y panning
-      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
-
-
       // save zdx and zdy values for zoom-panning values
       zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
 
-      // tell zooming to 'center' the visualization at the most left part
       if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
-        // set zdx equal to the negative value of the current tx so that they will cancel out
-        zoom_info['zd' + inst_axis] = 0 // -zoom_info[inst_td];
+
+        // debugger
+
+        // reporting values
+        if (inst_axis == 'x'){
+          console.log('\n\n\n')
+          console.log('before')
+          console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
+        }
+
+        // // set zdx equal to the negative value of the current tx so that they will cancel out
+        zoom_info['zd' + inst_axis] = -zoom_info[inst_td];
         // set total displacement to zero
         zoom_info[inst_td] = 0;
+
+        // reporting values
+        if (inst_axis == 'x'){
+          console.log('-----')
+          console.log('after')
+          console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
+        }
+
       }
 
-      // reporting values
+      // tell zooming to 'center' the visualization at the most left part
+      // total x and y panning
+      zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
+
       if (inst_axis == 'x'){
-        console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
+        console.log('outside x: ' + String(zoom_info[inst_td]) )
       }
 
     });
