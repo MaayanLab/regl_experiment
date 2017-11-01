@@ -130,12 +130,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
       var zoom_pan = zoom_eff * cursor_offset;
 
-      if (inst_axis == 'x'){
-        // console.log('zoom_eff: ' + String(zoom_eff))
-        // console.log('cursor_offset: ' + String(cursor_offset))
-        // console.log('zoom_pan: ' + String(zoom_pan))
-      }
-
       // restrict drag_pan
       if (zoom_info[inst_td] + zoom_info[inst_dd] > 0){
         zoom_info[inst_dd] = 0;
@@ -144,36 +138,22 @@ module.exports = function(regl, zoom_restrict, viz_component){
       var zoom_drag = zoom_info[inst_dd];
 
       // restrict effective position of mouse
-      if (zoom_info[inst_axis+'0'] < viz_dim.mat['min_'+inst_axis]){
-        zoom_info[inst_axis+'0'] = viz_dim.mat['min_'+inst_axis];
-      } else if (zoom_info[inst_axis+'0'] > viz_dim.mat['max_'+inst_axis]){
-        zoom_info[inst_axis+'0'] = viz_dim.mat['max_'+inst_axis];
+      if (zoom_info['x0'] < viz_dim.mat['min_x']){
+        zoom_info['x0'] = viz_dim.mat['min_x'];
+      } else if (zoom_info['x0'] > viz_dim.mat['max_x']){
+        zoom_info['x0'] = viz_dim.mat['max_x'];
       }
 
       // save zdx and zdy values for zoom-panning values
-      zoom_info['zd' + inst_axis] = (1 - zoom_info[inst_ds]) * zoom_info[inst_axis+'0']
+      zoom_info['zdx'] = (1 - zoom_info[inst_ds]) * zoom_info['x0']
 
       // // sanitize zoom displacement
-      // if (zoom_info[inst_td] + zoom_info['zd' + inst_axis] >= 0){
+      // if (zoom_info[inst_td] + zoom_info['zdx'] >= 0){
 
-      //   // reporting values
-      //   if (inst_axis == 'x'){
-      //     console.log('\n\n\n')
-      //     console.log('before')
-      //     console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
-      //   }
-
-      //   // // set zdx equal to the negative value of the current tx so that they will cancel out
-      //   zoom_info['zd' + inst_axis] = -zoom_info[inst_td];
-      //   // set total displacement to zero
-      //   zoom_info[inst_td] = 0;
-
-      //   // reporting values
-      //   if (inst_axis == 'x'){
-      //     console.log('-----')
-      //     console.log('after')
-      //     console.log('x: ' + String(zoom_info[inst_td]) + '\n zdx: ' + String(zoom_info['zdx']))
-      //   }
+        // // // set zdx equal to the negative value of the current tx so that they will cancel out
+        // zoom_info['zdx'] = -zoom_info[inst_td];
+        // // set total displacement to zero
+        // zoom_info[inst_td] = 0;
 
       // } else {
 
@@ -182,11 +162,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
       // update inst_td
       zoom_info[inst_td] = zoom_info[inst_td] + (zoom_drag + zoom_pan) / zoom_info[inst_ts];
 
-      if (inst_axis == 'x'){
-        console.log('x: ' + String(zoom_info[inst_td]) )
-        console.log('zoom_pan: ' + String(zoom_pan))
-        console.log('zdx: ' + String(zoom_info['zd' + inst_axis]))
-      }
+
 
     });
 
