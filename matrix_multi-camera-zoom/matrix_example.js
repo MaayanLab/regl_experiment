@@ -64,8 +64,8 @@ function run_viz(regl, assets){
   var num_col = mat_data[0].length;
 
   zoom_restrict = {};
-  zoom_restrict.max_x = 10.0;
-  zoom_restrict.max_y = 10.0;
+  zoom_restrict.max_x = 20.0;
+  zoom_restrict.max_y = 20.0;
   zoom_restrict.min_x = 1.0;
   zoom_restrict.min_y = 1.0;
 
