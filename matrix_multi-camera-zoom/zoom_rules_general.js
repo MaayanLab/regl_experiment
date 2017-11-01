@@ -125,7 +125,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
     // restrict pan_by_drag
     if (zoom_info.tx + zoom_info.pan_by_drag >= 0){
-      zoom_info.pan_by_drag = -zoom_info.tx;
+      zoom_info.pan_by_drag = 0;
     }
 
     // restrict effective position of mouse
@@ -151,11 +151,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.tx = zoom_info.tx +
                    zoom_info.pan_by_drag / zoom_info.tsx  +
 
-                   // // pan and zoom work well when dividing by total zoom
-                   // zoom_info.pan_by_zoom / zoom_info.tsx ;
-
                    // pan and zoom work well when dividing by total zoom
-                   zoom_info.pan_by_zoom * zoom_info.dsx
+                   zoom_info.pan_by_zoom / zoom_info.tsx ;
+
+                   // // pan and zoom work well when dividing by total zoom
+                   // zoom_info.pan_by_zoom * zoom_info.dsx
 
                    // // zoom in and out works well with this
                    // zoom_info.pan_by_zoom ;
