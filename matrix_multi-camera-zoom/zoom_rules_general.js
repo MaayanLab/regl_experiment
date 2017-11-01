@@ -36,6 +36,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
   console.log('canvas height: ' + String(viz_dim.canvas.height))
 
   global_translate = 0
+  lock_left = false
 
   var zoom_info = {};
   zoom_info.tsx = 1;
@@ -44,6 +45,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
   zoom_info.y0 = 0;
   zoom_info.tx = 0;
   zoom_info.ty = 0;
+  zoom_info.zdx = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
@@ -136,23 +138,17 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
 
-    // sanitize zoom displacement
-    if (zoom_info.tx < 0){
-
-      // zoom from real cursor position
+    // zoom from real cursor position
+    if (zoom_info.tx + zoom_eff * zoom_info.x0 < 0){
+      console.log('not locked')
       zoom_info.zdx = zoom_eff * zoom_info.x0
-
     } else {
-
-      // zoom from cursor position on the left
-      zoom_info.zdx = zoom_eff * (viz_dim.mat.min_x)
+      console.log('Locked')
+      zoom_info.zdx = zoom_eff * viz_dim.mat.min_x
+      zoom_info.pan_by_zoom = 0
     }
 
-
-
-
-    // update tsx with pan_by_ values in original (unzoomed) dimensions
-
+    // track zoom displacement in original coordinate system
     zoom_info.tx = zoom_info.tx +
                    zoom_info.pan_by_drag / zoom_info.tsx  +
 
@@ -167,6 +163,43 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    // // zoom in and out works well with this
                    // zoom_info.pan_by_zoom ;
 
+
+    // // sanitize zoom displacement
+    // if (zoom_info.tx + zoom_info.zdx < 0){
+
+    // } else {
+
+    //   // console.log('before correction')
+    //   // debugger
+
+    //   // might use
+    //   //////////////////
+    //   // // zoom from cursor position on the left
+    //   // zoom_info.zdx = zoom_eff * (viz_dim.mat.min_x)
+    //   // // zoom_info.pan_by_zoom = 0
+    //   // // zoom_info.tx = 0
+
+    //   // // bump matrix to zero
+    //   // if (zoom_info.tx < 0){
+    //   //   zoom_info.zdx = - zoom_info.tx;
+    //   // } else {
+    //   //   zoom_info.zdx = 0;
+    //   // }
+
+    //   // zoom_info.zdx = 0;
+
+    //   // zoom_info.tx = 0
+    //   // zoom_info.pan_by_zoom = 0
+
+    //   // console.log('after correction')
+    //   // debugger
+
+    // }
+
+
+
+
+
     // console.log(zoom_info.dsx)
 
     global_translate = global_translate + zoom_info.pan_by_zoom / zoom_info.tsx;
@@ -177,7 +210,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // // console.log('zoom_eff: ' + String(zoom_eff))
     // console.log('pan_by_drag: ' + String(zoom_info.pan_by_drag))
     // console.log('pan_by_zoom: ' + String(zoom_info.pan_by_zoom))
-    // // console.log('global_translate: ' + String(global_translate))
+    console.log('GT: ' + String(global_translate))
     // console.log('zdx: ' + String(zoom_info.zdx))
     console.log('tx: ' + String(zoom_info.tx))
 

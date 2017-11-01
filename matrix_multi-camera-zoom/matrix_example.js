@@ -123,7 +123,7 @@ function run_viz(regl, assets){
   // );
 
   window.addEventListener('resize', camera['mat'].resize);
-  window.addEventListener('resize', camera['row-labels'].resize);
+  // window.addEventListener('resize', camera['row-labels'].resize);
 
   function draw_commands(){
 
