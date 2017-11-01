@@ -68,21 +68,16 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
     zoom_info.dsx = ev.dsx;
     zoom_info.dsy = ev.dsy;
-    zoom_info.dx = ev.dx;
+    zoom_info.pan_by_drag = ev.dx;
     zoom_info.dy = ev.dy;
     zoom_info.x0 = ev.x0;
     zoom_info.y0 = ev.y0;
 
-    // // restrict x zooming
+    // // two-stage zooming
     // ///////////////////////
     // if (zoom_info.tsy < zoom_restrict.ratio_y){
     //   zoom_info.dsx = 1;
     // }
-
-    // restrict x panning
-    if (zoom_info.tx > 0 && zoom_info.dx > 0){
-      zoom_info.dx = 0;
-    }
 
     // X Zooming Rules
     ///////////////////////////////////////////////////////////////////////////////////
@@ -124,12 +119,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
     var pan_by_zoom = zoom_eff * cursor_offset;
 
-    // restrict dx
-    if (zoom_info.tx + zoom_info.dx >= 0){
-      zoom_info.dx = -zoom_info.tx;
+    // restrict pan_by_drag
+    if (zoom_info.tx + zoom_info.pan_by_drag >= 0){
+      zoom_info.pan_by_drag = -zoom_info.tx;
     }
-
-    var pan_by_drag = zoom_info.dx;
 
     // restrict effective position of mouse
     if (zoom_info['x0'] < viz_dim.mat['min_x']){
@@ -152,7 +145,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // }
 
     // update tsx
-    zoom_info.tx = zoom_info.tx + (pan_by_drag + pan_by_zoom) / zoom_info.tsx;
+    zoom_info.tx = zoom_info.tx + (zoom_info.pan_by_drag + pan_by_zoom) / zoom_info.tsx;
 
     ///////////////////////////////////////////////////////////////////////////////////
 
