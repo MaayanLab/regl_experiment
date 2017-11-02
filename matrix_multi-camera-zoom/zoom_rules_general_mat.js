@@ -90,10 +90,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
     var min_zoom = zoom_restrict.min_x;
 
     // calc potential_tsx, this is unsanitized
-    /*
-      checking the potential_tsx prevents the real tsx from becoming out of
-      range
-    */
+    // checking the potential_tsx prevents the real tsx from becoming out of
+    // range
     potential_tsx = zoom_info.tsx * zoom_info.dsx;
 
     // zooming within allowed range
@@ -121,9 +119,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
         zoom_info.tsx = min_zoom;
       }
     }
-
-
-    // console.log(zoom_info.tsx)
 
     var zoom_eff = 1 - zoom_info.dsx;
 
@@ -154,10 +149,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    console.log('pot pan', potential_total_pan)
-
     if (potential_total_pan <= 0){
-      // console.log('good')
       zoom_info.zdx = zoom_eff * zoom_info.x0
 
       // track zoom displacement in original coordinate system
@@ -166,24 +158,12 @@ module.exports = function(regl, zoom_restrict, viz_component){
                      zoom_info.pan_by_zoom_x / zoom_info.tsx ;
     } else {
 
-      // console.log('************ bad')
-
-      // alternate corrected zdx's
-      ///////////////////////////////////
       /*
       keep matrix positined at the left, and bump it to the left
       */
       zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan
-
-      // console.log('zdx: ', zoom_info.zdx)
-
       zoom_info.total_pan = 0
     }
-
-
-
-    console.log('act pan', zoom_info.total_pan)
-
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
