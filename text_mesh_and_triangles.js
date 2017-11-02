@@ -15,17 +15,16 @@ text_mesh = vectorizeText('something!', {
   // triangles:true
 });
 
-var font_size = 20;
-
+var font_detail = 20;
 text_vect = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
-  size:font_size,
+  size:font_detail,
   font:'"Open Sans", verdana, arial, sans-serif'
 });
 
-const camera = require('./camera-2d')(regl, {
+camera = require('./camera-2d')(regl, {
   xrange: [-2, 2],
   yrange: [-2, 2]
 });

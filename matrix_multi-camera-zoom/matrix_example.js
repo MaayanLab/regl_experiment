@@ -4,6 +4,7 @@
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
+const vectorizeText = require('vectorize-text')
 var zoom_rules = {};
 zoom_rules['mat'] = require('./zoom_rules_general_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_general_mat');
@@ -16,9 +17,8 @@ _ = require('underscore')
 still_interacting = false;
 initialize_viz = true;
 
-
-var filename = 'data/mnist.json'
-// var filename = 'data/mult_view.json'
+// var filename = 'data/mnist.json'
+var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
@@ -31,6 +31,19 @@ require('resl')({
     run_viz(regl, assets);
   }
 })
+
+var font_detail = 20;
+text_vect = vectorizeText('something!', {
+  textAlign: 'center',
+  textBaseline: 'middle',
+  triangles:true,
+  size:font_detail,
+  font:'"Open Sans", verdana, arial, sans-serif'
+});
+
+
+
+
 
 function run_viz(regl, assets){
 
