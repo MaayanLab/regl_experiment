@@ -154,22 +154,36 @@ module.exports = function(regl, zoom_restrict, viz_component){
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    console.log(potential_total_pan)
+    console.log('pot pan', potential_total_pan)
 
     if (potential_total_pan <= 0){
-      console.log('good')
+      // console.log('good')
       zoom_info.zdx = zoom_eff * zoom_info.x0
+
+      // track zoom displacement in original coordinate system
+      zoom_info.total_pan = zoom_info.total_pan +
+                     zoom_info.pan_by_drag_x / zoom_info.tsx  +
+                     zoom_info.pan_by_zoom_x / zoom_info.tsx ;
     } else {
-      console.log('bad')
-      zoom_info.zdx = zoom_eff * viz_dim.mat.min_x
+
+      // console.log('************ bad')
+
+      // alternate corrected zdx's
+      ///////////////////////////////////
+      /*
+      keep matrix positined at the left, and bump it to the left
+      */
+      zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan
+
+      // console.log('zdx: ', zoom_info.zdx)
+
+      zoom_info.total_pan = 0
     }
 
-    // track zoom displacement in original coordinate system
-    zoom_info.total_pan = zoom_info.total_pan +
-                   zoom_info.pan_by_drag_x / zoom_info.tsx  +
-                   zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    console.log(zoom_info.total_pan)
+
+    console.log('act pan', zoom_info.total_pan)
+
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
