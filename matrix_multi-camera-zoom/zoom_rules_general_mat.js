@@ -78,23 +78,28 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_drag_y = ev.dy;
     zoom_info.y0 = ev.y0;
 
-    // // two-stage zooming
-    // ///////////////////////
-    // if (zoom_info.tsy < zoom_restrict.ratio_y){
-    //   zoom_info.dsx = 1;
-    // }
+    // two-stage zooming
+    ///////////////////////
+    if (zoom_info.tsy < zoom_restrict.ratio_y){
+      zoom_info.dsx = 1;
+    }
+
+    console.log( 'tsx',zoom_info.tsx)
+    console.log( 'tsy',zoom_info.tsy)
+
 
     ///////////////////////////////////////////////////////////////////////////
     // X Zooming Rules
     ///////////////////////////////////////////////////////////////////////////
 
-    var max_zoom = zoom_restrict.max_x;
+    var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
     var min_zoom = zoom_restrict.min_x;
 
     // calc potential_tsx, this is unsanitized
     // checking the potential_tsx prevents the real tsx from becoming out of
     // range
     potential_tsx = zoom_info.tsx * zoom_info.dsx;
+
 
     // zooming within allowed range
     if (potential_tsx < max_zoom && potential_tsx > min_zoom){
@@ -106,7 +111,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
       if (zoom_info.dsx < 1){
         zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
       } else {
-        // console.log('DEBUGGER'); debugger;
         // bump zoom up to max
         zoom_info.dsx = max_zoom/zoom_info.tsx;
         // set zoom to max
@@ -181,15 +185,10 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // checking the potential_tsy prevents the real tsy from becoming out of
     // range
     potential_tsy = zoom_info.tsy * zoom_info.dsy;
-    console.log(zoom_info.tsy)
-    console.log(zoom_info.dsy)
-
-    console.log('here', potential_tsy)
 
     // zooming within allowed range
     if (potential_tsy < max_zoom && potential_tsy > min_zoom){
       zoom_info.tsy = zoom_info.tsy * zoom_info.dsy;
-      console.log('here')
     }
 
     // zoom above allowed range
@@ -205,7 +204,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
       }
     }
     else if (potential_tsy <= min_zoom){
-      console.log('something')
       if (zoom_info.dsy > 1){
         zoom_info.tsy = zoom_info.tsy * zoom_info.dsy;
       } else {

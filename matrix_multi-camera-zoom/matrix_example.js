@@ -17,8 +17,8 @@ still_interacting = false;
 initialize_viz = true;
 
 
-// var filename = 'data/mnist.json'
-var filename = 'data/mult_view.json'
+var filename = 'data/mnist.json'
+// var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
