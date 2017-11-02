@@ -9,7 +9,7 @@ const lookAt = require('gl-mat4/lookAt')
 
 var num_instances = 3;
 
-textMesh = vectorizeText('something!', {
+text_mesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
   // triangles:true
@@ -116,14 +116,14 @@ const draw_text_mesh = regl({
   }`,
 
   attributes: {
-    position: textMesh.positions,
+    position: text_mesh.positions,
     offset: {
       buffer: regl.buffer(offset_array),
       divisor: 1
     }
   },
 
-  elements: textMesh.edges,
+  elements: text_mesh.edges,
 
   uniforms: {
     t: ({tick}) => 0.01 * tick,
@@ -153,7 +153,7 @@ const draw_text_mesh = regl({
 regl.frame(() => {
 
   camera.draw( () => {
-    // draw_text_triangles();
-    draw_text_mesh()
+    draw_text_triangles();
+    // draw_text_mesh()
   })
 })
