@@ -19,7 +19,8 @@ textMesh = vectorizeText('something!', {
 text_vect = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
-  triangles:true
+  triangles:true,
+  size:40
 });
 
 const camera = require('./camera-2d')(regl, {
@@ -62,6 +63,10 @@ const draw_text_triangles = regl({
     }`,
   attributes: {
     position: text_vect.positions,
+    offset: {
+      buffer: regl.buffer(offset_array),
+      divisor: 1
+    }
   },
   elements: text_vect.cells,
   uniforms: {
@@ -146,5 +151,6 @@ regl.frame(() => {
 
   camera.draw( () => {
     draw_text_triangles();
+    draw_text_mesh()
   })
 })
