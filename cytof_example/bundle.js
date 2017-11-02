@@ -559,7 +559,7 @@ initialize_viz = true;
 
 // var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
-var filename = 'cytof_10k.json'
+var filename = 'cytof_25k.json'
 // var filename = 'data/mult_view.json'
 
 require('resl')({
@@ -652,7 +652,7 @@ function run_viz(regl, assets){
 
 
   // setting zoom high for CyTOF example
-  max_zoom = 300;
+  max_zoom = 700;
   zoom_restrict.max_x = max_zoom;
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
@@ -689,7 +689,7 @@ function run_viz(regl, assets){
 
   var draw_cells = require('./draw_cells')(regl, network, mat_data);
 
-  var ini_scale = 1.0 ;
+  var ini_scale = 0.6;
 
   const camera = {}
   camera['mat'] = require('./camera_2d_general_mat')(regl,
