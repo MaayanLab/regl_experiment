@@ -48,9 +48,10 @@ const draw_text_triangles = regl({
     precision mediump float;
     uniform mat4 projection, view;
     attribute vec2 position;
+    uniform mat4 zoom;
 
     void main () {
-      gl_Position = vec4(position, 0.0, 1.0);
+      gl_Position = zoom * vec4(position, 0.0, 1.0);
     }`,
   frag: `
     precision mediump float;
@@ -60,7 +61,27 @@ const draw_text_triangles = regl({
   attributes: {
     position: text_vect.positions,
   },
-  elements: text_vect.cells
+  elements: text_vect.cells,
+  uniforms: {
+    t: ({tick}) => 0.01 * tick,
+
+    view: ({tick}) => {
+      const t = 0.01 * tick
+      return lookAt([],
+        [0 , 0, -5 ],
+        [0, 0, 0],
+        [0, -1, 0])
+    },
+
+    projection: ({viewportWidth, viewportHeight}) =>
+      perspective([],
+        Math.PI / 4,
+        viewportWidth / viewportHeight,
+        0.01,
+        1000),
+
+    zoom: zoom_function
+  },
 })
 
 const draw_text_mesh = regl({
