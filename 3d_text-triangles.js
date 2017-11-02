@@ -14,7 +14,7 @@ text_vect = vectorizeText('something!', {
 });
 
 const camera = require('./camera')(regl, {
-  center: [0, 0.2, 0]
+  center: [0, 0, 0]
 })
 
 const draw_text = regl({

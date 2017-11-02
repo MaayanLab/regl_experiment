@@ -8,7 +8,7 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-var num_instances = 20;
+var num_instances = 1;
 
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
@@ -39,25 +39,25 @@ offset_array = Array(num_instances)
 
 const drawText = regl({
   vert: `
-  attribute vec2 position;
-  uniform mat4 projection, view;
-  attribute float offset;
-  uniform mat4 zoom;
-  varying float text_color;
+    attribute vec2 position;
+    uniform mat4 projection, view;
+    attribute float offset;
+    uniform mat4 zoom;
+    varying float text_color;
 
-  void main () {
-    // gl_Position = projection * view * vec4(position, 0, 1);
-    gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
-    text_color = offset;
-  }`,
+    void main () {
+      // gl_Position = projection * view * vec4(position, 0, 1);
+      gl_Position = zoom * projection * view * vec4(position.x + offset - 0.5, position.y + offset - 1.0, 0, 1);
+      text_color = offset;
+    }`,
 
   frag: `
-  precision mediump float;
-  uniform float t;
-  varying float text_color;
-  void main () {
-    gl_FragColor = vec4(1, 0, text_color, 1);
-  }`,
+    precision mediump float;
+    uniform float t;
+    varying float text_color;
+    void main () {
+      gl_FragColor = vec4(1, 0, 1, 1);
+    }`,
 
   attributes: {
     position: textMesh.positions,
