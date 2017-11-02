@@ -1,6 +1,5 @@
 /*
   <p>This example shows how you can draw vectorized text in regl.</p>
-
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
@@ -8,12 +7,19 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-var num_instances = 1;
+var num_instances = 2;
 
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
   // triangles:true
+});
+
+
+text_vect = vectorizeText('something!', {
+  textAlign: 'center',
+  textBaseline: 'middle',
+  triangles:true
 });
 
 const camera = require('./camera-2d')(regl, {
@@ -37,27 +43,46 @@ offset_array = Array(num_instances)
           .map(offset_function);
 
 
-const drawText = regl({
+const draw_text_triangles = regl({
   vert: `
-    attribute vec2 position;
+    precision mediump float;
     uniform mat4 projection, view;
-    attribute float offset;
-    uniform mat4 zoom;
-    varying float text_color;
+    attribute vec2 position;
 
     void main () {
-      // gl_Position = projection * view * vec4(position, 0, 1);
-      gl_Position = zoom * projection * view * vec4(position.x + offset - 0.5, position.y + offset - 1.0, 0, 1);
-      text_color = offset;
+      gl_Position = vec4(position, 0.0, 1.0);
     }`,
-
   frag: `
     precision mediump float;
-    uniform float t;
-    varying float text_color;
     void main () {
-      gl_FragColor = vec4(1, 0, 1, 1);
+      gl_FragColor = vec4(1, 0, 0, 1.0);
     }`,
+  attributes: {
+    position: text_vect.positions,
+  },
+  elements: text_vect.cells
+})
+
+const draw_text_mesh = regl({
+  vert: `
+  attribute vec2 position;
+  uniform mat4 projection, view;
+  attribute float offset;
+  uniform mat4 zoom;
+  varying float text_color;
+
+  void main () {
+    gl_Position = zoom * projection * view * vec4(position.x + offset - 1.0, position.y + offset - 1.0, 0, 1);
+    text_color = offset;
+  }`,
+
+  frag: `
+  precision mediump float;
+  uniform float t;
+  varying float text_color;
+  void main () {
+    gl_FragColor = vec4(1, 0, text_color, 1);
+  }`,
 
   attributes: {
     position: textMesh.positions,
@@ -97,6 +122,7 @@ const drawText = regl({
 regl.frame(() => {
 
   camera.draw( () => {
-    drawText();
+    draw_text_mesh();
+    draw_text_triangles();
   })
 })
