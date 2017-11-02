@@ -18,7 +18,9 @@ still_interacting = false;
 initialize_viz = true;
 
 // var filename = 'data/mnist.json'
-var filename = 'data/mult_view.json'
+// var filename = 'data/mnist_thin.json'
+var filename = 'data/cytof.json'
+// var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
@@ -34,7 +36,7 @@ require('resl')({
 
 // max ~200 min ~20
 var font_detail = 200;
-text_vect = vectorizeText('something!', {
+text_vect = vectorizeText('Title', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
@@ -56,7 +58,7 @@ const draw_text_triangles = regl({
 
     void main () {
       // reverse y position to get words to be upright
-      gl_Position = zoom * vec4( 0.5*position.x, -0.5 * position.y + 1.5, 0.0, 2.0);
+      gl_Position = zoom * vec4( 0.25*position.x, -0.25 * position.y + 1.5, 0.0, 2.0);
     }`,
   frag: `
     precision mediump float;
@@ -107,8 +109,12 @@ function run_viz(regl, assets){
   var num_col = mat_data[0].length;
 
   zoom_restrict = {};
-  zoom_restrict.max_x = 20.0;
-  zoom_restrict.max_y = 20.0;
+
+
+  // setting zoom high for CyTOF example
+  max_zoom = 100;
+  zoom_restrict.max_x = max_zoom;
+  zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
   zoom_restrict.min_y = 1.0;
 
@@ -183,7 +189,6 @@ function run_viz(regl, assets){
       draw_cells.top();
       draw_cells.bot();
 
-      draw_text_triangles();
 
     });
 
@@ -192,6 +197,7 @@ function run_viz(regl, assets){
     });
 
     camera['col-labels'].draw(() => {
+      draw_text_triangles();
       draw_labels['col']();
     });
 

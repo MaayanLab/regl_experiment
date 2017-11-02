@@ -30,10 +30,9 @@ module.exports = function(regl, zoom_restrict, viz_component){
   viz_dim.mat.min_y = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
   viz_dim.mat.max_y = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
-  console.log(viz_dim.mat.left_x)
-
-  console.log('canvas width: ' + String(viz_dim.canvas.width))
-  console.log('canvas height: ' + String(viz_dim.canvas.height))
+  // console.log(viz_dim.mat.left_x)
+  // console.log('canvas width: ' + String(viz_dim.canvas.width))
+  // console.log('canvas height: ' + String(viz_dim.canvas.height))
 
   global_translate = 0
   lock_left = false
@@ -84,8 +83,8 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.dsx = 1;
     }
 
-    console.log( 'tsx',zoom_info.tsx)
-    console.log( 'tsy',zoom_info.tsy)
+    // console.log( 'tsx',zoom_info.tsx)
+    // console.log( 'tsy',zoom_info.tsy)
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -106,25 +105,28 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     }
 
-    // zoom above allowed range
-    else if (potential_tsx >= max_zoom) {
-      if (zoom_info.dsx < 1){
-        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
-      } else {
-        // bump zoom up to max
-        zoom_info.dsx = max_zoom/zoom_info.tsx;
-        // set zoom to max
-        zoom_info.tsx = max_zoom;
-      }
-    }
-    else if (potential_tsx <= min_zoom){
-      if (zoom_info.dsx > 1){
-        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
-      } else {
-        zoom_info.dsx =  min_zoom/zoom_info.tsx;
-        zoom_info.tsx = min_zoom;
-      }
-    }
+    // causing problems with example cytof data
+    ////////////////////////////////////////////
+
+    // // zoom above allowed range
+    // else if (potential_tsx >= max_zoom) {
+    //   if (zoom_info.dsx < 1){
+    //     zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    //   } else {
+    //     // bump zoom up to max
+    //     zoom_info.dsx = max_zoom/zoom_info.tsx;
+    //     // set zoom to max
+    //     zoom_info.tsx = max_zoom;
+    //   }
+    // }
+    // else if (potential_tsx <= min_zoom){
+    //   if (zoom_info.dsx > 1){
+    //     zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    //   } else {
+    //     zoom_info.dsx =  min_zoom/zoom_info.tsx;
+    //     zoom_info.tsx = min_zoom;
+    //   }
+    // }
 
     var zoom_eff = 1 - zoom_info.dsx;
 
