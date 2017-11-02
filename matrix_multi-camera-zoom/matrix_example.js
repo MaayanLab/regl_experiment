@@ -32,7 +32,8 @@ require('resl')({
   }
 })
 
-var font_detail = 20;
+// max ~200 min ~20
+var font_detail = 200;
 text_vect = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
@@ -41,6 +42,35 @@ text_vect = vectorizeText('something!', {
   font:'"Open Sans", verdana, arial, sans-serif'
 });
 
+var zoom_function = function(context){
+  return context.view;
+}
+
+// draw command
+///////////////////
+const draw_text_triangles = regl({
+  vert: `
+    precision mediump float;
+    attribute vec2 position;
+    uniform mat4 zoom;
+
+    void main () {
+      // reverse y position to get words to be upright
+      gl_Position = zoom * vec4( 0.5*position.x, -0.5 * position.y + 1.5, 0.0, 2.0);
+    }`,
+  frag: `
+    precision mediump float;
+    void main () {
+      gl_FragColor = vec4(1, 0, 0, 1.0);
+    }`,
+  attributes: {
+    position: text_vect.positions
+  },
+  elements: text_vect.cells,
+  uniforms: {
+    zoom: zoom_function
+  }
+})
 
 
 
@@ -152,6 +182,9 @@ function run_viz(regl, assets){
       regl.clear({ color: [0, 0, 0, 0] });
       draw_cells.top();
       draw_cells.bot();
+
+      draw_text_triangles();
+
     });
 
     camera['row-labels'].draw(() => {

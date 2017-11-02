@@ -17,6 +17,8 @@ text_vect = vectorizeText('something!', {
   font:'"Open Sans", verdana, arial, sans-serif'
 });
 
+// camera stuff
+////////////////////////
 camera = require('./camera-2d')(regl, {
   xrange: [-2, 2],
   yrange: [-2, 2]
@@ -26,6 +28,9 @@ var zoom_function = function(context){
   return context.view;
 }
 
+
+// draw command
+///////////////////
 const draw_text_triangles = regl({
   vert: `
     precision mediump float;
