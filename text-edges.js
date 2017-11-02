@@ -30,6 +30,8 @@ const camera = require('./camera-2d')(regl, {
 window.addEventListener('resize', camera.resize);
 
 var zoom_function = function(context){
+  // context.view[5] = - context.view[5]
+  console.log(context.view[5])
   return context.view;
 }
 
@@ -51,7 +53,7 @@ const draw_text_triangles = regl({
     uniform mat4 zoom;
 
     void main () {
-      gl_Position = zoom * vec4(position, 0.0, 1.0);
+      gl_Position = zoom * vec4(position[0], -position[1], 0.0, 2.0);
     }`,
   frag: `
     precision mediump float;
@@ -143,7 +145,6 @@ const draw_text_mesh = regl({
 regl.frame(() => {
 
   camera.draw( () => {
-    draw_text_mesh();
     draw_text_triangles();
   })
 })
