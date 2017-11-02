@@ -43,7 +43,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
   // zoom_info.tsy = 1;
   zoom_info.x0 = 0;
   zoom_info.y0 = 0;
-  zoom_info.tx = 0;
+  zoom_info.total_pan = 0;
   zoom_info.ty = 0;
   zoom_info.zdx = 0;
 
@@ -89,7 +89,11 @@ module.exports = function(regl, zoom_restrict, viz_component){
     var max_zoom = zoom_restrict.max_x;
     var min_zoom = zoom_restrict.min_x;
 
-    // calc potential zoom, this is unsanitized
+    // calc potential_tsx, this is unsanitized
+    /*
+      checking the potential_tsx prevents the real tsx from becoming out of
+      range
+    */
     potential_tsx = zoom_info.tsx * zoom_info.dsx;
 
     // zooming within allowed range
@@ -119,7 +123,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
     }
 
 
-    console.log(zoom_info.tsx)
+    // console.log(zoom_info.tsx)
 
     var zoom_eff = 1 - zoom_info.dsx;
 
@@ -135,7 +139,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
     // restrict pan_by_drag
-    if (zoom_info.tx + zoom_info.pan_by_drag_x >= 0){
+    if (zoom_info.total_pan + zoom_info.pan_by_drag_x >= 0){
       zoom_info.pan_by_drag_x = 0;
     }
 
@@ -146,14 +150,26 @@ module.exports = function(regl, zoom_restrict, viz_component){
       zoom_info.x0 = viz_dim.mat.max_x;
     }
 
-    zoom_info.zdx = zoom_eff * zoom_info.x0
-
-    // track zoom displacement in original coordinate system
-    zoom_info.tx = zoom_info.tx +
+    potential_total_pan = zoom_info.total_pan +
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-    // console.log(zoom_info.tx)
+    console.log(potential_total_pan)
+
+    if (potential_total_pan <= 0){
+      console.log('good')
+      zoom_info.zdx = zoom_eff * zoom_info.x0
+    } else {
+      console.log('bad')
+      zoom_info.zdx = zoom_eff * viz_dim.mat.min_x
+    }
+
+    // track zoom displacement in original coordinate system
+    zoom_info.total_pan = zoom_info.total_pan +
+                   zoom_info.pan_by_drag_x / zoom_info.tsx  +
+                   zoom_info.pan_by_zoom_x / zoom_info.tsx ;
+
+    console.log(zoom_info.total_pan)
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////

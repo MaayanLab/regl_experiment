@@ -7,7 +7,7 @@ var extend = require('xtend/mutable');
 var zoom_rules = {};
 zoom_rules['mat'] = require('./zoom_rules_general_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_general');
-zoom_rules['col-labels'] = require('./zoom_rules_general');
+// zoom_rules['col-labels'] = require('./zoom_rules_general');
 
 d3 = require('d3');
 _ = require('underscore')
@@ -90,7 +90,7 @@ function run_viz(regl, assets){
   zoom_info = {}
   zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
   zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
-  zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
+  // zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {}
   draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
@@ -120,13 +120,13 @@ function run_viz(regl, assets){
     zoom_info['row-labels']
   );
 
-  camera['col-labels'] = require('./camera_2d_general')(regl,
-    {
-      xrange: [-ini_scale, ini_scale],
-      yrange: [-ini_scale, ini_scale]
-    },
-    zoom_info['col-labels']
-  );
+  // camera['col-labels'] = require('./camera_2d_general')(regl,
+  //   {
+  //     xrange: [-ini_scale, ini_scale],
+  //     yrange: [-ini_scale, ini_scale]
+  //   },
+  //   zoom_info['col-labels']
+  // );
 
   window.addEventListener('resize', camera['mat'].resize);
   // window.addEventListener('resize', camera['row-labels'].resize);
@@ -144,9 +144,9 @@ function run_viz(regl, assets){
       draw_labels['row']();
     });
 
-    camera['col-labels'].draw(() => {
-      draw_labels['col']();
-    });
+    // camera['col-labels'].draw(() => {
+    //   draw_labels['col']();
+    // });
 
   }
 
