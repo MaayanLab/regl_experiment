@@ -108,25 +108,25 @@ module.exports = function(regl, zoom_restrict, viz_component){
     // causing problems with example cytof data
     ////////////////////////////////////////////
 
-    // // zoom above allowed range
-    // else if (potential_tsx >= max_zoom) {
-    //   if (zoom_info.dsx < 1){
-    //     zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
-    //   } else {
-    //     // bump zoom up to max
-    //     zoom_info.dsx = max_zoom/zoom_info.tsx;
-    //     // set zoom to max
-    //     zoom_info.tsx = max_zoom;
-    //   }
-    // }
-    // else if (potential_tsx <= min_zoom){
-    //   if (zoom_info.dsx > 1){
-    //     zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
-    //   } else {
-    //     zoom_info.dsx =  min_zoom/zoom_info.tsx;
-    //     zoom_info.tsx = min_zoom;
-    //   }
-    // }
+    // zoom above allowed range
+    else if (potential_tsx >= max_zoom) {
+      if (zoom_info.dsx < 1){
+        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+      } else {
+        // bump zoom up to max
+        zoom_info.dsx = max_zoom/zoom_info.tsx;
+        // set zoom to max
+        zoom_info.tsx = max_zoom;
+      }
+    }
+    else if (potential_tsx <= min_zoom){
+      if (zoom_info.dsx > 1){
+        zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+      } else {
+        zoom_info.dsx =  min_zoom/zoom_info.tsx;
+        zoom_info.tsx = min_zoom;
+      }
+    }
 
     var zoom_eff = 1 - zoom_info.dsx;
 
