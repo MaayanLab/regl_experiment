@@ -7,7 +7,7 @@ const vectorizeText = require('vectorize-text')
 const perspective = require('gl-mat4/perspective')
 const lookAt = require('gl-mat4/lookAt')
 
-var num_instances = 2;
+var num_instances = 3;
 
 textMesh = vectorizeText('something!', {
   textAlign: 'center',
@@ -15,12 +15,13 @@ textMesh = vectorizeText('something!', {
   // triangles:true
 });
 
+var font_size = 20;
 
 text_vect = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
-  size:30,
+  size:font_size,
   font:'"Open Sans", verdana, arial, sans-serif'
 });
 
@@ -33,7 +34,6 @@ window.addEventListener('resize', camera.resize);
 
 var zoom_function = function(context){
   // context.view[5] = - context.view[5]
-  console.log(context.view[5])
   return context.view;
 }
 
@@ -51,11 +51,12 @@ const draw_text_triangles = regl({
   vert: `
     precision mediump float;
     uniform mat4 projection, view;
+    attribute float offset;
     attribute vec2 position;
     uniform mat4 zoom;
 
     void main () {
-      gl_Position = zoom * vec4(position[0], -position[1], 0.0, 2.0);
+      gl_Position = zoom * vec4(position.x + offset, -position.y - offset, 0.0, 2.0);
     }`,
   frag: `
     precision mediump float;
@@ -90,6 +91,7 @@ const draw_text_triangles = regl({
 
     zoom: zoom_function
   },
+  instances: num_instances,
 })
 
 const draw_text_mesh = regl({
@@ -151,7 +153,7 @@ const draw_text_mesh = regl({
 regl.frame(() => {
 
   camera.draw( () => {
-    draw_text_triangles();
+    // draw_text_triangles();
     draw_text_mesh()
   })
 })
