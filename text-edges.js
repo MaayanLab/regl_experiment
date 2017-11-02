@@ -20,7 +20,8 @@ text_vect = vectorizeText('something!', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
-  size:40
+  size:30,
+  font:'"Open Sans", verdana, arial, sans-serif'
 });
 
 const camera = require('./camera-2d')(regl, {
