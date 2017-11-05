@@ -6,7 +6,7 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 const vectorizeText = require('vectorize-text')
 var zoom_rules = {};
-zoom_rules['mat'] = require('./zoom_rules_mat');
+zoom_rules['mat'] = require('./zoom_rules_high_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_general');
 zoom_rules['col-labels'] = require('./zoom_rules_general');
 
