@@ -6,9 +6,9 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 const vectorizeText = require('vectorize-text')
 var zoom_rules = {};
-zoom_rules['mat'] = require('./zoom_rules_general_mat');
-zoom_rules['row-labels'] = require('./zoom_rules_general_mat');
-zoom_rules['col-labels'] = require('./zoom_rules_general_mat');
+zoom_rules['mat'] = require('./zoom_rules_mat');
+zoom_rules['row-labels'] = require('./zoom_rules_general');
+zoom_rules['col-labels'] = require('./zoom_rules_general');
 
 d3 = require('d3');
 _ = require('underscore')
@@ -152,7 +152,7 @@ function run_viz(regl, assets){
   var ini_scale = 1.0 ;
 
   const camera = {}
-  camera['mat'] = require('./camera_2d_general_mat')(regl,
+  camera['mat'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
@@ -161,7 +161,7 @@ function run_viz(regl, assets){
     'verbose'
   );
 
-  camera['row-labels'] = require('./camera_2d_general_mat')(regl,
+  camera['row-labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
@@ -169,7 +169,7 @@ function run_viz(regl, assets){
     zoom_info['row-labels']
   );
 
-  camera['col-labels'] = require('./camera_2d_general_mat')(regl,
+  camera['col-labels'] = require('./camera_2d_general')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
@@ -196,10 +196,10 @@ function run_viz(regl, assets){
       draw_labels['row']();
     });
 
-    camera['col-labels'].draw(() => {
-      draw_text_triangles();
-      draw_labels['col']();
-    });
+    // camera['col-labels'].draw(() => {
+    //   draw_text_triangles();
+    //   draw_labels['col']();
+    // });
 
   }
 
