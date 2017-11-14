@@ -51,8 +51,15 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
   // restrict pan_by_drag
-  if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
-    zoom_info.pan_by_drag_x = 0;
+
+  console.log('pan_by_drag', zoom_info.pan_by_drag_x)
+
+  // restrict positive pan_by_drag if necessary
+  if (zoom_info.pan_by_drag_x > 0){
+    if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
+      // push to edge
+      zoom_info.pan_by_drag_x = - zoom_info.total_pan_x;
+    }
   }
 
   // restrict effective position of mouse
@@ -78,7 +85,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     /*
     keep matrix positined at the left, and bump it to the left
     */
-    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x
+    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x;
     zoom_info.total_pan_x = 0
   }
 
