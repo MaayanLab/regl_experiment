@@ -1,11 +1,6 @@
 module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
-  console.log('zoom_rules_low_mat')
-
-  ///////////////////////////////////////////////////////////////////////////
   // X Zooming Rules
-  ///////////////////////////////////////////////////////////////////////////
-
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
   var min_zoom = zoom_restrict.min_x;
 
@@ -13,7 +8,6 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // checking the potential_tsx prevents the real tsx from becoming out of
   // range
   potential_tsx = zoom_info.tsx * zoom_info.dsx;
-
 
   // zooming within allowed range
   if (potential_tsx < max_zoom && potential_tsx > min_zoom){
@@ -87,9 +81,6 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x
     zoom_info.total_pan_x = 0
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////
 
   return zoom_info;
 
