@@ -93,11 +93,14 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     //////////////////////////////////////
     // pan-by-zoom restriction seems to be
     // working when zooming out with mouse
-    // on matrix
+    // on matrix, not working when mouse is to the right of matrix
     // (zoom in, pan right, zoom out)
     //////////////////////////////////////
 
     // pan-by-zoom, and add back in total panning necesary to get to zero scaled by total zooming
+    ////////////////////////////////////
+    // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
+    ////////////////////////////////////
     zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x*zoom_info.tsx;
     // zoom_info.zdx = zoom_info.total_pan_x;
     zoom_info.total_pan_x = 0
