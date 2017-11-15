@@ -52,8 +52,6 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   // restrict pan_by_drag
 
-  console.log('pan_by_drag', zoom_info.pan_by_drag_x)
-
   // restrict positive pan_by_drag if necessary
   if (zoom_info.pan_by_drag_x > 0){
     if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
@@ -73,21 +71,42 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
                  zoom_info.pan_by_drag_x / zoom_info.tsx  +
                  zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
-  if (potential_total_pan_x <= 0){
-    zoom_info.zdx = zoom_eff * zoom_info.x0
 
+  if (potential_total_pan_x <= 0.0001){
+
+    zoom_info.zdx = zoom_eff * zoom_info.x0
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
+
   } else {
 
     /*
     keep matrix positined at the left, and bump it to the left
     */
-    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x;
+
+    console.log('total_pan_x', zoom_info.total_pan_x)
+
+    // zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x;
+
+    //////////////////////////////////////
+    // pan-by-zoom restriction seems to be
+    // working when zooming out with mouse
+    // on matrix
+    // (zoom in, pan right, zoom out)
+    //////////////////////////////////////
+
+    // pan-by-zoom, and add back in total panning necesary to get to zero scaled by total zooming
+    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x*zoom_info.tsx;
+    // zoom_info.zdx = zoom_info.total_pan_x;
     zoom_info.total_pan_x = 0
+
+    console.log('restrict')
+
   }
+
+  // console.log(zoom_info.total_pan_x)
 
   return zoom_info;
 
