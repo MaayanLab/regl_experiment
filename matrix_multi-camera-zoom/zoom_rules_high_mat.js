@@ -38,7 +38,22 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
   global_translate = 0
   lock_left = false
 
+  // organize zoom rules into x and y components
   var zoom_info = {};
+  _.each(['x', 'y'], function(inst_dim){
+    info = {};
+    // total zooming
+    info.ts = 1;
+    // position of cursor
+    info.pos = 0;
+    // total panning
+    info.total_pan = 0;
+    // zd (zoom pan?)
+    info.zd = 0;
+    // add to zoom_info;
+    zoom_info[inst_dim] = info;
+  })
+
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;
   zoom_info.x0 = 0;
@@ -54,13 +69,13 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
   interactionEvents({
     element: element,
   })
-  .on('interaction', function(ev, zoom_info){
+  .on('interaction', function(ev){
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
-      restrict_zooming(ev);
+      restrict_zooming(ev, zoom_info);
     }
   });
 
-  function restrict_zooming(ev) {
+  function restrict_zooming(ev, zoom_info) {
 
     switch (ev.type) {
       case 'wheel':
@@ -74,6 +89,12 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_drag_x = ev.dx;
     zoom_info.x0 = ev.x0;
 
+
+    // transfer ev data to zoom_info
+    zoom_info.x.ds = ev.dsx;
+    zoom_info.x.pan_by_drag = ev.dx;
+    zoom_info.x.pos = ev.x0;
+
     zoom_info.dsy = ev.dsy;
     zoom_info.pan_by_drag_y = ev.dy;
     zoom_info.y0 = ev.y0;
@@ -84,14 +105,8 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     //   zoom_info.dsx = 1;
     // }
 
-    // console.log( 'tsx',zoom_info.tsx)
-    // console.log( 'tsy',zoom_info.tsy)
-
     // moved low level rules into zoom_rules_low
     zoom_info = zoom_rules_low_mat(zoom_info, zoom_restrict);
-
-
-
 
     if (still_interacting == false){
       still_interacting = true;
