@@ -1,4 +1,6 @@
-module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
+module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restrict){
+
+  console.log(zoom_info.dsx, zoom_info2.ds)
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
@@ -7,11 +9,11 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // calc potential_tsx, this is unsanitized
   // checking the potential_tsx prevents the real tsx from becoming out of
   // range
-  potential_tsx = zoom_info.tsx * zoom_info.dsx;
+  potential_tsx = zoom_info.tsx * zoom_info2.ds;
 
   // zooming within allowed range
   if (potential_tsx < max_zoom && potential_tsx > min_zoom){
-    zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
   }
 
   // causing problems with example cytof data
@@ -105,6 +107,10 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   // console.log(zoom_info.total_pan_x)
 
-  return zoom_info;
+  var all_info = {};
+  all_info.zoom_info = zoom_info;
+  all_info.zoom_info2 = zoom_info2;
+
+  return all_info;
 
 };

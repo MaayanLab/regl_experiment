@@ -100,6 +100,11 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_drag_y = ev.dy;
     zoom_info.y0 = ev.y0;
 
+    // transfer to zoom_info
+    zoom_info2.x.ds = ev.dsx;
+    zoom_info2.x.pan_by_drag = ev.dx;
+    zoom_info2.x.pos = ev.x0;
+
     // // two-stage zooming
     // ///////////////////////
     // if (zoom_info.tsy < zoom_restrict.ratio_y){
@@ -107,7 +112,10 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     // }
 
     // moved low level rules into zoom_rules_low
-    zoom_info = zoom_rules_low_mat(zoom_info, zoom_restrict);
+    all_info = zoom_rules_low_mat(zoom_info, zoom_info2.x, zoom_restrict);
+
+    zoom_info = all_info.zoom_info;
+    zoom_info2.x = all_info.zoom_info2;
 
     if (still_interacting == false){
       still_interacting = true;
@@ -136,8 +144,6 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_drag_y = 0;
     zoom_info.dsy = 1.0;
     zoom_info.zdy = 0;
-
-
 
   }
 
