@@ -89,12 +89,6 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     zoom_info.pan_by_drag_x = ev.dx;
     zoom_info.x0 = ev.x0;
 
-
-    // transfer ev data to zoom_info
-    zoom_info.x.ds = ev.dsx;
-    zoom_info.x.pan_by_drag = ev.dx;
-    zoom_info.x.pos = ev.x0;
-
     zoom_info.dsy = ev.dsy;
     zoom_info.pan_by_drag_y = ev.dy;
     zoom_info.y0 = ev.y0;
