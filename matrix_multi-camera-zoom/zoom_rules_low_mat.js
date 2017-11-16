@@ -1,6 +1,6 @@
 module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restrict){
 
-  console.log(zoom_info.tsx, zoom_info2.ts)
+  console.log(zoom_info.dsx, zoom_info2.ds)
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
@@ -21,18 +21,18 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
 
   // zoom above allowed range
   else if (potential_total_zoom >= max_zoom) {
-    if (zoom_info.dsx < 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    if (zoom_info2.ds < 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
     } else {
       // bump zoom up to max
-      zoom_info.dsx = max_zoom/zoom_info.tsx;
+      zoom_info2.ds = max_zoom/zoom_info.tsx;
       // set zoom to max
       zoom_info.tsx = max_zoom;
     }
   }
   else if (potential_total_zoom <= min_zoom){
-    if (zoom_info.dsx > 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    if (zoom_info2.ds > 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
     } else {
       zoom_info.dsx =  min_zoom/zoom_info.tsx;
       zoom_info.tsx = min_zoom;
