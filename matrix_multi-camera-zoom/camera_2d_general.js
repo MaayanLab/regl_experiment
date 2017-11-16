@@ -178,6 +178,8 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
     resize: function () {
       computeViewport();
 
+      console.log('resizing')
+
       // Reapply the aspect ratio:
       mView[5] = mView[0] * aspectRatio * width / height
       dirty = true;
