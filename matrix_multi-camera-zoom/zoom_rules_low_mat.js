@@ -1,18 +1,18 @@
 module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restrict){
 
-  console.log(zoom_info.dsx, zoom_info2.ds)
+  console.log(zoom_info.tsx, zoom_info2.ts)
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
   var min_zoom = zoom_restrict.min_x;
 
-  // calc potential_tsx, this is unsanitized
-  // checking the potential_tsx prevents the real tsx from becoming out of
+  // calc potential_total_zoom, this is unsanitized
+  // checking the potential_total_zoom prevents the real tsx from becoming out of
   // range
-  potential_tsx = zoom_info.tsx * zoom_info2.ds;
+  potential_total_zoom = zoom_info.tsx * zoom_info2.ds;
 
   // zooming within allowed range
-  if (potential_tsx < max_zoom && potential_tsx > min_zoom){
+  if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
     zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
   }
 
@@ -20,7 +20,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
   ////////////////////////////////////////////
 
   // zoom above allowed range
-  else if (potential_tsx >= max_zoom) {
+  else if (potential_total_zoom >= max_zoom) {
     if (zoom_info.dsx < 1){
       zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     } else {
@@ -30,7 +30,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
       zoom_info.tsx = max_zoom;
     }
   }
-  else if (potential_tsx <= min_zoom){
+  else if (potential_total_zoom <= min_zoom){
     if (zoom_info.dsx > 1){
       zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     } else {
@@ -43,9 +43,9 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
 
   // restrict positive pan_by_drag if necessary
   if (zoom_info.pan_by_drag_x > 0){
-    if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
+    if (zoom_info2.total_pan + zoom_info.pan_by_drag_x >= 0){
       // push to edge
-      zoom_info.pan_by_drag_x = - zoom_info.total_pan_x;
+      zoom_info.pan_by_drag_x = - zoom_info2.total_pan;
     }
   }
 
@@ -69,7 +69,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
 
   zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
-  potential_total_pan_x = zoom_info.total_pan_x +
+  potential_total_pan_x = zoom_info2.total_pan +
                  zoom_info.pan_by_drag_x / zoom_info.tsx  +
                  zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
@@ -79,7 +79,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
     zoom_info.zdx = zoom_eff * zoom_info.x0
 
     // track zoom displacement in original coordinate system
-    zoom_info.total_pan_x = zoom_info.total_pan_x +
+    zoom_info2.total_pan = zoom_info2.total_pan +
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
@@ -100,12 +100,10 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
     ////////////////////////////////////
     // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
     ////////////////////////////////////
-    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.tsx;
-    zoom_info.total_pan_x = 0
+    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info2.total_pan * zoom_info.tsx;
+    zoom_info2.total_pan = 0
 
   }
-
-  // console.log(zoom_info.total_pan_x)
 
   var all_info = {};
   all_info.zoom_info = zoom_info;
