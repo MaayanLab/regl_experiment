@@ -39,21 +39,28 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
   lock_left = false
 
   // organize zoom rules into x and y components
-  var zoom_info = {};
+  var zoom_info2 = {};
   _.each(['x', 'y'], function(inst_dim){
+
     info = {};
+
     // total zooming
     info.ts = 1;
+
     // position of cursor
     info.pos = 0;
+
     // total panning
     info.total_pan = 0;
+
     // zd (zoom pan?)
     info.zd = 0;
+
     // add to zoom_info;
-    zoom_info[inst_dim] = info;
+    zoom_info2[inst_dim] = info;
   })
 
+  var zoom_info = {}
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;
   zoom_info.x0 = 0;
