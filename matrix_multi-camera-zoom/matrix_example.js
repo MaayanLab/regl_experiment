@@ -129,16 +129,16 @@ function run_viz(regl, assets){
     zoom_restrict.ratio_x = num_col/num_row;
   }
 
-  var zoom_info = {}
-  zoom_info.tsx = 1;
-  zoom_info.x0 = 0;
-  zoom_info.total_pan_x = 0;
-  zoom_info.zdx = 0;
+  // var zoom_info = {}
+  // zoom_info.tsx = 1;
+  // zoom_info.x0 = 0;
+  // zoom_info.total_pan_x = 0;
+  // zoom_info.zdx = 0;
 
-  zoom_info.tsy = 1;
-  zoom_info.y0 = 0;
-  zoom_info.total_pan_y = 0;
-  zoom_info.zdy = 0;
+  // zoom_info.tsy = 1;
+  // zoom_info.y0 = 0;
+  // zoom_info.total_pan_y = 0;
+  // zoom_info.zdy = 0;
 
   // organize zoom rules into x and y components
   var zoom_data = {};
@@ -156,10 +156,10 @@ function run_viz(regl, assets){
     zoom_data[inst_dim] = info;
   });
 
+  zoom_rules_high_mat(regl, zoom_restrict, zoom_data, 'mat');
+
 
   var zoom_infos = {}
-
-  zoom_rules_high_mat(regl, zoom_restrict, 'mat', zoom_info, zoom_data);
   zoom_infos['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
   zoom_infos['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
@@ -179,7 +179,7 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info,
+    zoom_data.x,
     'verbose'
   );
 

@@ -1,6 +1,6 @@
 var zoom_rules_low_mat = require('./zoom_rules_low_mat');
 
-module.exports = function restrict_zoom_on_interaction(ev, zoom_info, zoom_data, viz_component){
+module.exports = function restrict_zoom_on_interaction(ev, zoom_info, viz_component){
 
   console.log('restricting on interaction')
 
@@ -20,23 +20,8 @@ module.exports = function restrict_zoom_on_interaction(ev, zoom_info, zoom_data,
   zoom_info.pan_by_drag_y = ev.dy;
   zoom_info.y0 = ev.y0;
 
-  // transfer to zoom_info
-  zoom_data.x.dsx = ev.dsx;
-  zoom_data.x.pan_by_drag_x = ev.dx;
-  zoom_data.x.x0 = ev.x0;
-
-  // // two-stage zooming
-  // ///////////////////////
-  // if (zoom_info.tsy < zoom_restrict.ratio_y){
-  //   zoom_info.dsx = 1;
-  // }
-
-  // // use zoom_data
-  // zoom_data.x = zoom_rules_low_mat(zoom_data.x, zoom_restrict);
-
   // moved low level rules into zoom_rules_low
   zoom_info = zoom_rules_low_mat(zoom_info, zoom_restrict);
-
 
   if (still_interacting == false){
     still_interacting = true;
