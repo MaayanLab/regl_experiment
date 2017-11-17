@@ -2,18 +2,9 @@ var interactionEvents = require('interaction-events');
 var extend = require('xtend/mutable');
 var restrict_zoom_on_interaction = require('./restrict_zoom_on_interaction');
 
-module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
+module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component, zoom_info, zoom_data){
 
-  var zoom_info = {}
-  zoom_info.tsx = 1;
-  zoom_info.x0 = 0;
-  zoom_info.total_pan_x = 0;
-  zoom_info.zdx = 0;
 
-  zoom_info.tsy = 1;
-  zoom_info.y0 = 0;
-  zoom_info.total_pan_y = 0;
-  zoom_info.zdy = 0;
 
   var opts = opts || {};
   var options = extend({
@@ -49,22 +40,6 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
   global_translate = 0
   lock_left = false
 
-  // organize zoom rules into x and y components
-  var zoom_data = {};
-  _.each(['x', 'y'], function(inst_dim){
-    info = {};
-    // total zooming
-    info.tsx = 1;
-    // position of cursor
-    info.x0 = 0;
-    // total panning
-    info.total_pan_x = 0;
-    // zd (zoom pan?)
-    info.zdx = 0;
-    // add to zoom_data
-    zoom_data[inst_dim] = info;
-  })
-
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
   interactionEvents({
@@ -75,9 +50,5 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
       restrict_zoom_on_interaction(ev, zoom_info, zoom_data, viz_component);
     }
   });
-
-
-
-  return zoom_info;
 
 };
