@@ -111,11 +111,12 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     //   zoom_info.dsx = 1;
     // }
 
+    // // use zoom_data
+    // zoom_data.x = zoom_rules_low_mat(zoom_data.x, zoom_restrict);
+
     // moved low level rules into zoom_rules_low
     zoom_info = zoom_rules_low_mat(zoom_info, zoom_restrict);
 
-    // // use zoom_data
-    // zoom_data.x = zoom_rules_low_mat(zoom_data.x, zoom_restrict);
 
     if (still_interacting == false){
       still_interacting = true;

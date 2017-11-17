@@ -6,7 +6,7 @@ const regl = require('regl')({extensions: ['angle_instanced_arrays']})
 var extend = require('xtend/mutable');
 const vectorizeText = require('vectorize-text')
 var zoom_rules = {};
-zoom_rules['mat'] = require('./zoom_rules_high_mat');
+var zoom_rules_mat = require('./zoom_rules_high_mat');
 zoom_rules['row-labels'] = require('./zoom_rules_general');
 zoom_rules['col-labels'] = require('./zoom_rules_general');
 
@@ -74,9 +74,6 @@ const draw_text_triangles = regl({
   }
 })
 
-
-
-
 function run_viz(regl, assets){
 
   network = JSON.parse(assets['viz'])
@@ -137,7 +134,7 @@ function run_viz(regl, assets){
   }
 
   zoom_info = {}
-  zoom_info['mat'] = zoom_rules['mat'](regl, zoom_restrict, 'mat');
+  zoom_info_mat = zoom_rules_mat(regl, zoom_restrict, 'mat');
   zoom_info['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
   zoom_info['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
@@ -157,11 +154,12 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_info['mat'],
+    zoom_info_mat,
     'verbose'
   );
 
-  camera['row-labels'] = require('./camera_2d_general')(regl,
+  camera['row-labels'] = require('./camera_2d_general')(
+    regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]

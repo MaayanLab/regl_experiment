@@ -1,7 +1,5 @@
 module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
-  console.log(zoom_info)
-
   // X Zooming Rules
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
   var min_zoom = zoom_restrict.min_x;
