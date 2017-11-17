@@ -62,13 +62,13 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
 
   var zoom_info = {}
   zoom_info.tsx = 1;
-  zoom_info.tsy = 1;
   zoom_info.x0 = 0;
-  zoom_info.y0 = 0;
   zoom_info.total_pan_x = 0;
-  zoom_info.total_pan_y = 0;
-  zoom_info.ty = 0;
   zoom_info.zdx = 0;
+
+  zoom_info.tsy = 1;
+  zoom_info.y0 = 0;
+  zoom_info.total_pan_y = 0;
   zoom_info.zdy = 0;
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
@@ -112,10 +112,10 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     // }
 
     // moved low level rules into zoom_rules_low
-    all_info = zoom_rules_low_mat(zoom_info, zoom_data.x, zoom_restrict);
+    zoom_info = zoom_rules_low_mat(zoom_info, zoom_restrict);
 
-    zoom_info = all_info.zoom_info;
-    zoom_data.x = all_info.zoom_data;
+    // // use zoom_data
+    // zoom_data.x = zoom_rules_low_mat(zoom_data.x, zoom_restrict);
 
     if (still_interacting == false){
       still_interacting = true;
