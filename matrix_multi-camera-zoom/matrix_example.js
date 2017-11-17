@@ -174,7 +174,8 @@ function run_viz(regl, assets){
   var ini_scale = 1.0 ;
 
   const camera = {}
-  camera['mat'] = require('./camera_2d_general')(regl,
+  // requiring camera and
+  camera['mat'] = require('./camera_2d_mat')(regl,
     {
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]

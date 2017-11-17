@@ -27,7 +27,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 }
 
-module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
+module.exports = function makeCamera2D (regl, opts, zoom_data, verbose=false) {
   opts = opts || {};
 
   var options = extend({
@@ -103,12 +103,12 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
 
       ev.preventDefault();
 
-      dViewport[0] = zoom_info.dsx;
+      dViewport[0] = zoom_data.dsx;
       dViewport[1] = 0;
       dViewport[2] = 0;
       dViewport[3] = 0;
       dViewport[4] = 0;
-      dViewport[5] = zoom_info.dsy;
+      dViewport[5] = zoom_data.dsy;
       dViewport[6] = 0;
       dViewport[7] = 0;
       dViewport[8] = 0;
@@ -116,12 +116,12 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
       dViewport[10] = 1;
       dViewport[11] = 0;
 
-      // dViewport[12] = (1 - zoom_info.dsx) * zoom_info.x0 + zoom_info.dx;
-      dViewport[12] = zoom_info.zdx + zoom_info.pan_by_drag_x;
+      // dViewport[12] = (1 - zoom_data.dsx) * zoom_data.x0 + zoom_data.dx;
+      dViewport[12] = zoom_data.zdx + zoom_data.pan_by_drag_x;
 
 
-      // dViewport[13] = (1 - zoom_info.dsy) * zoom_info.y0 + zoom_info.dy;
-      dViewport[13] = zoom_info.zdy + zoom_info.pan_by_drag_y;
+      // dViewport[13] = (1 - zoom_data.dsy) * zoom_data.y0 + zoom_data.dy;
+      dViewport[13] = zoom_data.zdy + zoom_data.pan_by_drag_y;
 
       dViewport[14] = 0;
       dViewport[15] = 1;
@@ -152,7 +152,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
 
   var emitter = new EventEmitter();
 
-  return {
+  var inst_camera = {
     draw: function (cb) {
       setProps({
         view: mView,
@@ -182,4 +182,6 @@ module.exports = function makeCamera2D (regl, opts, zoom_info, verbose=false) {
       dirty = true;
     }
   };
+
+  return inst_camera;
 }
