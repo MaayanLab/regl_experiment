@@ -39,25 +39,25 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
   lock_left = false
 
   // organize zoom rules into x and y components
-  var zoom_info2 = {};
+  var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
 
     info = {};
 
     // total zooming
-    info.ts = 1;
+    info.tsx = 1;
 
     // position of cursor
-    info.pos = 0;
+    info.x0 = 0;
 
     // total panning
-    info.total_pan = 0;
+    info.total_pan_x = 0;
 
     // zd (zoom pan?)
-    info.zd = 0;
+    info.zdx = 0;
 
     // add to zoom_info;
-    zoom_info2[inst_dim] = info;
+    zoom_data[inst_dim] = info;
   })
 
   var zoom_info = {}
@@ -101,9 +101,9 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     zoom_info.y0 = ev.y0;
 
     // transfer to zoom_info
-    zoom_info2.x.ds = ev.dsx;
-    zoom_info2.x.pan_by_drag = ev.dx;
-    zoom_info2.x.pos = ev.x0;
+    zoom_data.x.dsx = ev.dsx;
+    zoom_data.x.pan_by_drag_x = ev.dx;
+    zoom_data.x.x0 = ev.x0;
 
     // // two-stage zooming
     // ///////////////////////
@@ -112,10 +112,10 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, viz_component){
     // }
 
     // moved low level rules into zoom_rules_low
-    all_info = zoom_rules_low_mat(zoom_info, zoom_info2.x, zoom_restrict);
+    all_info = zoom_rules_low_mat(zoom_info, zoom_data.x, zoom_restrict);
 
     zoom_info = all_info.zoom_info;
-    zoom_info2.x = all_info.zoom_info2;
+    zoom_data.x = all_info.zoom_data;
 
     if (still_interacting == false){
       still_interacting = true;

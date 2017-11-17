@@ -1,38 +1,37 @@
-module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restrict){
+module.exports = function zoom_rules_low_mat(zoom_info, zoom_data, zoom_restrict){
 
-  console.log(zoom_info.dsx, zoom_info2.ds)
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
   var min_zoom = zoom_restrict.min_x;
 
-  // calc potential_total_zoom, this is unsanitized
-  // checking the potential_total_zoom prevents the real tsx from becoming out of
+  // calc potential_tsx, this is unsanitized
+  // checking the potential_tsx prevents the real tsx from becoming out of
   // range
-  potential_total_zoom = zoom_info.tsx * zoom_info2.ds;
+  potential_tsx = zoom_info.tsx * zoom_info.dsx;
 
   // zooming within allowed range
-  if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
-    zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
+  if (potential_tsx < max_zoom && potential_tsx > min_zoom){
+    zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
   }
 
   // causing problems with example cytof data
   ////////////////////////////////////////////
 
   // zoom above allowed range
-  else if (potential_total_zoom >= max_zoom) {
-    if (zoom_info2.ds < 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
+  else if (potential_tsx >= max_zoom) {
+    if (zoom_info.dsx < 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     } else {
       // bump zoom up to max
-      zoom_info2.ds = max_zoom/zoom_info.tsx;
+      zoom_info.dsx = max_zoom/zoom_info.tsx;
       // set zoom to max
       zoom_info.tsx = max_zoom;
     }
   }
-  else if (potential_total_zoom <= min_zoom){
-    if (zoom_info2.ds > 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info2.ds;
+  else if (potential_tsx <= min_zoom){
+    if (zoom_info.dsx > 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
     } else {
       zoom_info.dsx =  min_zoom/zoom_info.tsx;
       zoom_info.tsx = min_zoom;
@@ -43,21 +42,21 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
 
   // restrict positive pan_by_drag if necessary
   if (zoom_info.pan_by_drag_x > 0){
-    if (zoom_info2.total_pan + zoom_info.pan_by_drag_x >= 0){
+    if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
       // push to edge
-      zoom_info.pan_by_drag_x = - zoom_info2.total_pan;
+      zoom_info.pan_by_drag_x = - zoom_info.total_pan_x;
     }
   }
 
   // restrict effective position of mouse
-  if (zoom_info2.pos < viz_dim.mat.min_x){
-    zoom_info2.pos = viz_dim.mat.min_x;
-  } else if (zoom_info2.pos > viz_dim.mat.max_x){
-    zoom_info2.pos = viz_dim.mat.max_x;
+  if (zoom_info.x0 < viz_dim.mat.min_x){
+    zoom_info.x0 = viz_dim.mat.min_x;
+  } else if (zoom_info.x0 > viz_dim.mat.max_x){
+    zoom_info.x0 = viz_dim.mat.max_x;
   }
 
   // tracking cursor offset (working)
-  var cursor_offset = zoom_info2.pos - viz_dim.mat.min_x;
+  var cursor_offset = zoom_info.x0 - viz_dim.mat.min_x
 
   // negative cursor offsets are set to zero
   // (cannot zoom with cursor to left of matrix)
@@ -69,17 +68,17 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
 
   zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
-  potential_total_pan_x = zoom_info2.total_pan +
+  potential_total_pan_x = zoom_info.total_pan_x +
                  zoom_info.pan_by_drag_x / zoom_info.tsx  +
                  zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
 
   if (potential_total_pan_x <= 0.0001){
 
-    zoom_info.zdx = zoom_eff * zoom_info2.pos;
+    zoom_info.zdx = zoom_eff * zoom_info.x0
 
     // track zoom displacement in original coordinate system
-    zoom_info2.total_pan = zoom_info2.total_pan +
+    zoom_info.total_pan_x = zoom_info.total_pan_x +
                    zoom_info.pan_by_drag_x / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
@@ -100,14 +99,16 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_info2, zoom_restric
     ////////////////////////////////////
     // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
     ////////////////////////////////////
-    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info2.total_pan * zoom_info.tsx;
-    zoom_info2.total_pan = 0
+    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.tsx;
+    zoom_info.total_pan_x = 0
 
   }
 
+  // console.log(zoom_info.total_pan_x)
+
   var all_info = {};
   all_info.zoom_info = zoom_info;
-  all_info.zoom_info2 = zoom_info2;
+  all_info.zoom_data = zoom_data;
 
   return all_info;
 
