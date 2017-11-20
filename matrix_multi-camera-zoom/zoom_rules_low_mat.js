@@ -44,13 +44,19 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // Pan Rules
   //////////////////////////////////
 
-  // restrict positive pan_by_drag if necessary
+  // restrict right pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
     if (zoom_data.total_pan + zoom_data.pan_by_drag >= 0){
       // push to edge
       zoom_data.pan_by_drag = - zoom_data.total_pan;
     }
   }
+
+  // restrict left pan_by_drag if necessary
+  if (zoom_data.pan_by_drag < 0){
+  }
+
+  console.log(zoom_data.total_zoom - 1)
 
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_mat.min){
@@ -70,8 +76,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   }
 
   // pan by zoom relative to the axis
-  var zoom_eff = 1 - zoom_data.inst_zoom;
-  zoom_data.pbz_relative_axis = zoom_eff * cursor_relative_axis;
+  var inst_eff_zoom = 1 - zoom_data.inst_zoom;
+  zoom_data.pbz_relative_axis = inst_eff_zoom * cursor_relative_axis;
 
   var potential_total_pan = zoom_data.total_pan +
                  zoom_data.pan_by_drag / zoom_data.total_zoom  +
@@ -81,7 +87,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // Panning in bounds
   if (potential_total_pan <= 0.0001){
 
-    zoom_data.pan_by_zoom = zoom_eff * zoom_data.cursor_position;
+    zoom_data.pan_by_zoom = inst_eff_zoom * zoom_data.cursor_position;
     zoom_data.total_pan = potential_total_pan;
 
   } else {
@@ -92,7 +98,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // size
     var push_matrix = zoom_data.total_pan * zoom_data.total_zoom;
 
-    zoom_data.pan_by_zoom = zoom_eff * viz_dim_mat.min - push_matrix;
+    zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.min - push_matrix;
     zoom_data.total_pan = 0
 
   }

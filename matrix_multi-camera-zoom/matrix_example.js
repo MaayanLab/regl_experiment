@@ -131,17 +131,19 @@ function run_viz(regl, assets){
   // organize zoom rules into x and y components
   var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
-    info = {};
+    inst_data = {};
     // total zooming (formerly tsx)
-    info.total_zoom = 1;
+    inst_data.total_zoom = 1;
     // position of cursor (formerly x0)
-    info.cursor_position = 0;
+    inst_data.cursor_position = 0;
     // total panning
-    info.total_pan = 0;
+    inst_data.total_pan = 0;
+    // pan_room (allowed negative panning)
+    inst_data.pan_room = 0;
     // pan_by_zoom (formerly zdx)
-    info.pan_by_zoom = 0;
+    inst_data.pan_by_zoom = 0;
     // add to zoom_data
-    zoom_data[inst_dim] = info;
+    zoom_data[inst_dim] = inst_data;
   });
 
 
