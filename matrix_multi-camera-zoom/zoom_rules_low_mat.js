@@ -44,7 +44,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // Pan Rules
   //////////////////////////////////
 
-  // restrict right pan_by_drag if necessary
+  // restrict min pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
     if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
       // push to edge
@@ -52,8 +52,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     }
   }
 
-  // restrict left pan_by_drag if necessary
+  // restrict max pan_by_drag if necessary
   if (zoom_data.pan_by_drag < 0){
+    if (zoom_data.total_pan_max - zoom_data.pan_by_drag >= 0){
+      // // push to edge
+      zoom_data.pan_by_drag = zoom_data.total_pan_max;
+      console.log('restrict')
+    }
   }
 
   // var tmp = (zoom_data.total_zoom  * viz_dim_mat.max  -  viz_dim_mat.max) / zoom_data.total_zoom;
@@ -114,7 +119,6 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   } else {
 
-
     // push over by total_pan (negative value) times total zoom applied
     // since need to push more when matrix has been effectively increased in
     // size
@@ -125,15 +129,14 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   }
 
-  // console.log('pbz_relative_min', zoom_data.pbz_relative_min)
 
+  // panning by drag has the opposite effect relative to the max/right side
   var potential_total_pan_max = zoom_data.total_pan_max +
-                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
+                 - zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_max / zoom_data.total_zoom ;
 
 
   zoom_data.total_pan_max = potential_total_pan_max;
-
 
   if (axis == 'x'){
     console.log('total_pan_min', zoom_data.total_pan_min)
