@@ -96,12 +96,12 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   }
 
 
-  // pan by zoom relative to the axis
+  // pan_by_zoom relative to matrix max and min
+  // zooming in causes negative panning
+  // net positive panning is not allowed
   var inst_eff_zoom = zoom_data.inst_zoom - 1;
   zoom_data.pbz_relative_min = - inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = - inst_eff_zoom * cursor_relative_max;
-
-
 
   // calculate unsanitized versions of total pan values
   var potential_total_pan_min = zoom_data.total_pan_min +
@@ -117,18 +117,14 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   var zero_treshold = 0.0001;
 
   // Panning in bounds
-  if (potential_total_pan_min <= zero_treshold ){
+  if (potential_total_pan_min <= zero_treshold && potential_total_pan_max <= zero_treshold){
 
     zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
-
-    if (axis=='x'){
-      console.log(inst_eff_zoom)
-      console.log(zoom_data.cursor_position)
-      console.log(zoom_data.pan_by_zoom)
-      console.log('\n')
-    }
-
     zoom_data.total_pan_min = potential_total_pan_min;
+
+    // if (axis='x'){
+    //   console.log('in bounds')
+    // }
 
   }
 
@@ -138,21 +134,21 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // need to push more when matrix has been effectively increased in size
     zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
     zoom_data.total_pan_min = 0;
-    console.log('left restrict')
+
+    if (axis='x'){
+      console.log('left restrict')
+    }
 
   }
 
-   if (potential_total_pan_max > zero_treshold ) {
-    console.log('right restrict', potential_total_pan_max)
+  if (potential_total_pan_max > zero_treshold ) {
 
-  //   // push over by total_pan (negative value) times total zoom applied
-  //   // need to push more when matrix has been effectively increased in size
-  //   // zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-  //   zoom_data.pan_by_zoom = potential_total_pan_max;
+    zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
+    zoom_data.total_pan_min = potential_total_pan_min;
 
-  //   // debugger
-  //   // zoom_data.total_pan_max = 0;
-  //   console.log('right side')
+    if (axis='x'){
+      console.log('right restrict', potential_total_pan_max)
+    }
 
   }
 
