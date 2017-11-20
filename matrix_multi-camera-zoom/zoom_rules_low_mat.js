@@ -68,19 +68,16 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // pan by zoom relative to the axis
   zoom_info.pbz_relative_axis = zoom_eff * cursor_relative_axis;
 
-  potential_total_pan_x = zoom_info.total_pan_x +
+  var potential_total_pan = zoom_info.total_pan_x +
                  zoom_info.pan_by_drag / zoom_info.total_zoom  +
                  zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
 
 
-  if (potential_total_pan_x <= 0.0001){
+  if (potential_total_pan <= 0.0001){
 
     zoom_info.pan_by_zoom = zoom_eff * zoom_info.cursor_position;
 
-    // track zoom displacement in original coordinate system
-    zoom_info.total_pan_x = zoom_info.total_pan_x +
-                   zoom_info.pan_by_drag / zoom_info.total_zoom  +
-                   zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
+    zoom_info.total_pan_x = potential_total_pan;
 
   } else {
 
