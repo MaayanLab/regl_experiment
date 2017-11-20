@@ -136,8 +136,10 @@ function run_viz(regl, assets){
     inst_data.total_zoom = 1;
     // position of cursor (formerly x0)
     inst_data.cursor_position = 0;
-    // total panning
-    inst_data.total_pan = 0;
+    // total panning relative to the min
+    inst_data.total_pan_min = 0;
+    // total panning relative to the max
+    inst_data.total_pan_max = 0;
     // pan_room (allowed negative panning)
     inst_data.pan_room = 0;
     // pan_by_zoom (formerly zdx)

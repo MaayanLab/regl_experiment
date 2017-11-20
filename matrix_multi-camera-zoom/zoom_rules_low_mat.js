@@ -46,9 +46,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   // restrict right pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
-    if (zoom_data.total_pan + zoom_data.pan_by_drag >= 0){
+    if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
       // push to edge
-      zoom_data.pan_by_drag = - zoom_data.total_pan;
+      zoom_data.pan_by_drag = - zoom_data.total_pan_min;
     }
   }
 
@@ -57,9 +57,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   }
 
   // var tmp = (zoom_data.total_zoom  * viz_dim_mat.max  -  viz_dim_mat.max) / zoom_data.total_zoom;
-  console.log('\n')
+  // console.log('\n')
   // console.log( 'tmp', tmp )
-  // console.log( 'total pan', zoom_data.total_pan )
+  // console.log( 'total pan', zoom_data.total_pan_min )
   // console.log(viz_dim_mat.max)
   // console.log('total zoom ', zoom_data.total_zoom)
   // console.log(viz_dim_mat.max)
@@ -97,24 +97,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   zoom_data.pbz_relative_min = inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = inst_eff_zoom * cursor_relative_max;
 
-  if (axis == 'x'){
-    console.log('pbz_min', zoom_data.pbz_relative_min)
-    console.log('pbz_max', zoom_data.pbz_relative_max)
-    console.log('\n')
-  }
 
-  var potential_total_pan = zoom_data.total_pan +
+
+  // calculate unsanitized versions of total pan values
+  var potential_total_pan_min = zoom_data.total_pan_min +
                  zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_min / zoom_data.total_zoom ;
 
-  // console.log('pbz_relative_min', zoom_data.pbz_relative_min)
 
 
   // Panning in bounds
-  if (potential_total_pan <= 0.0001){
+  if (potential_total_pan_min <= 0.0001){
 
     zoom_data.pan_by_zoom = inst_eff_zoom * zoom_data.cursor_position;
-    zoom_data.total_pan = potential_total_pan;
+    zoom_data.total_pan_min = potential_total_pan_min;
 
   } else {
 
@@ -122,11 +118,27 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // push over by total_pan (negative value) times total zoom applied
     // since need to push more when matrix has been effectively increased in
     // size
-    var push_matrix = zoom_data.total_pan * zoom_data.total_zoom;
+    var push_matrix = zoom_data.total_pan_min * zoom_data.total_zoom;
 
     zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.min - push_matrix;
-    zoom_data.total_pan = 0
+    zoom_data.total_pan_min = 0
 
+  }
+
+  // console.log('pbz_relative_min', zoom_data.pbz_relative_min)
+
+  var potential_total_pan_max = zoom_data.total_pan_max +
+                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
+                 zoom_data.pbz_relative_max / zoom_data.total_zoom ;
+
+
+  zoom_data.total_pan_max = potential_total_pan_max;
+
+
+  if (axis == 'x'){
+    console.log('total_pan_min', zoom_data.total_pan_min)
+    console.log('total_pan_max', zoom_data.total_pan_max)
+    console.log('\n')
   }
 
 };
