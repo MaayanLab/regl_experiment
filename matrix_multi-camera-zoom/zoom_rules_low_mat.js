@@ -1,4 +1,8 @@
-module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_mat){
+
+module.exports = function zoom_rules_low_mat(ev, zoom_restrict, zoom_data, viz_component, viz_dim_mat){
+
+  // // moved low level rules into zoom_rules_low
+  // zoom_rules_low_mat(zoom_data, zoom_restrict, viz_dim_mat);
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max;
@@ -6,11 +10,11 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_m
 
   // calc unsanitized potential_total_zoom
   // checking this prevents the real total_zoom from going out of bounds
-  var potential_total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
+  var potential_total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
 
   // zooming within allowed range
   if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
-    zoom_info.total_zoom = potential_total_zoom;
+    zoom_data.total_zoom = potential_total_zoom;
   }
 
   // causing problems with example cytof data
@@ -18,43 +22,43 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_m
 
   // zoom above allowed range
   else if (potential_total_zoom >= max_zoom) {
-    if (zoom_info.inst_zoom < 1){
-      zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
+    if (zoom_data.inst_zoom < 1){
+      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
       // bump zoom up to max
-      zoom_info.inst_zoom = max_zoom/zoom_info.total_zoom;
+      zoom_data.inst_zoom = max_zoom/zoom_data.total_zoom;
       // set zoom to max
-      zoom_info.total_zoom = max_zoom;
+      zoom_data.total_zoom = max_zoom;
     }
   }
   else if (potential_total_zoom <= min_zoom){
-    if (zoom_info.inst_zoom > 1){
-      zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
+    if (zoom_data.inst_zoom > 1){
+      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
-      zoom_info.inst_zoom =  min_zoom/zoom_info.total_zoom;
-      zoom_info.total_zoom = min_zoom;
+      zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
+      zoom_data.total_zoom = min_zoom;
     }
   }
 
-  var zoom_eff = 1 - zoom_info.inst_zoom;
+  var zoom_eff = 1 - zoom_data.inst_zoom;
 
   // restrict positive pan_by_drag if necessary
-  if (zoom_info.pan_by_drag > 0){
-    if (zoom_info.total_pan + zoom_info.pan_by_drag >= 0){
+  if (zoom_data.pan_by_drag > 0){
+    if (zoom_data.total_pan + zoom_data.pan_by_drag >= 0){
       // push to edge
-      zoom_info.pan_by_drag = - zoom_info.total_pan;
+      zoom_data.pan_by_drag = - zoom_data.total_pan;
     }
   }
 
   // restrict effective position of mouse
-  if (zoom_info.cursor_position < viz_dim_mat.min){
-    zoom_info.cursor_position = viz_dim_mat.min;
-  } else if (zoom_info.cursor_position > viz_dim_mat.max){
-    zoom_info.cursor_position = viz_dim_mat.max;
+  if (zoom_data.cursor_position < viz_dim_mat.min){
+    zoom_data.cursor_position = viz_dim_mat.min;
+  } else if (zoom_data.cursor_position > viz_dim_mat.max){
+    zoom_data.cursor_position = viz_dim_mat.max;
   }
 
   // tracking cursor offset (working)
-  var cursor_relative_axis = zoom_info.cursor_position - viz_dim_mat.min;
+  var cursor_relative_axis = zoom_data.cursor_position - viz_dim_mat.min;
 
   // negative cursor offsets are set to zero
   // (cannot zoom with cursor to left of matrix)
@@ -65,18 +69,18 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_m
   }
 
   // pan by zoom relative to the axis
-  zoom_info.pbz_relative_axis = zoom_eff * cursor_relative_axis;
+  zoom_data.pbz_relative_axis = zoom_eff * cursor_relative_axis;
 
-  var potential_total_pan = zoom_info.total_pan +
-                 zoom_info.pan_by_drag / zoom_info.total_zoom  +
-                 zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
+  var potential_total_pan = zoom_data.total_pan +
+                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
+                 zoom_data.pbz_relative_axis / zoom_data.total_zoom ;
 
 
   if (potential_total_pan <= 0.0001){
 
-    zoom_info.pan_by_zoom = zoom_eff * zoom_info.cursor_position;
+    zoom_data.pan_by_zoom = zoom_eff * zoom_data.cursor_position;
 
-    zoom_info.total_pan = potential_total_pan;
+    zoom_data.total_pan = potential_total_pan;
 
   } else {
 
@@ -93,15 +97,13 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_m
     // push over by total pan (negative position) times total zoom applied
     // (since need to push more when matrix has been effectively increased in
     // size)
-    var push_by_total_pan = zoom_info.total_pan * zoom_info.total_zoom;
+    var push_by_total_pan = zoom_data.total_pan * zoom_data.total_zoom;
 
-    zoom_info.pan_by_zoom = zoom_eff * viz_dim_mat.min - push_by_total_pan;
-    zoom_info.total_pan = 0
+    zoom_data.pan_by_zoom = zoom_eff * viz_dim_mat.min - push_by_total_pan;
+    zoom_data.total_pan = 0
 
   }
 
-  // console.log(zoom_info.total_pan)
 
-  return zoom_info;
 
 };
