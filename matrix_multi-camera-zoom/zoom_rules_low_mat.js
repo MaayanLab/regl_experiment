@@ -97,9 +97,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
 
   // pan by zoom relative to the axis
-  var inst_eff_zoom = 1 - zoom_data.inst_zoom;
-  zoom_data.pbz_relative_min = inst_eff_zoom * cursor_relative_min;
-  zoom_data.pbz_relative_max = inst_eff_zoom * cursor_relative_max;
+  var inst_eff_zoom = zoom_data.inst_zoom - 1;
+  zoom_data.pbz_relative_min = - inst_eff_zoom * cursor_relative_min;
+  zoom_data.pbz_relative_max = - inst_eff_zoom * cursor_relative_max;
 
 
 
@@ -119,7 +119,15 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // Panning in bounds
   if (potential_total_pan_min <= zero_treshold ){
 
-    zoom_data.pan_by_zoom = inst_eff_zoom * zoom_data.cursor_position;
+    zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
+
+    if (axis=='x'){
+      console.log(inst_eff_zoom)
+      console.log(zoom_data.cursor_position)
+      console.log(zoom_data.pan_by_zoom)
+      console.log('\n')
+    }
+
     zoom_data.total_pan_min = potential_total_pan_min;
 
   }
@@ -128,7 +136,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
-    zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
     zoom_data.total_pan_min = 0;
     console.log('left restrict')
 
@@ -139,7 +147,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   //   // push over by total_pan (negative value) times total zoom applied
   //   // need to push more when matrix has been effectively increased in size
-  //   // zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+  //   // zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
   //   zoom_data.pan_by_zoom = potential_total_pan_max;
 
   //   // debugger
