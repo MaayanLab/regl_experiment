@@ -48,14 +48,14 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   }
 
   // restrict effective position of mouse
-  if (zoom_info.x0 < viz_dim.mat.min_x){
-    zoom_info.x0 = viz_dim.mat.min_x;
-  } else if (zoom_info.x0 > viz_dim.mat.max_x){
-    zoom_info.x0 = viz_dim.mat.max_x;
+  if (zoom_info.cursor_position < viz_dim.mat.min_x){
+    zoom_info.cursor_position = viz_dim.mat.min_x;
+  } else if (zoom_info.cursor_position > viz_dim.mat.max_x){
+    zoom_info.cursor_position = viz_dim.mat.max_x;
   }
 
   // tracking cursor offset (working)
-  var cursor_offset = zoom_info.x0 - viz_dim.mat.min_x
+  var cursor_offset = zoom_info.cursor_position - viz_dim.mat.min_x;
 
   // negative cursor offsets are set to zero
   // (cannot zoom with cursor to left of matrix)
@@ -74,7 +74,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   if (potential_total_pan_x <= 0.0001){
 
-    zoom_info.zdx = zoom_eff * zoom_info.x0
+    zoom_info.zdx = zoom_eff * zoom_info.cursor_position;
 
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +

@@ -12,7 +12,7 @@ module.exports = function restrict_zoom_on_interaction(ev, zoom_data, viz_compon
   // transfer data from event to zoom_data
   zoom_data.inst_zoom = ev.dsx;
   zoom_data.pan_by_drag = ev.dx;
-  zoom_data.x0 = ev.x0;
+  zoom_data.cursor_position = ev.x0;
 
   zoom_data.dsy = ev.dsy;
   zoom_data.pan_by_drag_y = ev.dy;
