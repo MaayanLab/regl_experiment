@@ -1,5 +1,5 @@
 
-module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_mat, viz_component){
+module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_mat, viz_component, axis){
 
   /////////////////////////
   // Zooming Rules
@@ -56,7 +56,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   if (zoom_data.pan_by_drag < 0){
   }
 
-  console.log(zoom_data.total_zoom - 1)
+  // var tmp = (zoom_data.total_zoom  * viz_dim_mat.max  -  viz_dim_mat.max) / zoom_data.total_zoom;
+  console.log('\n')
+  // console.log( 'tmp', tmp )
+  // console.log( 'total pan', zoom_data.total_pan )
+  // console.log(viz_dim_mat.max)
+  // console.log('total zoom ', zoom_data.total_zoom)
+  // console.log(viz_dim_mat.max)
 
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_mat.min){
@@ -65,23 +71,43 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.cursor_position = viz_dim_mat.max;
   }
 
-  // tracking cursor offset (working)
-  var cursor_relative_axis = zoom_data.cursor_position - viz_dim_mat.min;
+  // tracking cursor position relative to the minimum
+  var cursor_relative_min = zoom_data.cursor_position - viz_dim_mat.min;
 
-  // restrict cursor_relative_axis
-  if (cursor_relative_axis < 0){
-    cursor_relative_axis = 0;
-  } else if (cursor_relative_axis > viz_dim_mat.max){
-    cursor_relative_axis = viz_dim_mat.max;
+  // restrict cursor_relative_min
+  if (cursor_relative_min < 0){
+    cursor_relative_min = 0;
+  } else if (cursor_relative_min > viz_dim_mat.max){
+    cursor_relative_min = viz_dim_mat.max;
   }
+
+  // tracking cursor position relative to the maximum
+  var cursor_relative_max = viz_dim_mat.max - zoom_data.cursor_position;
+
+  // restrict cursor_relative_max
+  if (cursor_relative_max < 0){
+    cursor_relative_max = 0;
+  } else if (cursor_relative_max > viz_dim_mat.max){
+    cursor_relative_max = viz_dim_mat.max;
+  }
+
 
   // pan by zoom relative to the axis
   var inst_eff_zoom = 1 - zoom_data.inst_zoom;
-  zoom_data.pbz_relative_axis = inst_eff_zoom * cursor_relative_axis;
+  zoom_data.pbz_relative_min = inst_eff_zoom * cursor_relative_min;
+  zoom_data.pbz_relative_max = inst_eff_zoom * cursor_relative_max;
+
+  if (axis == 'x'){
+    console.log('pbz_min', zoom_data.pbz_relative_min)
+    console.log('pbz_max', zoom_data.pbz_relative_max)
+    console.log('\n')
+  }
 
   var potential_total_pan = zoom_data.total_pan +
                  zoom_data.pan_by_drag / zoom_data.total_zoom  +
-                 zoom_data.pbz_relative_axis / zoom_data.total_zoom ;
+                 zoom_data.pbz_relative_min / zoom_data.total_zoom ;
+
+  // console.log('pbz_relative_min', zoom_data.pbz_relative_min)
 
 
   // Panning in bounds
