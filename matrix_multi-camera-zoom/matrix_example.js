@@ -182,11 +182,13 @@ function run_viz(regl, assets){
   viz_dim.mat.height = viz_dim.canvas.width/2;
 
   // min and max position of matrix
-  viz_dim.mat.min_x = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
-  viz_dim.mat.max_x = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
+  viz_dim.mat.x = {};
+  viz_dim.mat.x.min = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
+  viz_dim.mat.x.max = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
 
-  viz_dim.mat.min_y = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
-  viz_dim.mat.max_y = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
+  viz_dim.mat.y = {};
+  viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
+  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
   zoom_rules_high_mat(regl, zoom_restrict_mat, zoom_data, 'mat', viz_dim);
 

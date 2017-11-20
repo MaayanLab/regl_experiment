@@ -22,7 +22,7 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
   .on('interaction', function(ev){
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
-      restrict_zoom_on_interaction(ev, zoom_restrict.x, zoom_data.x, viz_component, viz_dim);
+      restrict_zoom_on_interaction(ev, zoom_restrict.x, zoom_data.x, viz_component, viz_dim.mat.x);
 
     }
   });

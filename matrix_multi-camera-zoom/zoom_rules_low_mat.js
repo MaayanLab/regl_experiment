@@ -1,4 +1,4 @@
-module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim){
+module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim_mat){
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max;
@@ -47,21 +47,21 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim){
   }
 
   // restrict effective position of mouse
-  if (zoom_info.cursor_position < viz_dim.mat.min_x){
-    zoom_info.cursor_position = viz_dim.mat.min_x;
-  } else if (zoom_info.cursor_position > viz_dim.mat.max_x){
-    zoom_info.cursor_position = viz_dim.mat.max_x;
+  if (zoom_info.cursor_position < viz_dim_mat.min){
+    zoom_info.cursor_position = viz_dim_mat.min;
+  } else if (zoom_info.cursor_position > viz_dim_mat.max){
+    zoom_info.cursor_position = viz_dim_mat.max;
   }
 
   // tracking cursor offset (working)
-  var cursor_relative_axis = zoom_info.cursor_position - viz_dim.mat.min_x;
+  var cursor_relative_axis = zoom_info.cursor_position - viz_dim_mat.min;
 
   // negative cursor offsets are set to zero
   // (cannot zoom with cursor to left of matrix)
   if (cursor_relative_axis < 0){
     cursor_relative_axis = 0;
-  } else if (cursor_relative_axis > viz_dim.mat.max_x){
-    cursor_relative_axis = viz_dim.mat.max_x;
+  } else if (cursor_relative_axis > viz_dim_mat.max){
+    cursor_relative_axis = viz_dim_mat.max;
   }
 
   // pan by zoom relative to the axis
@@ -95,7 +95,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim){
     // size)
     var push_by_total_pan = zoom_info.total_pan * zoom_info.total_zoom;
 
-    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - push_by_total_pan;
+    zoom_info.pan_by_zoom = zoom_eff * viz_dim_mat.min - push_by_total_pan;
     zoom_info.total_pan = 0
 
   }
