@@ -40,10 +40,10 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   var zoom_eff = 1 - zoom_info.inst_zoom;
 
   // restrict positive pan_by_drag if necessary
-  if (zoom_info.pan_by_drag_x > 0){
-    if (zoom_info.total_pan_x + zoom_info.pan_by_drag_x >= 0){
+  if (zoom_info.pan_by_drag > 0){
+    if (zoom_info.total_pan_x + zoom_info.pan_by_drag >= 0){
       // push to edge
-      zoom_info.pan_by_drag_x = - zoom_info.total_pan_x;
+      zoom_info.pan_by_drag = - zoom_info.total_pan_x;
     }
   }
 
@@ -68,7 +68,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
 
   potential_total_pan_x = zoom_info.total_pan_x +
-                 zoom_info.pan_by_drag_x / zoom_info.tsx  +
+                 zoom_info.pan_by_drag / zoom_info.tsx  +
                  zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
 
@@ -78,7 +78,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +
-                   zoom_info.pan_by_drag_x / zoom_info.tsx  +
+                   zoom_info.pan_by_drag / zoom_info.tsx  +
                    zoom_info.pan_by_zoom_x / zoom_info.tsx ;
 
   } else {
