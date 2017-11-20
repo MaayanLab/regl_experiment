@@ -197,12 +197,12 @@ function run_viz(regl, assets){
   zoom_infos['col-labels'] = zoom_rules['col-labels'](regl, zoom_restrict, 'col-labels');
 
   var draw_labels = {};
-  draw_labels['row'] = require('./draw_dendro')(regl, num_row, 'row');
+  draw_labels['row'] = require('./draw_mat_labels')(regl, num_row, 'row');
   draw_labels['col'] = require('./draw_mat_labels')(regl, num_col, 'col');
 
   var draw_dendro = {};
-  // draw_dendro['row'] = require('./draw_dendro')(regl, num_row, 'row');
-  // draw_dendro['col'] = require('./draw_mat_labels')(regl, num_col, 'col');
+  draw_dendro['row'] = require('./draw_dendro')(regl, num_row, 'row');
+  draw_dendro['col'] = require('./draw_dendro')(regl, num_col, 'col');
 
 
   flat_mat = [].concat.apply([], mat_data);
@@ -258,9 +258,9 @@ function run_viz(regl, assets){
       draw_labels['row']();
     });
 
-    // camera['row-labels'].draw(() => {
-    //   draw_dendro['row']();
-    // });
+    camera['row-labels'].draw(() => {
+      draw_dendro['row']();
+    });
 
     // camera['col-labels'].draw(() => {
     //   draw_text_triangles();

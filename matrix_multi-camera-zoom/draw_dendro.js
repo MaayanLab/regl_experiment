@@ -13,7 +13,7 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = -0.5 - row_width;
+  var x_offset = 0.5 ; // row_width;
 
   y_offset_array = [];
   for (var i = 0; i < num_rows; i++){
@@ -73,16 +73,16 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
 
       // color triangle red
       void main () {
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1);
+        gl_FragColor = vec4(0.6, 0.6, 0.6, 1);
       }
 
     `,
 
     attributes: {
       position: [
-        [row_width,  row_height/2],
-        [0.00,  0.0],
-        [row_width, -row_height/2],
+        [0.0,  row_height/2],
+        [row_width,  0.0],
+        [0.0, -row_height/2],
       ],
       y_offset_att: {
         buffer: y_offset_buffer,
