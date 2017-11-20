@@ -4,21 +4,20 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   var max_zoom = zoom_restrict.max_x/ zoom_restrict.ratio_y;
   var min_zoom = zoom_restrict.min_x;
 
-  // calc potential_tsx, this is unsanitized
-  // checking the potential_tsx prevents the real tsx from becoming out of
-  // range
-  potential_tsx = zoom_info.total_zoom * zoom_info.inst_zoom;
+  // calc unsanitized potential_total_zoom
+  // checking this prevents the real total_zoom from going out of bounds
+  potential_total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
 
   // zooming within allowed range
-  if (potential_tsx < max_zoom && potential_tsx > min_zoom){
-    zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
+  if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
+    zoom_info.total_zoom = potential_total_zoom;
   }
 
   // causing problems with example cytof data
   ////////////////////////////////////////////
 
   // zoom above allowed range
-  else if (potential_tsx >= max_zoom) {
+  else if (potential_total_zoom >= max_zoom) {
     if (zoom_info.inst_zoom < 1){
       zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
     } else {
@@ -28,7 +27,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
       zoom_info.total_zoom = max_zoom;
     }
   }
-  else if (potential_tsx <= min_zoom){
+  else if (potential_total_zoom <= min_zoom){
     if (zoom_info.inst_zoom > 1){
       zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
     } else {

@@ -1,6 +1,6 @@
 var zoom_rules_low_mat = require('./zoom_rules_low_mat');
 
-module.exports = function restrict_zoom_on_interaction(ev, zoom_data, viz_component){
+module.exports = function restrict_zoom_on_interaction(ev, zoom_restrict, zoom_data, viz_component){
 
   switch (ev.type) {
     case 'wheel':

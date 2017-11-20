@@ -105,7 +105,7 @@ function run_viz(regl, assets){
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
 
-  zoom_restrict = {};
+  var zoom_restrict = {};
 
   // setting zoom high for CyTOF example
   max_zoom = 10;
@@ -113,7 +113,6 @@ function run_viz(regl, assets){
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
   zoom_restrict.min_y = 1.0;
-
   zoom_restrict.ratio_x = 1;
   zoom_restrict.ratio_y = 1;
 
@@ -145,8 +144,21 @@ function run_viz(regl, assets){
     zoom_data[inst_dim] = info;
   });
 
-  zoom_rules_high_mat(regl, zoom_restrict, zoom_data, 'mat');
 
+  // working on improved matrix zooming
+  var zoom_restrict_mat = {};
+
+  zoom_restrict_mat.x = {};
+  zoom_restrict_mat.x.max = max_zoom;
+  zoom_restrict_mat.x.min = 1.0;
+  zoom_restrict_mat.x.ratio = 1;
+
+  zoom_restrict_mat.y = {};
+  zoom_restrict_mat.y.max = max_zoom;
+  zoom_restrict_mat.y.min = 1.0;
+  zoom_restrict_mat.y.ratio = 1;
+
+  zoom_rules_high_mat(regl, zoom_restrict, zoom_data, 'mat');
 
   var zoom_infos = {}
   zoom_infos['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
