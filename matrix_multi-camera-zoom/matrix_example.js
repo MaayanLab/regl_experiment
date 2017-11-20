@@ -213,7 +213,7 @@ function run_viz(regl, assets){
       xrange: [-ini_scale, ini_scale],
       yrange: [-ini_scale, ini_scale]
     },
-    zoom_data.x,
+    zoom_data,
     'verbose'
   );
 

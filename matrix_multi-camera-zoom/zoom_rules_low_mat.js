@@ -1,8 +1,5 @@
 
-module.exports = function zoom_rules_low_mat(ev, zoom_restrict, zoom_data, viz_component, viz_dim_mat){
-
-  // // moved low level rules into zoom_rules_low
-  // zoom_rules_low_mat(zoom_data, zoom_restrict, viz_dim_mat);
+module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_component, viz_dim_mat){
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max;
@@ -16,9 +13,6 @@ module.exports = function zoom_rules_low_mat(ev, zoom_restrict, zoom_data, viz_c
   if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
     zoom_data.total_zoom = potential_total_zoom;
   }
-
-  // causing problems with example cytof data
-  ////////////////////////////////////////////
 
   // zoom above allowed range
   else if (potential_total_zoom >= max_zoom) {

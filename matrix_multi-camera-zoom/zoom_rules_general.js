@@ -30,13 +30,6 @@ module.exports = function(regl, zoom_restrict, viz_component){
   viz_dim.mat.min_y = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
   viz_dim.mat.max_y = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
-  // console.log(viz_dim.mat.left_x)
-  // console.log('canvas width: ' + String(viz_dim.canvas.width))
-  // console.log('canvas height: ' + String(viz_dim.canvas.height))
-
-  global_translate = 0
-  lock_left = false
-
   var zoom_info = {};
   zoom_info.tsx = 1;
   zoom_info.tsy = 1;

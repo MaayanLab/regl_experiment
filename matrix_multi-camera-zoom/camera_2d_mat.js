@@ -102,25 +102,20 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, verbose=false) {
 
       ev.preventDefault();
 
-      dViewport[0] = zoom_data.inst_zoom;
+      dViewport[0] = zoom_data.x.inst_zoom;
       dViewport[1] = 0;
       dViewport[2] = 0;
       dViewport[3] = 0;
       dViewport[4] = 0;
-      dViewport[5] = zoom_data.dsy;
+      dViewport[5] = zoom_data.y.inst_zoom;
       dViewport[6] = 0;
       dViewport[7] = 0;
       dViewport[8] = 0;
       dViewport[9] = 0;
       dViewport[10] = 1;
       dViewport[11] = 0;
-
-      // dViewport[12] = (1 - zoom_data.dsx) * zoom_data.x0 + zoom_data.dx;
-      dViewport[12] = zoom_data.pan_by_zoom + zoom_data.pan_by_drag;
-
-      // dViewport[13] = (1 - zoom_data.dsy) * zoom_data.y0 + zoom_data.dy;
-      dViewport[13] = zoom_data.zdy + zoom_data.pan_by_drag_y;
-
+      dViewport[12] = zoom_data.x.pan_by_zoom + zoom_data.x.pan_by_drag;
+      dViewport[13] = zoom_data.y.pan_by_zoom + zoom_data.y.pan_by_drag;
       dViewport[14] = 0;
       dViewport[15] = 1;
 
