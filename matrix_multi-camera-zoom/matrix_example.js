@@ -158,7 +158,7 @@ function run_viz(regl, assets){
   zoom_restrict_mat.y.min = 1.0;
   zoom_restrict_mat.y.ratio = 1;
 
-  zoom_rules_high_mat(regl, zoom_restrict, zoom_data, 'mat');
+  zoom_rules_high_mat(regl, zoom_restrict_mat, zoom_data, 'mat');
 
   var zoom_infos = {}
   zoom_infos['row-labels'] = zoom_rules['row-labels'](regl, zoom_restrict, 'row-labels');
