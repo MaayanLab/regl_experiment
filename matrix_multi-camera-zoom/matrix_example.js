@@ -139,8 +139,8 @@ function run_viz(regl, assets){
     info.x0 = 0;
     // total panning
     info.total_pan_x = 0;
-    // zd (zoom pan?)
-    info.zdx = 0;
+    // pan_by_zoom (formerly zdx)
+    info.pan_by_zoom = 0;
     // add to zoom_data
     zoom_data[inst_dim] = info;
   });
