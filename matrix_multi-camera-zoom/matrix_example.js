@@ -133,10 +133,10 @@ function run_viz(regl, assets){
   var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
     info = {};
-    // total zooming
-    info.tsx = 1;
-    // position of cursor
-    info.x0 = 0;
+    // total zooming (formerly tsx)
+    info.total_zoom = 1;
+    // position of cursor (formerly x0)
+    info.cursor_position = 0;
     // total panning
     info.total_pan_x = 0;
     // pan_by_zoom (formerly zdx)

@@ -7,11 +7,11 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // calc potential_tsx, this is unsanitized
   // checking the potential_tsx prevents the real tsx from becoming out of
   // range
-  potential_tsx = zoom_info.tsx * zoom_info.inst_zoom;
+  potential_tsx = zoom_info.total_zoom * zoom_info.inst_zoom;
 
   // zooming within allowed range
   if (potential_tsx < max_zoom && potential_tsx > min_zoom){
-    zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
+    zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
   }
 
   // causing problems with example cytof data
@@ -20,20 +20,20 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // zoom above allowed range
   else if (potential_tsx >= max_zoom) {
     if (zoom_info.inst_zoom < 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
+      zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
     } else {
       // bump zoom up to max
-      zoom_info.inst_zoom = max_zoom/zoom_info.tsx;
+      zoom_info.inst_zoom = max_zoom/zoom_info.total_zoom;
       // set zoom to max
-      zoom_info.tsx = max_zoom;
+      zoom_info.total_zoom = max_zoom;
     }
   }
   else if (potential_tsx <= min_zoom){
     if (zoom_info.inst_zoom > 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
+      zoom_info.total_zoom = zoom_info.total_zoom * zoom_info.inst_zoom;
     } else {
-      zoom_info.inst_zoom =  min_zoom/zoom_info.tsx;
-      zoom_info.tsx = min_zoom;
+      zoom_info.inst_zoom =  min_zoom/zoom_info.total_zoom;
+      zoom_info.total_zoom = min_zoom;
     }
   }
 
@@ -69,8 +69,8 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   zoom_info.pbz_relative_axis = zoom_eff * cursor_relative_axis;
 
   potential_total_pan_x = zoom_info.total_pan_x +
-                 zoom_info.pan_by_drag / zoom_info.tsx  +
-                 zoom_info.pbz_relative_axis / zoom_info.tsx ;
+                 zoom_info.pan_by_drag / zoom_info.total_zoom  +
+                 zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
 
 
   if (potential_total_pan_x <= 0.0001){
@@ -79,8 +79,8 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +
-                   zoom_info.pan_by_drag / zoom_info.tsx  +
-                   zoom_info.pbz_relative_axis / zoom_info.tsx ;
+                   zoom_info.pan_by_drag / zoom_info.total_zoom  +
+                   zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
 
   } else {
 
@@ -99,7 +99,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     ////////////////////////////////////
     // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
     ////////////////////////////////////
-    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.tsx;
+    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.total_zoom;
     zoom_info.total_pan_x = 0
 
   }
