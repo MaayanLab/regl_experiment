@@ -1,5 +1,5 @@
 
-module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_component, viz_dim_mat){
+module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_mat, viz_component){
 
   // X Zooming Rules
   var max_zoom = zoom_restrict.max;
@@ -97,7 +97,5 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_compo
     zoom_data.total_pan = 0
 
   }
-
-
 
 };
