@@ -1,8 +1,8 @@
-module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
+module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict, viz_dim){
 
   // X Zooming Rules
-  var max_zoom = zoom_restrict.x.max/ zoom_restrict.y.ratio;
-  var min_zoom = zoom_restrict.x.min;
+  var max_zoom = zoom_restrict.max;
+  var min_zoom = zoom_restrict.min;
 
   // calc unsanitized potential_total_zoom
   // checking this prevents the real total_zoom from going out of bounds

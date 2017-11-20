@@ -10,7 +10,7 @@ module.exports = function(regl, zoom_restrict, viz_component){
 
   var element = options.element;
 
-  viz_dim = {};
+  var viz_dim = {};
   viz_dim.canvas = {};
   viz_dim.mat = {};
 

@@ -2,7 +2,7 @@ var interactionEvents = require('interaction-events');
 var extend = require('xtend/mutable');
 var restrict_zoom_on_interaction = require('./restrict_zoom_on_interaction');
 
-module.exports = function zoom_rules_mat(regl, zoom_restrict, zoom_data, viz_component){
+module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, viz_dim, viz_component){
 
   var opts = opts || {};
   var options = extend({
@@ -11,7 +11,7 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, zoom_data, viz_com
 
   var element = options.element;
 
-  viz_dim = {};
+  var viz_dim = {};
   viz_dim.canvas = {};
   viz_dim.mat = {};
 
@@ -31,10 +31,6 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, zoom_data, viz_com
   viz_dim.mat.min_y = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
   viz_dim.mat.max_y = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
-  // console.log(viz_dim.mat.left_x)
-  // console.log('canvas width: ' + String(viz_dim.canvas.width))
-  // console.log('canvas height: ' + String(viz_dim.canvas.height))
-
   global_translate = 0
   lock_left = false
 
@@ -46,7 +42,7 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, zoom_data, viz_com
   .on('interaction', function(ev){
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
-      restrict_zoom_on_interaction(ev, zoom_restrict, zoom_data.x, viz_component);
+      restrict_zoom_on_interaction(ev, zoom_restrict.x, zoom_data.x, viz_component, viz_dim);
 
     }
   });
