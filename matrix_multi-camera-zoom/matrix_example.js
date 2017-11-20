@@ -138,7 +138,7 @@ function run_viz(regl, assets){
     // position of cursor (formerly x0)
     info.cursor_position = 0;
     // total panning
-    info.total_pan_x = 0;
+    info.total_pan = 0;
     // pan_by_zoom (formerly zdx)
     info.pan_by_zoom = 0;
     // add to zoom_data

@@ -41,9 +41,9 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   // restrict positive pan_by_drag if necessary
   if (zoom_info.pan_by_drag > 0){
-    if (zoom_info.total_pan_x + zoom_info.pan_by_drag >= 0){
+    if (zoom_info.total_pan + zoom_info.pan_by_drag >= 0){
       // push to edge
-      zoom_info.pan_by_drag = - zoom_info.total_pan_x;
+      zoom_info.pan_by_drag = - zoom_info.total_pan;
     }
   }
 
@@ -68,7 +68,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // pan by zoom relative to the axis
   zoom_info.pbz_relative_axis = zoom_eff * cursor_relative_axis;
 
-  var potential_total_pan = zoom_info.total_pan_x +
+  var potential_total_pan = zoom_info.total_pan +
                  zoom_info.pan_by_drag / zoom_info.total_zoom  +
                  zoom_info.pbz_relative_axis / zoom_info.total_zoom ;
 
@@ -77,31 +77,31 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
     zoom_info.pan_by_zoom = zoom_eff * zoom_info.cursor_position;
 
-    zoom_info.total_pan_x = potential_total_pan;
+    zoom_info.total_pan = potential_total_pan;
 
   } else {
 
     /*
-    keep matrix positined at the left, and bump it to the left
+    reposition total_pan to the left, and use the camera to bump it over
     */
 
     //////////////////////////////////////
     // pan-by-zoom restriction seems to be
     // working when zooming out with mouse
-    // on matrix, not working when mouse is to the right of matrix
     // (zoom in, pan right, zoom out)
     //////////////////////////////////////
 
-    // pan-by-zoom, and add back in total panning necesary to get to zero scaled by total zooming
-    ////////////////////////////////////
-    // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
-    ////////////////////////////////////
-    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.total_zoom;
-    zoom_info.total_pan_x = 0
+    // push over by total pan (negative position) times total zoom applied
+    // (since need to push more when matrix has been effectively increased in
+    // size)
+    var push_by_total_pan = zoom_info.total_pan * zoom_info.total_zoom;
+
+    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - push_by_total_pan;
+    zoom_info.total_pan = 0
 
   }
 
-  // console.log(zoom_info.total_pan_x)
+  // console.log(zoom_info.total_pan)
 
   return zoom_info;
 
