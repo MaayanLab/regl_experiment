@@ -116,7 +116,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, verbose=false) {
       dViewport[11] = 0;
 
       // dViewport[12] = (1 - zoom_data.dsx) * zoom_data.x0 + zoom_data.dx;
-      dViewport[12] = zoom_data.zdx + zoom_data.pan_by_drag;
+      dViewport[12] = zoom_data.pan_by_zoom + zoom_data.pan_by_drag;
 
       // dViewport[13] = (1 - zoom_data.dsy) * zoom_data.y0 + zoom_data.dy;
       dViewport[13] = zoom_data.zdy + zoom_data.pan_by_drag_y;

@@ -75,7 +75,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   if (potential_total_pan_x <= 0.0001){
 
-    zoom_info.zdx = zoom_eff * zoom_info.cursor_position;
+    zoom_info.pan_by_zoom = zoom_eff * zoom_info.cursor_position;
 
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +
@@ -99,7 +99,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     ////////////////////////////////////
     // redefine 'zoom_eff * viz_dim.mat.min_x' as total_pan_zoom
     ////////////////////////////////////
-    zoom_info.zdx = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.tsx;
+    zoom_info.pan_by_zoom = zoom_eff * viz_dim.mat.min_x - zoom_info.total_pan_x * zoom_info.tsx;
     zoom_info.total_pan_x = 0
 
   }
