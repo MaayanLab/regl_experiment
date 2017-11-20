@@ -55,9 +55,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // restrict max pan_by_drag if necessary
   if (zoom_data.pan_by_drag < 0){
     if (zoom_data.total_pan_max - zoom_data.pan_by_drag >= 0){
-      // // push to edge
+      // push to edge
       zoom_data.pan_by_drag = zoom_data.total_pan_max;
-      console.log('restrict')
     }
   }
 
@@ -110,38 +109,55 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
                  zoom_data.pbz_relative_min / zoom_data.total_zoom ;
 
 
-
-  // Panning in bounds
-  if (potential_total_pan_min <= 0.0001){
-
-    zoom_data.pan_by_zoom = inst_eff_zoom * zoom_data.cursor_position;
-    zoom_data.total_pan_min = potential_total_pan_min;
-
-  } else {
-
-    // push over by total_pan (negative value) times total zoom applied
-    // since need to push more when matrix has been effectively increased in
-    // size
-    var push_matrix = zoom_data.total_pan_min * zoom_data.total_zoom;
-
-    zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.min - push_matrix;
-    zoom_data.total_pan_min = 0
-
-  }
-
-
   // panning by drag has the opposite effect relative to the max/right side
   var potential_total_pan_max = zoom_data.total_pan_max +
                  - zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_max / zoom_data.total_zoom ;
 
+  var zero_treshold = 0.0001;
+
+  // Panning in bounds
+  if (potential_total_pan_min <= zero_treshold ){
+
+    zoom_data.pan_by_zoom = inst_eff_zoom * zoom_data.cursor_position;
+    zoom_data.total_pan_min = potential_total_pan_min;
+
+  }
+
+  if (potential_total_pan_min > zero_treshold ) {
+
+    // push over by total_pan (negative value) times total zoom applied
+    // need to push more when matrix has been effectively increased in size
+    zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.total_pan_min = 0;
+    console.log('left restrict')
+
+  }
+
+   if (potential_total_pan_max > zero_treshold ) {
+    console.log('right restrict', potential_total_pan_max)
+
+  //   // push over by total_pan (negative value) times total zoom applied
+  //   // need to push more when matrix has been effectively increased in size
+  //   // zoom_data.pan_by_zoom = inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+  //   zoom_data.pan_by_zoom = potential_total_pan_max;
+
+  //   // debugger
+  //   // zoom_data.total_pan_max = 0;
+  //   console.log('right side')
+
+  }
+
+
+
 
   zoom_data.total_pan_max = potential_total_pan_max;
 
   if (axis == 'x'){
-    console.log('total_pan_min', zoom_data.total_pan_min)
-    console.log('total_pan_max', zoom_data.total_pan_max)
-    console.log('\n')
+    // console.log('total_pan_min', zoom_data.total_pan_min)
+    // console.log('total_pan_max', zoom_data.total_pan_max)
+    // console.log('potential_total_pan_max', potential_total_pan_max)
+    // console.log('\n')
   }
 
 };
