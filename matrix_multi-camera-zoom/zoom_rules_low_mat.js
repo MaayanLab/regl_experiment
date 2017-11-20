@@ -55,21 +55,22 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   }
 
   // tracking cursor offset (working)
-  var cursor_offset = zoom_info.cursor_position - viz_dim.mat.min_x;
+  var cursor_relative_axis = zoom_info.cursor_position - viz_dim.mat.min_x;
 
   // negative cursor offsets are set to zero
   // (cannot zoom with cursor to left of matrix)
-  if (cursor_offset < 0){
-    cursor_offset = 0;
-  } else if (cursor_offset > viz_dim.mat.max_x){
-    cursor_offset = viz_dim.mat.max_x;
+  if (cursor_relative_axis < 0){
+    cursor_relative_axis = 0;
+  } else if (cursor_relative_axis > viz_dim.mat.max_x){
+    cursor_relative_axis = viz_dim.mat.max_x;
   }
 
-  zoom_info.pan_by_zoom_x = zoom_eff * cursor_offset;
+  // pan by zoom relative to the axis
+  zoom_info.pbz_relative_axis = zoom_eff * cursor_relative_axis;
 
   potential_total_pan_x = zoom_info.total_pan_x +
                  zoom_info.pan_by_drag / zoom_info.tsx  +
-                 zoom_info.pan_by_zoom_x / zoom_info.tsx ;
+                 zoom_info.pbz_relative_axis / zoom_info.tsx ;
 
 
   if (potential_total_pan_x <= 0.0001){
@@ -79,7 +80,7 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
     // track zoom displacement in original coordinate system
     zoom_info.total_pan_x = zoom_info.total_pan_x +
                    zoom_info.pan_by_drag / zoom_info.tsx  +
-                   zoom_info.pan_by_zoom_x / zoom_info.tsx ;
+                   zoom_info.pbz_relative_axis / zoom_info.tsx ;
 
   } else {
 
