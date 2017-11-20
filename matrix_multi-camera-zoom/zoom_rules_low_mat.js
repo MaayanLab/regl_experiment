@@ -7,11 +7,11 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
   // calc potential_tsx, this is unsanitized
   // checking the potential_tsx prevents the real tsx from becoming out of
   // range
-  potential_tsx = zoom_info.tsx * zoom_info.dsx;
+  potential_tsx = zoom_info.tsx * zoom_info.inst_zoom;
 
   // zooming within allowed range
   if (potential_tsx < max_zoom && potential_tsx > min_zoom){
-    zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
   }
 
   // causing problems with example cytof data
@@ -19,25 +19,25 @@ module.exports = function zoom_rules_low_mat(zoom_info, zoom_restrict){
 
   // zoom above allowed range
   else if (potential_tsx >= max_zoom) {
-    if (zoom_info.dsx < 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    if (zoom_info.inst_zoom < 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
     } else {
       // bump zoom up to max
-      zoom_info.dsx = max_zoom/zoom_info.tsx;
+      zoom_info.inst_zoom = max_zoom/zoom_info.tsx;
       // set zoom to max
       zoom_info.tsx = max_zoom;
     }
   }
   else if (potential_tsx <= min_zoom){
-    if (zoom_info.dsx > 1){
-      zoom_info.tsx = zoom_info.tsx * zoom_info.dsx;
+    if (zoom_info.inst_zoom > 1){
+      zoom_info.tsx = zoom_info.tsx * zoom_info.inst_zoom;
     } else {
-      zoom_info.dsx =  min_zoom/zoom_info.tsx;
+      zoom_info.inst_zoom =  min_zoom/zoom_info.tsx;
       zoom_info.tsx = min_zoom;
     }
   }
 
-  var zoom_eff = 1 - zoom_info.dsx;
+  var zoom_eff = 1 - zoom_info.inst_zoom;
 
   // restrict positive pan_by_drag if necessary
   if (zoom_info.pan_by_drag_x > 0){

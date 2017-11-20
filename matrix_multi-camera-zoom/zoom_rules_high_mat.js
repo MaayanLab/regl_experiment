@@ -46,7 +46,6 @@ module.exports = function zoom_rules_mat(regl, zoom_restrict, zoom_data, viz_com
   .on('interaction', function(ev){
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
-      // restrict new zoom_data
       restrict_zoom_on_interaction(ev, zoom_data.x, viz_component);
 
     }

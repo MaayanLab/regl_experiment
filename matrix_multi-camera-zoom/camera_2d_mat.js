@@ -102,7 +102,7 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, verbose=false) {
 
       ev.preventDefault();
 
-      dViewport[0] = zoom_data.dsx;
+      dViewport[0] = zoom_data.inst_zoom;
       dViewport[1] = 0;
       dViewport[2] = 0;
       dViewport[3] = 0;

@@ -129,17 +129,6 @@ function run_viz(regl, assets){
     zoom_restrict.ratio_x = num_col/num_row;
   }
 
-  // var zoom_info = {}
-  // zoom_info.tsx = 1;
-  // zoom_info.x0 = 0;
-  // zoom_info.total_pan_x = 0;
-  // zoom_info.zdx = 0;
-
-  // zoom_info.tsy = 1;
-  // zoom_info.y0 = 0;
-  // zoom_info.total_pan_y = 0;
-  // zoom_info.zdy = 0;
-
   // organize zoom rules into x and y components
   var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
