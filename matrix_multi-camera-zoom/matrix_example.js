@@ -144,6 +144,8 @@ function run_viz(regl, assets){
     inst_data.pan_room = 0;
     // pan_by_zoom (formerly zdx)
     inst_data.pan_by_zoom = 0;
+    inst_data.pan_by_drag = 0;
+    inst_data.inst_zoom = 1;
     // add to zoom_data
     zoom_data[inst_dim] = inst_data;
   });
@@ -172,7 +174,7 @@ function run_viz(regl, assets){
 
   var element = options.element;
 
-  var viz_dim = {};
+  viz_dim = {};
   viz_dim.canvas = {};
   viz_dim.mat = {};
 
