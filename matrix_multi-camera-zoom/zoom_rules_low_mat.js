@@ -121,6 +121,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
     zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     zoom_data.total_pan_min = potential_total_pan_min;
+    zoom_data.total_pan_max = potential_total_pan_max;
 
     // if (axis='x'){
     //   console.log('in bounds')
@@ -142,23 +143,23 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   }
 
+
+
   if (potential_total_pan_max > zero_treshold ) {
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push by total remaining pan
-    zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max  //+ zoom_data.total_pan_max //* zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
     zoom_data.total_pan_max = 0 ;
 
     if (axis='x'){
-      console.log('right restrict', potential_total_pan_max)
+      console.log('right restrict')
+      console.log(zoom_data.total_pan_max)
     }
-
   }
 
 
 
-
-  zoom_data.total_pan_max = potential_total_pan_max;
 
   if (axis == 'x'){
     // console.log('total_pan_min', zoom_data.total_pan_min)
