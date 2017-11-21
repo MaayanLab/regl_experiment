@@ -114,10 +114,18 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
                  - zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_max / zoom_data.total_zoom ;
 
-  var zero_treshold = 0.0001;
+  var zero_threshold = 0.0001;
+
+  var fully_zoomed_out = false;
+  if (axis=='x'){
+    if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
+      console.log(' fully_zoomed_out!!\n')
+      fully_zoomed_out = true;
+    }
+  }
 
   // Panning in bounds
-  if (potential_total_pan_min <= zero_treshold && potential_total_pan_max <= zero_treshold){
+  if (potential_total_pan_min <= zero_threshold && potential_total_pan_max <= zero_threshold){
 
     zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     zoom_data.total_pan_min = potential_total_pan_min;
@@ -127,7 +135,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     //   console.log('in bounds')
     // }
 
-  } else if (potential_total_pan_min > zero_treshold ) {
+  } else if (potential_total_pan_min > zero_threshold) {
 
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
@@ -139,23 +147,25 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // this panning
     zoom_data.total_pan_min = 0;
 
-    // other panning (works when zooming from outside matrix)
-    // // zoom_data.total_pan_max = zoom_data.total_pan_max - potential_total_pan_max // - zoom_data.pan_by_zoom
-    // zoom_data.total_pan_max = zoom_data.total_pan_max + zoom_data.pan_by_zoom / zoom_data.total_zoom;
-
     // the cursor is effectively locked on the left side
     new_cursor_relative_max = viz_dim_mat.max - viz_dim_mat.min;
     new_pbz_relative_max = - inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
     if (axis='x'){
-      console.log('left restrict')
-      console.log('pot-min', potential_total_pan_min)
-      console.log('pot-max', potential_total_pan_max)
-      console.log('\n')
+      console.log('left restrict', fully_zoomed_out)
+      // console.log('pot-min', potential_total_pan_min)
+      // console.log('pot-max', potential_total_pan_max)
+      // console.log('\n')
     }
 
-  } else if (potential_total_pan_max > zero_treshold ) {
+    // prevent push if fully zoomed out
+    if (fully_zoomed_out == true && inst_eff_zoom <=0){
+      zoom_data.pan_by_zoom = 0
+      zoom_data.total_pan_max = 0;
+    }
+
+  } else if (potential_total_pan_max > zero_threshold) {
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
@@ -165,23 +175,28 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // this panning
     zoom_data.total_pan_max = 0 ;
 
-    // // other panning (works when zooming from outside matrix)
-    // // zoom_data.total_pan_min = potential_total_pan_min ;
-    // zoom_data.total_pan_min = zoom_data.total_pan_min + zoom_data.pan_by_zoom / zoom_data.total_zoom;
-
     // the cursor is effectively locked on the left side
     new_cursor_relative_min = viz_dim_mat.max - viz_dim_mat.min;
-    new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_max;
+    new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
     if (axis='x'){
-      console.log('right restrict')
-      console.log('pot-min', potential_total_pan_min)
-      console.log('pot-max', potential_total_pan_max)
-      console.log('\n')
+      console.log('right restrict', fully_zoomed_out)
+      // console.log('pot-min', potential_total_pan_min)
+      // console.log('pot-max', potential_total_pan_max)
+      // console.log('\n')
     }
 
+    // prevent push if fully zoomed out
+    if (fully_zoomed_out == true && inst_eff_zoom <=0){
+      console.log(inst_eff_zoom)
+      zoom_data.pan_by_zoom = 0
+      zoom_data.total_pan_min = 0;
+    }
+
+
   }
+
 
 
 
