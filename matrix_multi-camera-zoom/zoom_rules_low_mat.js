@@ -133,7 +133,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
-    // steps: 1) pin to min matrix, and 2) push by total remaining pan
+    // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
     zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
     zoom_data.total_pan_min = 0;
 
@@ -148,7 +148,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   if (potential_total_pan_max > zero_treshold ) {
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
-    // steps: 1) pin to max matrix, and 2) push by total remaining pan
+    // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
+    // total_pan_max
     zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
     zoom_data.total_pan_max = 0 ;
 
