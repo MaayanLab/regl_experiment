@@ -143,7 +143,6 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // // zoom_data.total_pan_max = zoom_data.total_pan_max - potential_total_pan_max // - zoom_data.pan_by_zoom
     // zoom_data.total_pan_max = zoom_data.total_pan_max + zoom_data.pan_by_zoom / zoom_data.total_zoom;
 
-
     // the cursor is effectively locked on the left side
     new_cursor_relative_max = viz_dim_mat.max - viz_dim_mat.min;
     new_pbz_relative_max = - inst_eff_zoom * new_cursor_relative_max;
@@ -151,10 +150,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
     if (axis='x'){
       console.log('left restrict')
-      console.log('total pan max', zoom_data.total_pan_max)
-      console.log(cursor_relative_max)
-      // debugger
-      console.log('new_pbz_relative_max', new_pbz_relative_max)
+      console.log('pot-min', potential_total_pan_min)
+      console.log('pot-max', potential_total_pan_max)
+      console.log('\n')
     }
 
   } else if (potential_total_pan_max > zero_treshold ) {
@@ -167,12 +165,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // this panning
     zoom_data.total_pan_max = 0 ;
 
-    // other panning (works when zooming from outside matrix)
-    // zoom_data.total_pan_min = potential_total_pan_min ;
-    zoom_data.total_pan_min = zoom_data.total_pan_min + zoom_data.pan_by_zoom / zoom_data.total_zoom;
+    // // other panning (works when zooming from outside matrix)
+    // // zoom_data.total_pan_min = potential_total_pan_min ;
+    // zoom_data.total_pan_min = zoom_data.total_pan_min + zoom_data.pan_by_zoom / zoom_data.total_zoom;
+
+    // the cursor is effectively locked on the left side
+    new_cursor_relative_min = viz_dim_mat.max - viz_dim_mat.min;
+    new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_max;
+    zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
     if (axis='x'){
       console.log('right restrict')
+      console.log('pot-min', potential_total_pan_min)
+      console.log('pot-max', potential_total_pan_max)
+      console.log('\n')
     }
 
   }
