@@ -129,7 +129,7 @@ function run_viz(regl, assets){
   }
 
   // organize zoom rules into x and y components
-  var zoom_data = {};
+  zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
     inst_data = {};
     // total zooming (formerly tsx)

@@ -136,6 +136,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
     zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
     zoom_data.total_pan_min = 0;
+    zoom_data.total_pan_max = 0 // potential_total_pan_max ;
 
     if (axis='x'){
       console.log('left restrict')
@@ -151,6 +152,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
     // total_pan_max
     zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.total_pan_min = 0 // potential_total_pan_min ;
     zoom_data.total_pan_max = 0 ;
 
     if (axis='x'){
