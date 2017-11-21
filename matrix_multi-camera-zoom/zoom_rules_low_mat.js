@@ -60,14 +60,6 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     }
   }
 
-  // var tmp = (zoom_data.total_zoom  * viz_dim_mat.max  -  viz_dim_mat.max) / zoom_data.total_zoom;
-  // console.log('\n')
-  // console.log( 'tmp', tmp )
-  // console.log( 'total pan', zoom_data.total_pan_min )
-  // console.log(viz_dim_mat.max)
-  // console.log('total zoom ', zoom_data.total_zoom)
-  // console.log(viz_dim_mat.max)
-
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_mat.min){
     zoom_data.cursor_position = viz_dim_mat.min;
@@ -131,10 +123,6 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.total_pan_min = potential_total_pan_min;
     zoom_data.total_pan_max = potential_total_pan_max;
 
-    // if (axis='x'){
-    //   console.log('in bounds')
-    // }
-
   } else if (potential_total_pan_min > zero_threshold) {
 
     // push over by total_pan (negative value) times total zoom applied
@@ -152,15 +140,15 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     new_pbz_relative_max = - inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
-    if (axis='x'){
-      console.log('left restrict', fully_zoomed_out)
-      // console.log('pot-min', potential_total_pan_min)
-      // console.log('pot-max', potential_total_pan_max)
-      // console.log('\n')
-    }
+    // if (axis='x'){
+    //   console.log('left restrict', fully_zoomed_out)
+    //   console.log('pot-min', potential_total_pan_min)
+    //   console.log('pot-max', potential_total_pan_max)
+    //   console.log('\n')
+    // }
 
-    // prevent push if fully zoomed out
-    if (fully_zoomed_out == true && inst_eff_zoom <=0){
+    // prevent push if fully zoomed out (&& inst_eff_zoom <=0)
+    if (fully_zoomed_out == true ){
       zoom_data.pan_by_zoom = 0
       zoom_data.total_pan_max = 0;
     }
@@ -180,32 +168,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
-    if (axis='x'){
-      console.log('right restrict', fully_zoomed_out)
-      // console.log('pot-min', potential_total_pan_min)
-      // console.log('pot-max', potential_total_pan_max)
-      // console.log('\n')
-    }
+    // if (axis='x'){
+    //   console.log('right restrict', fully_zoomed_out)
+    //   console.log('pot-min', potential_total_pan_min)
+    //   console.log('pot-max', potential_total_pan_max)
+    //   console.log('\n')
+    // }
 
     // prevent push if fully zoomed out
-    if (fully_zoomed_out == true && inst_eff_zoom <=0){
-      console.log(inst_eff_zoom)
+    if (fully_zoomed_out == true ){
       zoom_data.pan_by_zoom = 0
       zoom_data.total_pan_min = 0;
     }
 
 
-  }
-
-
-
-
-
-  if (axis == 'x'){
-    // console.log('total_pan_min', zoom_data.total_pan_min)
-    // console.log('total_pan_max', zoom_data.total_pan_max)
-    // console.log('potential_total_pan_max', potential_total_pan_max)
-    // console.log('\n')
   }
 
 };
