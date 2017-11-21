@@ -109,11 +109,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   var zero_threshold = 0.0001;
 
   var fully_zoomed_out = false;
-  if (axis=='x'){
-    if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
-      console.log(' fully_zoomed_out!!\n')
-      fully_zoomed_out = true;
-    }
+  if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
+    fully_zoomed_out = true;
   }
 
   // Panning in bounds

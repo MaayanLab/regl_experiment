@@ -260,16 +260,11 @@ function run_viz(regl, assets){
 
     camera['row-labels'].draw(() => {
       draw_labels['row']();
-    });
+      draw_labels['col']();
 
-    camera['row-labels'].draw(() => {
       draw_dendro['row']();
+      draw_dendro['col']();
     });
-
-    // camera['col-labels'].draw(() => {
-    //   draw_text_triangles();
-    //   draw_labels['col']();
-    // });
 
   }
 
