@@ -1,6 +1,10 @@
 
 module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_mat, viz_component, axis){
 
+  if (axis === 'x'){
+    tick = tick + 1
+  }
+
   /////////////////////////
   // Zooming Rules
   /////////////////////////
@@ -17,6 +21,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // calc unsanitized potential_total_zoom
   // checking this prevents the real total_zoom from going out of bounds
   var potential_total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
+
+  var zooming_below_one = false;
 
   // zooming within allowed range
   if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
@@ -39,6 +45,14 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     if (zoom_data.inst_zoom > 1){
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
+      // declare that this is zooming_below_one
+      if (zoom_data.total_zoom == 1){
+        // if (axis === 'x'){
+        //   console.log('zooming_below_one')
+        // }
+        zooming_below_one = false;
+      }
+
       // bump zoom down to min
       zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
       // set zoom to min
@@ -124,6 +138,24 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     fully_zoomed_out = true;
   }
 
+  var double_restrict = false;
+  if (potential_total_pan_min > zero_threshold && potential_total_pan_max > zero_threshold ) {
+    console.log('\n')
+    console.log("********* ")
+    console.log("********* ")
+    console.log('both')
+    console.log("********* ")
+    console.log("********* ")
+    console.log('\n')
+    double_restrict = true;
+    debugger
+
+    has_been_both = true
+  }
+
+
+
+
   // Panning in bounds
   if (potential_total_pan_min <= zero_threshold && potential_total_pan_max <= zero_threshold){
 
@@ -131,13 +163,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.total_pan_min = potential_total_pan_min;
     zoom_data.total_pan_max = potential_total_pan_max;
 
-  } else if (potential_total_pan_min > zero_threshold) {
+  }
+
+  if (potential_total_pan_min > zero_threshold) {
 
     if (axis ==='x'){
-      console.log('min restrict', fully_zoomed_out)
+      console.log('min restrict', tick, fully_zoomed_out)
       // console.log('pot-min', potential_total_pan_min)
       // console.log('pot-max', potential_total_pan_max)
       // console.log('\n')
+
+    }
+
+    if (axis === 'x' && has_been_both === true){
+      debugger
     }
 
     // push over by total_pan (negative value) times total zoom applied
@@ -154,7 +193,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
     // prevent push if fully zoomed out (&& inst_eff_zoom <=0)
-    if (fully_zoomed_out == true ){
+    if (fully_zoomed_out == true && double_restrict === false){
       if (axis === 'x'){
         console.log('<<<<<<<<<< Min prevent push')
       }
@@ -162,13 +201,19 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
       zoom_data.total_pan_max = 0;
     }
 
-  } else if (potential_total_pan_max > zero_threshold) {
+  }
+
+  if (potential_total_pan_max > zero_threshold) {
 
     if (axis === 'x'){
-      console.log('max restrict', fully_zoomed_out)
+      console.log('max restrict', tick, fully_zoomed_out)
       // console.log('pot-min', potential_total_pan_min)
       // console.log('pot-max', potential_total_pan_max)
       // console.log('\n')
+    }
+
+    if (axis === 'x' && has_been_both === true){
+      debugger
     }
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
@@ -185,13 +230,10 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
     // prevent push if fully zoomed out
-    if (fully_zoomed_out == true ){
+    if (fully_zoomed_out == true && double_restrict === false){
       if (axis === 'x'){
         console.log('>>>>>>>>>>>>> Max prevent push')
       }
-      // console.log('zoom_data.pan_by_zoom', zoom_data.pan_by_zoom)
-      // console.log('zoom_data.total_pan_min', zoom_data.total_pan_min)
-      // console.log('zoom_data.total_zoom', zoom_data.total_zoom)
       zoom_data.pan_by_zoom = 0;
       zoom_data.total_pan_min = 0;
     }

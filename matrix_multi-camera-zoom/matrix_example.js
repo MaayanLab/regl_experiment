@@ -13,6 +13,9 @@ zoom_rules['col-labels'] = require('./zoom_rules_general');
 d3 = require('d3');
 _ = require('underscore')
 
+tick = 0
+has_been_both = false
+
 
 still_interacting = false;
 initialize_viz = true;
