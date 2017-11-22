@@ -20,10 +20,10 @@ has_been_both = false
 still_interacting = false;
 initialize_viz = true;
 
+var filename = 'data/mult_view.json'
 // var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
 // var filename = 'data/cytof_25k.json'
-var filename = 'data/mult_view.json'
 
 require('resl')({
   manifest:{
@@ -108,10 +108,10 @@ function run_viz(regl, assets){
   var num_row = mat_data.length;
   var num_col = mat_data[0].length;
 
-  var zoom_restrict = {};
+  zoom_restrict = {};
 
   // setting zoom high for CyTOF example
-  max_zoom = 10;
+  max_zoom = 30;
   zoom_restrict.max_x = max_zoom;
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
@@ -159,7 +159,7 @@ function run_viz(regl, assets){
 
 
   // working on improved matrix zooming
-  var zoom_restrict_mat = {};
+  zoom_restrict_mat = {};
 
   zoom_restrict_mat.x = {};
   zoom_restrict_mat.x.max = max_zoom;
@@ -171,6 +171,14 @@ function run_viz(regl, assets){
   zoom_restrict_mat.y.min = 1.0;
   zoom_restrict_mat.y.ratio = 1;
 
+  // increase max zoom in y or x direction
+  if (num_row > num_col){
+    zoom_restrict_mat.y.max = zoom_restrict_mat.y.max * ( num_row/num_col );
+    zoom_restrict_mat.y.ratio = num_row/num_col;
+  } else if (num_col < num_row) {
+    zoom_restrict_mat.x.max = zoom_restrict_mat.x.max * ( num_col/num_row );
+    zoom_restrict_mat.x.ratio = num_col/num_row;
+  }
 
   // Set up viz_dim
   ///////////////////////
