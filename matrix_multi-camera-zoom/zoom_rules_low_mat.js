@@ -143,7 +143,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     console.log('\n')
     console.log("********* ")
     console.log("********* ")
-    console.log('both')
+    console.log('both', tick)
     console.log("********* ")
     console.log("********* ")
     console.log('\n')
@@ -205,7 +205,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   if (potential_total_pan_max > zero_threshold) {
 
-    if (double_restrict == false){
+    // if (double_restrict == false){
 
       if (axis === 'x'){
         console.log('\nmax restrict', tick, fully_zoomed_out)
@@ -241,7 +241,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
         // debugger
       }
 
-    }
+    // }
 
   }
 
@@ -249,13 +249,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // if double restrict, pin to min (left)
   if (double_restrict){
 
-    // pin matrix to left (zoom_data.pan_by_zoom)
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
 
-    if (axis == 'x'){
-      console.log('\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-      console.log('auto calc pan_by_zoom', tick)
-      console.log('zoom_data.pan_by_zoom' ,zoom_data.pan_by_zoom)
+    // pin matrix to left (zoom_data.pan_by_zoom) if already pinned to the left
+    // otherwise pin to right
+    console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------')
+    console.log('pot min', potential_total_pan_min)
+    console.log('pot max', potential_total_pan_max)
+
+
+    if (potential_total_pan_min < potential_total_pan_max) {
+      console.log('\n### PINNING LEFT ####\n##########')
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    } else {
+      console.log('\n### PINNING RIGHT ####\n##########')
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
     }
 
   }
