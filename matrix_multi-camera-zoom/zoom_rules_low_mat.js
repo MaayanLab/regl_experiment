@@ -3,6 +3,10 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
 
   if (axis === 'x'){
     tick = tick + 1
+    if (has_been_both === true){
+      // debugger
+      has_been_both = false
+    }
   }
 
   // make a copy of zoom_data for later use (not a reference)
@@ -264,15 +268,21 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     // pin matrix to left (zoom_data.pan_by_zoom) if already pinned to the left
     // otherwise pin to right
     console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------')
-    console.log('pot min', potential_total_pan_min)
-    console.log('pot max', potential_total_pan_max)
+    // console.log('pot min', potential_total_pan_min)
+    // console.log('pot max', potential_total_pan_max)
     console.log('total_pan min', zoom_data.total_pan_min)
     console.log('total_pan max', zoom_data.total_pan_max)
-    console.log('COPY total_pan min', zoom_data_copy.total_pan_min)
-    console.log('COPY total_pan max', zoom_data_copy.total_pan_max)
+    // console.log('COPY total_pan min', zoom_data_copy.total_pan_min)
+    // console.log('COPY total_pan max', zoom_data_copy.total_pan_max)
     console.log('prev_restrict', zoom_data_copy.prev_restrict)
 
     // debugger
+
+    /*
+
+    May be some problem with adding in push when already positioned at border...
+
+    */
 
     // if (potential_total_pan_min < potential_total_pan_max) {
     // if (zoom_data_copy.total_pan_min < zoom_data_copy.total_pan_max) {
@@ -280,12 +290,19 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
       console.log('\n######################')
       console.log('### PINNING LEFT ####', tick)
       console.log('######################\n')
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+
+      // adding push appears to be causing a problem, experiment with removing it
+
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min //- zoom_data.total_pan_min * zoom_data.total_zoom;
+
     } else if (zoom_data_copy.prev_restrict === 'max'){
       console.log('\n######################')
       console.log('### PINNING RIGHT ####', tick)
       console.log('######################\n')
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max // + zoom_data.total_pan_max * zoom_data.total_zoom;
     }
 
   }
