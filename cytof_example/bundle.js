@@ -559,7 +559,7 @@ initialize_viz = true;
 
 // var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
-var filename = 'cytof_35k.json'
+var filename = 'cytof_25k.json'
 // var filename = 'data/mult_view.json'
 
 require('resl')({

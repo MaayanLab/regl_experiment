@@ -1,5 +1,12 @@
 /*
   Making an interactive matrix using instancing.
+
+  use the following to run using budo:
+  budo matrix_example.js --open --live -- -t es2020
+
+  use the following command to create a bundle:
+  browserify -r es2020 matrix_example.js > ../cytof_example_2/bundle.js
+
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
