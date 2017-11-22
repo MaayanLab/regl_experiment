@@ -157,6 +157,12 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   }
 
 
+  // if (has_been_both === true){
+  //   console.log('\nstopping after double_restrict')
+  //   console.log('#####################################3')
+  //   console.log('#####################################3')
+  //   debugger
+  // }
 
 
   // Panning in bounds
@@ -165,6 +171,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     zoom_data.total_pan_min = potential_total_pan_min;
     zoom_data.total_pan_max = potential_total_pan_max;
+
+    zoom_data.prev_restrict = false;
 
   }
 
@@ -204,47 +212,47 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
       // debugger
     }
 
+    zoom_data.prev_restrict = 'min';
+
   }
 
   if (potential_total_pan_max > zero_threshold) {
 
-    // if (double_restrict == false){
+    if (axis === 'x'){
+      console.log('\nmax restrict', tick, fully_zoomed_out)
+      // console.log('pot-min', potential_total_pan_min)
+      // console.log('pot-max', potential_total_pan_max)
+      // console.log('\n')
+    }
 
+    // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
+    // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
+    // total_pan_max
+    zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+
+    // set total_pan_max to 0, no panning room remaining after being pushed left
+    zoom_data.total_pan_max = 0 ;
+
+    // the cursor is effectively locked on the max (right) side of the matrix
+    new_cursor_relative_min = viz_dim_mat.max - viz_dim_mat.min;
+    new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_min;
+    zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
+
+    // prevent push if fully zoomed out
+    if (fully_zoomed_out == true){
       if (axis === 'x'){
-        console.log('\nmax restrict', tick, fully_zoomed_out)
-        // console.log('pot-min', potential_total_pan_min)
-        // console.log('pot-max', potential_total_pan_max)
-        // console.log('\n')
+        console.log('>>>>>>>>>>>>> Max prevent push')
       }
-
-      // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
-      // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
-      // total_pan_max
-      zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-
-      // set total_pan_max to 0, no panning room remaining after being pushed left
-      zoom_data.total_pan_max = 0 ;
-
-      // the cursor is effectively locked on the max (right) side of the matrix
-      new_cursor_relative_min = viz_dim_mat.max - viz_dim_mat.min;
-      new_pbz_relative_min = - inst_eff_zoom * new_cursor_relative_min;
-      zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
-
-      // prevent push if fully zoomed out
-      if (fully_zoomed_out == true){
-        if (axis === 'x'){
-          console.log('>>>>>>>>>>>>> Max prevent push')
-        }
-        zoom_data.pan_by_zoom = 0;
-        zoom_data.total_pan_min = 0;
-      }
+      zoom_data.pan_by_zoom = 0;
+      zoom_data.total_pan_min = 0;
+    }
 
 
-      if (axis === 'x' && has_been_both === true){
-        // debugger
-      }
+    if (axis === 'x' && has_been_both === true){
+      // debugger
+    }
 
-    // }
+    zoom_data.prev_restrict = 'max';
 
   }
 
@@ -262,18 +270,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     console.log('total_pan max', zoom_data.total_pan_max)
     console.log('COPY total_pan min', zoom_data_copy.total_pan_min)
     console.log('COPY total_pan max', zoom_data_copy.total_pan_max)
+    console.log('prev_restrict', zoom_data_copy.prev_restrict)
 
     // debugger
 
     // if (potential_total_pan_min < potential_total_pan_max) {
-    if (zoom_data_copy.total_pan_min < zoom_data_copy.total_pan_max) {
+    // if (zoom_data_copy.total_pan_min < zoom_data_copy.total_pan_max) {
+    if (zoom_data_copy.prev_restrict === 'min') {
       console.log('\n######################')
-      console.log('### PINNING LEFT ####')
+      console.log('### PINNING LEFT ####', tick)
       console.log('######################\n')
       zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
-    } else {
+    } else if (zoom_data_copy.prev_restrict === 'max'){
       console.log('\n######################')
-      console.log('### PINNING RIGHT ####')
+      console.log('### PINNING RIGHT ####', tick)
       console.log('######################\n')
       zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
     }
