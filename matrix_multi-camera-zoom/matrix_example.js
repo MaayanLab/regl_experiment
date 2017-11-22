@@ -27,11 +27,11 @@ has_been_both = false
 still_interacting = false;
 initialize_viz = true;
 
-// var filename = 'data/mult_view.json'
+var filename = 'data/mult_view.json'
 // var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
 // var filename = 'data/cytof_10k.json'
-var filename = 'data/cytof_25k.json'
+// var filename = 'data/cytof_25k.json'
 // var filename = 'data/cytof_35k.json'
 
 require('resl')({
