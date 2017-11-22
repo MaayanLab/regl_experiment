@@ -5,6 +5,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     tick = tick + 1
   }
 
+  // make a copy of zoom_data for later use (not a reference)
+  var zoom_data_copy = _.clone(zoom_data);
+
   /////////////////////////
   // Zooming Rules
   /////////////////////////
@@ -255,13 +258,23 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------')
     console.log('pot min', potential_total_pan_min)
     console.log('pot max', potential_total_pan_max)
+    console.log('total_pan min', zoom_data.total_pan_min)
+    console.log('total_pan max', zoom_data.total_pan_max)
+    console.log('COPY total_pan min', zoom_data_copy.total_pan_min)
+    console.log('COPY total_pan max', zoom_data_copy.total_pan_max)
 
+    // debugger
 
-    if (potential_total_pan_min < potential_total_pan_max) {
-      console.log('\n### PINNING LEFT ####\n##########')
+    // if (potential_total_pan_min < potential_total_pan_max) {
+    if (zoom_data_copy.total_pan_min < zoom_data_copy.total_pan_max) {
+      console.log('\n######################')
+      console.log('### PINNING LEFT ####')
+      console.log('######################\n')
       zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
     } else {
-      console.log('\n### PINNING RIGHT ####\n##########')
+      console.log('\n######################')
+      console.log('### PINNING RIGHT ####')
+      console.log('######################\n')
       zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
     }
 

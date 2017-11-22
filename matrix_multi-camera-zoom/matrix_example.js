@@ -149,6 +149,10 @@ function run_viz(regl, assets){
     inst_data.pan_by_zoom = 0;
     inst_data.pan_by_drag = 0;
     inst_data.inst_zoom = 1;
+
+    // keep track of previous restrictions
+    inst_data.prev_restrict = false;
+
     // add to zoom_data
     zoom_data[inst_dim] = inst_data;
   });
