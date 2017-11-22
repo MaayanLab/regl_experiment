@@ -148,7 +148,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     console.log("********* ")
     console.log('\n')
     double_restrict = true;
-    debugger
+    // debugger
 
     has_been_both = true
   }
@@ -168,7 +168,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   if (potential_total_pan_min > zero_threshold) {
 
     if (axis ==='x'){
-      console.log('min restrict', tick, fully_zoomed_out)
+      console.log('\nmin restrict', tick, fully_zoomed_out)
       // console.log('pot-min', potential_total_pan_min)
       // console.log('pot-max', potential_total_pan_max)
       // console.log('\n')
@@ -198,16 +198,17 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
     }
 
     if (axis === 'x' && has_been_both === true){
-      debugger
+      // debugger
     }
 
   }
 
   if (potential_total_pan_max > zero_threshold) {
 
-    // if (double_restrict === false){
+    if (double_restrict == false){
+
       if (axis === 'x'){
-        console.log('max restrict', tick, fully_zoomed_out)
+        console.log('\nmax restrict', tick, fully_zoomed_out)
         // console.log('pot-min', potential_total_pan_min)
         // console.log('pot-max', potential_total_pan_max)
         // console.log('\n')
@@ -235,19 +236,28 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
         zoom_data.total_pan_min = 0;
       }
 
+
       if (axis === 'x' && has_been_both === true){
-        debugger
+        // debugger
       }
 
-    // }
+    }
 
   }
 
 
   // if double restrict, pin to min (left)
   if (double_restrict){
-    // pin matrix to left
-    zoom_data.pan_by_zoom = - inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+
+    // pin matrix to left (zoom_data.pan_by_zoom)
+    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+
+    if (axis == 'x'){
+      console.log('\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+      console.log('auto calc pan_by_zoom', tick)
+      console.log('zoom_data.pan_by_zoom' ,zoom_data.pan_by_zoom)
+    }
+
   }
 
   return zoom_data;
