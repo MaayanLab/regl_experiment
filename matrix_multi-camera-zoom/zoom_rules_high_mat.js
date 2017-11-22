@@ -38,11 +38,11 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
       // disable y zooming and panning
       ///////////////////////////////////
 
-      zoom_data.y.inst_zoom = 1;
-      // zoom_data.y.inst_zoom = ev.dsy;
+      // zoom_data.y.inst_zoom = 1;
+      zoom_data.y.inst_zoom = ev.dsy;
 
-      zoom_data.y.pan_by_drag = 0;
-      // zoom_data.y.pan_by_drag = ev.dy;
+      // zoom_data.y.pan_by_drag = 0;
+      zoom_data.y.pan_by_drag = ev.dy;
 
       zoom_data.y.cursor_position = ev.y0;
 
