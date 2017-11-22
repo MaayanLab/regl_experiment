@@ -7,6 +7,11 @@
   use the following command to create a bundle:
   browserify -r es2020 matrix_example.js > ../cytof_example_2/bundle.js
 
+  Bugs
+  **************
+  1. resizing causes errors with tracking zooming/panning
+  2. resizing does not immediately redraw figure
+
  */
 
 const regl = require('regl')({extensions: ['angle_instanced_arrays']})
