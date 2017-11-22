@@ -20,10 +20,12 @@ has_been_both = false
 still_interacting = false;
 initialize_viz = true;
 
-var filename = 'data/mult_view.json'
+// var filename = 'data/mult_view.json'
 // var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
-// var filename = 'data/cytof_25k.json'
+// var filename = 'data/cytof_10k.json'
+var filename = 'data/cytof_25k.json'
+// var filename = 'data/cytof_35k.json'
 
 require('resl')({
   manifest:{
@@ -61,7 +63,7 @@ const draw_text_triangles = regl({
 
     void main () {
       // reverse y position to get words to be upright
-      gl_Position = zoom * vec4( 0.25*position.x, -0.25 * position.y + 1.5, 0.0, 2.0);
+      gl_Position = zoom * vec4( 0.25*position.x, -0.25 * position.y + 1.2, 0.0, 2.0);
     }`,
   frag: `
     precision mediump float;
@@ -111,7 +113,7 @@ function run_viz(regl, assets){
   zoom_restrict = {};
 
   // setting zoom high for CyTOF example
-  max_zoom = 30;
+  max_zoom = 10;
   zoom_restrict.max_x = max_zoom;
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
@@ -281,6 +283,8 @@ function run_viz(regl, assets){
 
       draw_dendro['row']();
       draw_dendro['col']();
+
+      draw_text_triangles();
     });
 
   }
