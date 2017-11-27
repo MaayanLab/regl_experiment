@@ -46,13 +46,10 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
 
       zoom_data.y.cursor_position = ev.y0;
 
-      // console.log('somethign')
-      // set up two-stage zooming
-      // console.log(zoom_data.y.total_zoom)
-      // console.log(zoom_restrict.x.ratio)
-      if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
-        zoom_data.x.inst_zoom = 1;
-      }
+      // // set up two-stage zooming
+      // if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
+      //   zoom_data.x.inst_zoom = 1;
+      // }
 
       zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.mat.x, viz_component, 'x');
       zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.mat.y, viz_component, 'y');
