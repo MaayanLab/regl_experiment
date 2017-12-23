@@ -32,8 +32,8 @@ has_been_both = false
 still_interacting = false;
 initialize_viz = true;
 
-var filename = 'data/mult_view.json'
-// var filename = 'data/mnist.json'
+// var filename = 'data/mult_view.json'
+var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
 // var filename = 'data/cytof_10k.json'
 // var filename = 'data/cytof_25k.json'
@@ -53,7 +53,7 @@ require('resl')({
 
 // max ~200 min ~20
 var font_detail = 200;
-text_vect = vectorizeText('Title', {
+text_vect = vectorizeText('Something', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
@@ -119,19 +119,20 @@ function run_viz(regl, assets){
   //////////////////////////
   mat_data = network.mat
 
-  var num_row = mat_data.length;
-  var num_col = mat_data[0].length;
+  num_row = mat_data.length;
+  num_col = mat_data[0].length;
 
   zoom_restrict = {};
 
   // setting zoom high for CyTOF example
-  max_zoom = 10;
+  max_zoom = 200;
   zoom_restrict.max_x = max_zoom;
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;
   zoom_restrict.min_y = 1.0;
   zoom_restrict.ratio_x = 1;
   zoom_restrict.ratio_y = 1;
+  zoom_restrict.zoom_ratio = num_row/num_col;
 
   // run one fix of mat offset
   fix_once = true
