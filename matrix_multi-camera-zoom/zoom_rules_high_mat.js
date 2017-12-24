@@ -50,7 +50,9 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
       There is a problem toggling X-zoom when zooming quickly
       */
 
-      var inst_zoom_ratio =
+      // var inst_zoom_ratio =
+
+
       // set up two-stage zooming
       if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
         zoom_data.x.inst_zoom = 1;
