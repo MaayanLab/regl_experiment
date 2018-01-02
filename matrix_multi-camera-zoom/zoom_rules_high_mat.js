@@ -53,14 +53,36 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
       // var inst_zoom_ratio =
 
 
+      /*
+      Zoom Switch only working for tall matrices not wide matrices
+      */
+
+
       // set up two-stage zooming
       if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
+
         zoom_data.x.inst_zoom = 1;
+
+        console.log(zoom_data.y.inst_zoom)
+        var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
+
+        // check potential_zoom
+        if (potential_zoom > zoom_restrict.y.ratio){
+          console.log('--------------------------')
+          console.log('passed threshold ' + potential_zoom)
+          zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
+          console.log()
+          console.log('--------------------------')
+        }
+
       } else {
-        // checking total_zoom when s
-        console.log(zoom_data.y.total_zoom,
-        zoom_data.x.total_zoom,
-        zoom_data.y.total_zoom / zoom_data.x.total_zoom)
+
+        // checking total_zoom when
+        console.log(
+          zoom_data.y.total_zoom,
+          zoom_data.x.total_zoom,
+          zoom_data.y.total_zoom / zoom_data.x.total_zoom
+        )
 
         // Fix for fast zoom_switching
         //////////////////////////////////
@@ -71,7 +93,6 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
         */
 
         // if (zoom_data.y.total_zoom/)
-
 
       }
 
