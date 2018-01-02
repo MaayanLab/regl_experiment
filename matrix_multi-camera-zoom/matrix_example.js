@@ -33,10 +33,10 @@ still_interacting = false;
 initialize_viz = true;
 
 // var filename = 'data/mult_view.json'
-var filename = 'data/mnist.json'
+// var filename = 'data/mnist.json'
 // var filename = 'data/mnist_thin.json'
 // var filename = 'data/cytof_10k.json'
-// var filename = 'data/cytof_25k.json'
+var filename = 'data/cytof_25k.json'
 // var filename = 'data/cytof_35k.json'
 
 require('resl')({
@@ -53,7 +53,7 @@ require('resl')({
 
 // max ~200 min ~20
 var font_detail = 200;
-text_vect = vectorizeText('Something', {
+text_vect = vectorizeText('25,000 rows', {
   textAlign: 'center',
   textBaseline: 'middle',
   triangles:true,
