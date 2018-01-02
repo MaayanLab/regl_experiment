@@ -125,7 +125,7 @@ function run_viz(regl, assets){
   zoom_restrict = {};
 
   // setting zoom high for CyTOF example
-  max_zoom = 200;
+  max_zoom = 20;
   zoom_restrict.max_x = max_zoom;
   zoom_restrict.max_y = max_zoom;
   zoom_restrict.min_x = 1.0;

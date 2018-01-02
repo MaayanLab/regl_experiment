@@ -63,38 +63,43 @@ module.exports = function zoom_rules_high_mat(regl, zoom_restrict, zoom_data, vi
 
         zoom_data.x.inst_zoom = 1;
 
-        console.log(zoom_data.y.inst_zoom)
+        // console.log(zoom_data.y.inst_zoom)
         var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
 
         // check potential_zoom
         if (potential_zoom > zoom_restrict.y.ratio){
-          console.log('--------------------------')
-          console.log('passed threshold ' + potential_zoom)
+          // console.log('--------------------------')
+          // console.log('passed threshold ' + potential_zoom)
+
+          // bump x inst_zoom
           zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
-          console.log()
-          console.log('--------------------------')
+
+          // console.log()
+          // console.log('--------------------------')
         }
 
-      } else {
-
-        // checking total_zoom when
-        console.log(
-          zoom_data.y.total_zoom,
-          zoom_data.x.total_zoom,
-          zoom_data.y.total_zoom / zoom_data.x.total_zoom
-        )
-
-        // Fix for fast zoom_switching
-        //////////////////////////////////
-        /*
-        1. Check whether zoom ratio is off
-        2. adjust x.inst_zoom to fix ratio
-        3. adjust x.total_zoom to fix ratio
-        */
-
-        // if (zoom_data.y.total_zoom/)
-
       }
+
+      // else {
+
+      //   // // checking total_zoom when
+      //   // console.log(
+      //   //   zoom_data.y.total_zoom,
+      //   //   zoom_data.x.total_zoom,
+      //   //   zoom_data.y.total_zoom / zoom_data.x.total_zoom
+      //   // )
+
+      //   // Fix for fast zoom_switching
+      //   //////////////////////////////////
+      //   /*
+      //   1. Check whether zoom ratio is off
+      //   2. adjust x.inst_zoom to fix ratio
+      //   3. adjust x.total_zoom to fix ratio
+      //   */
+
+      //   // if (zoom_data.y.total_zoom/)
+
+      // }
 
 
 

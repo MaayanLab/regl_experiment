@@ -67,6 +67,11 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data, viz_dim_m
   // Pan Rules
   //////////////////////////////////
 
+  // do not allow simultaneous panning and zooming
+  if (zoom_data.inst_zoom > 1){
+    zoom_data.pan_by_drag = 0;
+  }
+
   // restrict min pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
     if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
