@@ -1,3 +1,16 @@
+1-2-2018 Notes
+===============
+  Run
+
+    >> budo matrix_example.js --open --live -- -t es2020
+
+  in the
+
+    matrix_multi-camera-zoom
+
+  directory
+
+
 2D label Notes
 ==============
 Nicolas Fernandez @cornhundred 11:55
