@@ -64,7 +64,8 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
         // new_position = mat_rotate * mat_scale * new_position + vec_translate;
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
-        gl_Position = zoom * vec4(new_position, 1);
+        // depth is being set to 0.45
+        gl_Position = zoom * vec4(new_position[0], new_position[1], 0.5, 1);
 
       }
     `,
@@ -98,7 +99,14 @@ module.exports = function draw_mat_labels(regl, num_rows, inst_rc){
     },
 
     count: 3,
-    instances: num_rows
+    instances: num_rows,
+    depth: {
+      enable: true,
+      mask: true,
+      func: 'less',
+      // func: 'greater',
+      range: [0, 1]
+    },
 
   });
 
