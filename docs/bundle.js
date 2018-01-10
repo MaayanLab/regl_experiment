@@ -1165,6 +1165,9 @@ function run_viz(regl, assets){
   // generate draw_cells_props using buffers
   var draw_cells_props = make_draw_cells_props(arrs);
 
+  var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
+  var scaled_height = 0.5 / height_to_width;
+
   var spillover_tri_positions = [
     // left spillover rect
     {'pos': [[-1, 1], [-0.5, -1], [-1.0, -1]]},
@@ -1175,12 +1178,12 @@ function run_viz(regl, assets){
     {'pos': [[1, 1], [0.5,  1], [0.5, -1]]},
 
     // top spillover rect
-    {'pos': [[-0.5, 1], [-0.5, 0.373], [0.5, 1]]},
-    {'pos': [[ 0.5, 1], [0.5, 0.373], [-0.5, 0.373]]},
+    {'pos': [[-0.5, 1], [-0.5, scaled_height], [0.5, 1]]},
+    {'pos': [[ 0.5, 1], [0.5, scaled_height], [-0.5, scaled_height]]},
 
     // bottom spillover rect
-    {'pos': [[-0.5, -1], [-0.5, -0.373], [0.5, -1]]},
-    {'pos': [[ 0.5, -1], [0.5, -0.373], [-0.5, -0.373]]},
+    {'pos': [[-0.5, -1], [-0.5, -scaled_height], [0.5, -1]]},
+    {'pos': [[ 0.5, -1], [0.5, -scaled_height], [-0.5, -scaled_height]]},
   ]
 
   camera_type = 'mat'
@@ -1776,13 +1779,13 @@ exports.interleave3 = function(x, y, z) {
   y  = (y | (y<<4))  & 3272356035;
   y  = (y | (y<<2))  & 1227133513;
   x |= (y << 1);
-
+  
   z &= 0x3FF;
   z  = (z | (z<<16)) & 4278190335;
   z  = (z | (z<<8))  & 251719695;
   z  = (z | (z<<4))  & 3272356035;
   z  = (z | (z<<2))  & 1227133513;
-
+  
   return x | (z << 2);
 }
 
@@ -5295,7 +5298,7 @@ function boxIntersect(red, blue, visit, full) {
       //Special case: 1d complete
       sweep.init(n)
       retval = sweep.sweepComplete(
-        d, visit,
+        d, visit, 
         0, n, redList, redIds,
         0, n, redList, redIds)
     } else {
@@ -5311,7 +5314,7 @@ function boxIntersect(red, blue, visit, full) {
         if(d === 1) {
           //Special case: 1d bipartite
           retval = sweep.sweepBipartite(
-            d, visit,
+            d, visit, 
             0, n, redList,  redIds,
             0, m, blueList, blueIds)
         } else {
@@ -5412,15 +5415,15 @@ var ARGS = [
 ]
 
 function generateBruteForce(redMajor, flip, full) {
-  var funcName = 'bruteForce' +
-    (redMajor ? 'Red' : 'Blue') +
+  var funcName = 'bruteForce' + 
+    (redMajor ? 'Red' : 'Blue') + 
     (flip ? 'Flip' : '') +
     (full ? 'Full' : '')
 
   var code = ['function ', funcName, '(', ARGS.join(), '){',
     'var ', ELEM_SIZE, '=2*', DIMENSION, ';']
 
-  var redLoop =
+  var redLoop = 
     'for(var i=' + RED_START + ',' + RED_PTR + '=' + ELEM_SIZE + '*' + RED_START + ';' +
         'i<' + RED_END +';' +
         '++i,' + RED_PTR + '+=' + ELEM_SIZE + '){' +
@@ -5428,7 +5431,7 @@ function generateBruteForce(redMajor, flip, full) {
             'x1=' + RED_BOXES + '[' + AXIS + '+' + RED_PTR + '+' + DIMENSION + '],' +
             'xi=' + RED_INDEX + '[i];'
 
-  var blueLoop =
+  var blueLoop = 
     'for(var j=' + BLUE_START + ',' + BLUE_PTR + '=' + ELEM_SIZE + '*' + BLUE_START + ';' +
         'j<' + BLUE_END + ';' +
         '++j,' + BLUE_PTR + '+=' + ELEM_SIZE + '){' +
@@ -5467,7 +5470,7 @@ function generateBruteForce(redMajor, flip, full) {
   code.push(');if(' + RETVAL + '!==void 0)return ' + RETVAL + ';}}}')
 
   return {
-    name: funcName,
+    name: funcName, 
     code: code.join('')
   }
 }
@@ -5533,11 +5536,11 @@ var genPartition = require('./partition')
 //Twiddle parameters
 var BRUTE_FORCE_CUTOFF    = 128       //Cut off for brute force search
 var SCAN_CUTOFF           = (1<<22)   //Cut off for two way scan
-var SCAN_COMPLETE_CUTOFF  = (1<<22)
+var SCAN_COMPLETE_CUTOFF  = (1<<22)  
 
 //Partition functions
 var partitionInteriorContainsInterval = genPartition(
-  '!(lo>=p0)&&!(p1>=hi)',
+  '!(lo>=p0)&&!(p1>=hi)', 
   ['p0', 'p1'])
 
 var partitionStartEqual = genPartition(
@@ -5586,10 +5589,10 @@ function iterInit(d, count) {
 
 //Append item to queue
 function iterPush(ptr,
-  axis,
-  redStart, redEnd,
-  blueStart, blueEnd,
-  state,
+  axis, 
+  redStart, redEnd, 
+  blueStart, blueEnd, 
+  state, 
   lo, hi) {
 
   var iptr = IFRAME_SIZE * ptr
@@ -5701,14 +5704,14 @@ function boxIntersectIter(
       0,
       0, xSize,
       0, ySize,
-      initFull ? 16 : 0,
+      initFull ? 16 : 0, 
       -Infinity, Infinity)
   if(!initFull) {
     iterPush(top++,
       0,
       0, ySize,
       0, xSize,
-      1,
+      1, 
       -Infinity, Infinity)
   }
 
@@ -5761,14 +5764,14 @@ function boxIntersectIter(
         continue
       }
     }
-
+    
     var redCount  = redEnd  - redStart
     var blueCount = blueEnd - blueStart
 
     if(full) {
       if(d * redCount * (redCount + blueCount) < SCAN_COMPLETE_CUTOFF) {
         retval = sweep.scanComplete(
-          d, axis, visit,
+          d, axis, visit, 
           redStart, redEnd, red, redIndex,
           blueStart, blueEnd, blue, blueIndex)
         if(retval !== void 0) {
@@ -5790,7 +5793,7 @@ function boxIntersectIter(
       } else if(d * redCount * blueCount < SCAN_CUTOFF) {
         //If input medium sized, then use sweep and prune
         retval = sweep.scanBipartite(
-          d, axis, visit, flip,
+          d, axis, visit, flip, 
           redStart, redEnd, red, redIndex,
           blueStart, blueEnd, blue, blueIndex)
         if(retval !== void 0) {
@@ -5799,10 +5802,10 @@ function boxIntersectIter(
         continue
       }
     }
-
+    
     //First, find all red intervals whose interior contains (lo,hi)
     var red0 = partitionInteriorContainsInterval(
-      d, axis,
+      d, axis, 
       redStart, redEnd, red, redIndex,
       lo, hi)
 
@@ -5859,7 +5862,7 @@ function boxIntersectIter(
       //  Points > mid point
       //
       var blue0 = findMedian(
-        d, axis,
+        d, axis, 
         blueStart, blueEnd, blue, blueIndex)
       var mid = blue[elemSize * blue0 + axis]
       var blue1 = partitionStartEqual(
@@ -6028,8 +6031,8 @@ function insertionSort(d, axis, start, end, boxes, ids) {
   var boxPtr = elemSize * (start+1) + axis
   for(var i=start+1; i<end; ++i, boxPtr+=elemSize) {
     var x = boxes[boxPtr]
-    for(var j=i, ptr=elemSize*(i-1);
-        j>start && boxes[ptr+axis] > x;
+    for(var j=i, ptr=elemSize*(i-1); 
+        j>start && boxes[ptr+axis] > x; 
         --j, ptr-=elemSize) {
       //Swap
       var aPtr = ptr
@@ -6059,14 +6062,14 @@ function findMedian(d, axis, start, end, boxes, ids) {
   var elemSize = 2*d
   var pivot    = mid
   var value    = boxes[elemSize*mid+axis]
-
+  
   while(lo < hi) {
     if(hi - lo < PARTITION_THRESHOLD) {
       insertionSort(d, axis, lo, hi, boxes, ids)
       value = boxes[elemSize*mid+axis]
       break
     }
-
+    
     //Select pivot using median-of-3
     var count  = hi - lo
     var pivot0 = (Math.random()*count+lo)|0
@@ -6113,7 +6116,7 @@ function findMedian(d, axis, start, end, boxes, ids) {
 
     //Partition using pivot
     pivot = partitionStartLessThan(
-      d, axis,
+      d, axis, 
       lo, hi-1, boxes, ids,
       value)
 
@@ -6132,7 +6135,7 @@ function findMedian(d, axis, start, end, boxes, ids) {
     //Swap pivot to last pivot
     if(mid < pivot) {
       hi = pivot-1
-      while(lo < hi &&
+      while(lo < hi && 
         boxes[elemSize*(hi-1)+axis] === value) {
         hi -= 1
       }
@@ -6150,7 +6153,7 @@ function findMedian(d, axis, start, end, boxes, ids) {
 
   //Make sure pivot is at start
   return partitionStartLessThan(
-    d, axis,
+    d, axis, 
     start, mid, boxes, ids,
     boxes[elemSize*mid+axis])
 }
@@ -6283,19 +6286,19 @@ function comparePivot(i, y, b, data) {
 }
 
 function quickSort(left, right, data) {
-  var sixth = (right - left + 1) / 6 | 0,
-      index1 = left + sixth,
-      index5 = right - sixth,
-      index3 = left + right >> 1,
-      index2 = index3 - sixth,
-      index4 = index3 + sixth,
-      el1 = index1,
-      el2 = index2,
-      el3 = index3,
-      el4 = index4,
-      el5 = index5,
-      less = left + 1,
-      great = right - 1,
+  var sixth = (right - left + 1) / 6 | 0, 
+      index1 = left + sixth, 
+      index5 = right - sixth, 
+      index3 = left + right >> 1, 
+      index2 = index3 - sixth, 
+      index4 = index3 + sixth, 
+      el1 = index1, 
+      el2 = index2, 
+      el3 = index3, 
+      el4 = index4, 
+      el5 = index5, 
+      less = left + 1, 
+      great = right - 1, 
       tmp = 0
   if(compare(el1, el2, data)) {
     tmp = el1
@@ -6527,7 +6530,7 @@ function sweepBipartite(
   //process events from left->right
   var n = ptr >>> 1
   isort(SWEEP_EVENTS, n)
-
+  
   var redActive  = 0
   var blueActive = 0
   for(var i=0; i<n; ++i) {
@@ -6564,7 +6567,7 @@ function sweepBipartite(
 }
 
 //Complete sweep
-function sweepComplete(d, visit,
+function sweepComplete(d, visit, 
   redStart, redEnd, red, redIndex,
   blueStart, blueEnd, blue, blueIndex) {
 
@@ -6594,7 +6597,7 @@ function sweepComplete(d, visit,
   //process events from left->right
   var n = ptr >>> 1
   isort(SWEEP_EVENTS, n)
-
+  
   var redActive    = 0
   var blueActive   = 0
   var commonActive = 0
@@ -6605,7 +6608,7 @@ function sweepComplete(d, visit,
       color = 2
       i += 1
     }
-
+    
     if(e < 0) {
       //Create event
       var id = -(e>>1) - 1
@@ -6672,7 +6675,7 @@ function scanBipartite(
   d, axis, visit, flip,
   redStart,  redEnd, red, redIndex,
   blueStart, blueEnd, blue, blueIndex) {
-
+  
   var ptr      = 0
   var elemSize = 2*d
   var istart   = axis
@@ -6704,7 +6707,7 @@ function scanBipartite(
   //process events from left->right
   var n = ptr >>> 1
   isort(SWEEP_EVENTS, n)
-
+  
   var redActive    = 0
   for(var i=0; i<n; ++i) {
     var e = SWEEP_EVENTS[2*i+1]|0
@@ -6713,7 +6716,7 @@ function scanBipartite(
       var isRed = false
       if(idx >= BLUE_FLAG) {
         isRed = !flip
-        idx -= BLUE_FLAG
+        idx -= BLUE_FLAG 
       } else {
         isRed = !!flip
         idx -= 1
@@ -6723,7 +6726,7 @@ function scanBipartite(
       } else {
         var blueId  = blueIndex[idx]
         var bluePtr = elemSize * idx
-
+        
         var b0 = blue[bluePtr+axis+1]
         var b1 = blue[bluePtr+axis+1+d]
 
@@ -6732,13 +6735,13 @@ red_loop:
           var oidx   = RED_SWEEP_QUEUE[j]
           var redPtr = elemSize * oidx
 
-          if(b1 < red[redPtr+axis+1] ||
+          if(b1 < red[redPtr+axis+1] || 
              red[redPtr+axis+1+d] < b0) {
             continue
           }
 
           for(var k=axis+2; k<d; ++k) {
-            if(blue[bluePtr + k + d] < red[redPtr + k] ||
+            if(blue[bluePtr + k + d] < red[redPtr + k] || 
                red[redPtr + k + d] < blue[bluePtr + k]) {
               continue red_loop
             }
@@ -6752,7 +6755,7 @@ red_loop:
             retval = visit(redId, blueId)
           }
           if(retval !== void 0) {
-            return retval
+            return retval 
           }
         }
       }
@@ -6790,7 +6793,7 @@ function scanComplete(
   //process events from left->right
   var n = ptr >>> 1
   isort(SWEEP_EVENTS, n)
-
+  
   var redActive    = 0
   for(var i=0; i<n; ++i) {
     var e = SWEEP_EVENTS[2*i+1]|0
@@ -6816,12 +6819,12 @@ red_loop:
           }
 
           var redPtr = elemSize * oidx
-          if(b1 < red[redPtr+axis+1] ||
+          if(b1 < red[redPtr+axis+1] || 
             red[redPtr+axis+1+d] < b0) {
             continue
           }
           for(var k=axis+2; k<d; ++k) {
-            if(blue[bluePtr + k + d] < red[redPtr + k] ||
+            if(blue[bluePtr + k + d] < red[redPtr + k] || 
                red[redPtr + k + d]   < blue[bluePtr + k]) {
               continue red_loop
             }
@@ -6829,7 +6832,7 @@ red_loop:
 
           var retval = visit(redId, blueId)
           if(retval !== void 0) {
-            return retval
+            return retval 
           }
         }
       }
@@ -6925,7 +6928,7 @@ function cdt2d(points, edges, options) {
     } else {
       return triangulation.cells()
     }
-
+    
   } else {
     return cells
   }
@@ -8071,7 +8074,7 @@ function Procedure() {
 function compileCwise(user_args) {
   //Create procedure
   var proc = new Procedure()
-
+  
   //Parse blocks
   proc.pre    = user_args.pre
   proc.body   = user_args.body
@@ -8126,12 +8129,12 @@ function compileCwise(user_args) {
       throw new Error("cwise: Unknown argument type " + proc_args[i])
     }
   }
-
+  
   //Make sure at least one array argument was specified
   if(proc.arrayArgs.length <= 0) {
     throw new Error("cwise: No array arguments specified")
   }
-
+  
   //Make sure arguments are correct
   if(proc.pre.args.length > proc_args.length) {
     throw new Error("cwise: Too many arguments in pre() block")
@@ -8145,10 +8148,10 @@ function compileCwise(user_args) {
 
   //Check debug flag
   proc.debug = !!user_args.printCode || !!user_args.debug
-
+  
   //Retrieve name
   proc.funcName = user_args.funcName || "cwise"
-
+  
   //Read in block size
   proc.blockSize = user_args.blockSize || 64
 
@@ -8188,7 +8191,7 @@ function innerFill(order, proc, body) {
   }
   if (vars.length > 0) {
     code.push("var " + vars.join(","))
-  }
+  }  
   //Scan loop
   for(i=dimension-1; i>=0; --i) { // Start at largest stride and work your way inwards
     idx = order[i]
@@ -8396,7 +8399,7 @@ function generateCWiseOp(proc, typesig) {
     dtypes[i] = typesig[2*i]
     orders[i] = typesig[2*i+1]
   }
-
+  
   //Determine where block and loop indices start and end
   var blockBegin = [], blockEnd = [] // These indices are exposed as blocks
   var loopBegin = [], loopEnd = [] // These indices are iterated over
@@ -8426,7 +8429,7 @@ function generateCWiseOp(proc, typesig) {
   var arglist = ["SS"] // SS is the overall shape over which we iterate
   var code = ["'use strict'"]
   var vars = []
-
+  
   for(var j=0; j<dimension; ++j) {
     vars.push(["s", j, "=SS[", j, "]"].join("")) // The limits for each dimension.
   }
@@ -8434,11 +8437,11 @@ function generateCWiseOp(proc, typesig) {
     arglist.push("a"+i) // Actual data array
     arglist.push("t"+i) // Strides
     arglist.push("p"+i) // Offset in the array at which the data starts (also used for iterating over the data)
-
+    
     for(var j=0; j<dimension; ++j) { // Unpack the strides into vars for looping
       vars.push(["t",i,"p",j,"=t",i,"[",loopBegin[i]+j,"]"].join(""))
     }
-
+    
     for(var j=0; j<Math.abs(proc.arrayBlockIndices[i]); ++j) { // Unpack the strides into vars for block iteration
       vars.push(["t",i,"b",j,"=t",i,"[",blockBegin[i]+j,"]"].join(""))
     }
@@ -8464,7 +8467,7 @@ function generateCWiseOp(proc, typesig) {
       if(off_arg.offset[j] === 0) {
         continue
       } else if(off_arg.offset[j] === 1) {
-        init_string.push(["t", off_arg.array, "p", j].join(""))
+        init_string.push(["t", off_arg.array, "p", j].join(""))      
       } else {
         init_string.push([off_arg.offset[j], "*t", off_arg.array, "p", j].join(""))
       }
@@ -8487,7 +8490,7 @@ function generateCWiseOp(proc, typesig) {
   for(var i=0; i<proc.arrayArgs.length; ++i) {
     code.push("p"+i+"|=0")
   }
-
+  
   //Inline prelude
   if(proc.pre.body.length > 3) {
     code.push(processBlock(proc.pre, proc, dtypes))
@@ -8506,11 +8509,11 @@ function generateCWiseOp(proc, typesig) {
   if(proc.post.body.length > 3) {
     code.push(processBlock(proc.post, proc, dtypes))
   }
-
+  
   if(proc.debug) {
     console.log("-----Generated cwise routine for ", typesig, ":\n" + code.join("\n") + "\n----------")
   }
-
+  
   var loopName = [(proc.funcName||"unnamed"), "_cwise_loop_", orders[0].join("s"),"m",matched,typeSummary(dtypes)].join("")
   var f = new Function(["function ",loopName,"(", arglist.join(","),"){", code.join("\n"),"} return ", loopName].join(""))
   return f()
@@ -8549,7 +8552,7 @@ function createThunk(proc) {
   var code = ["'use strict'", "var CACHED={}"]
   var vars = []
   var thunkName = proc.funcName + "_cwise_thunk"
-
+  
   //Build thunk
   code.push(["return function ", thunkName, "(", proc.shimArgs.join(","), "){"].join(""))
   var typesig = []
@@ -8589,7 +8592,7 @@ function createThunk(proc) {
   vars.push(["type=[", string_typesig.join(","), "].join()"].join(""))
   vars.push("proc=CACHED[type]")
   code.push("var " + vars.join(","))
-
+  
   code.push(["if(!proc){",
              "CACHED[type]=proc=compile([", typesig.join(","), "])}",
              "return proc(", proc_args.join(","), ")}"].join(""))
@@ -8597,7 +8600,7 @@ function createThunk(proc) {
   if(proc.debug) {
     console.log("-----Generated thunk:\n" + code.join("\n") + "\n----------")
   }
-
+  
   //Compile thunk
   var thunk = new Function("compile", code.join("\n"))
   return thunk(compile.bind(undefined, proc))
@@ -9855,7 +9858,7 @@ d.gs = function (dscr, get, set/*, options*/) {
           svg.remove();
         }
       }
-      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX,
+      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX, 
       point.y = e.clientY;
       point = point.matrixTransform(container.getScreenCTM().inverse());
       return [ point.x, point.y ];
@@ -10230,7 +10233,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     }
     function mousewheeled() {
       var dispatch = event.of(this, arguments);
-      if (mousewheelTimer) clearTimeout(mousewheelTimer); else d3_selection_interrupt.call(this),
+      if (mousewheelTimer) clearTimeout(mousewheelTimer); else d3_selection_interrupt.call(this), 
       translate0 = location(center0 = center || d3.mouse(this)), zoomstarted(dispatch);
       mousewheelTimer = setTimeout(function() {
         mousewheelTimer = null;
@@ -10599,7 +10602,7 @@ d.gs = function (dscr, get, set/*, options*/) {
   d3.xhr = d3_xhrType(d3_identity);
   function d3_xhrType(response) {
     return function(url, mimeType, callback) {
-      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType,
+      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType, 
       mimeType = null;
       return d3_xhr(url, mimeType, response, callback);
     };
@@ -11440,7 +11443,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     return n ? (date.y = d3_time_expandYear(+n[0]), i + n[0].length) : -1;
   }
   function d3_time_parseZone(date, string, i) {
-    return /^[+-]\d{4}$/.test(string = string.slice(i, i + 5)) ? (date.Z = -string,
+    return /^[+-]\d{4}$/.test(string = string.slice(i, i + 5)) ? (date.Z = -string, 
     i + 5) : -1;
   }
   function d3_time_expandYear(d) {
@@ -11633,7 +11636,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     var λ00, φ00, λ0, cosφ0, sinφ0;
     d3_geo_area.point = function(λ, φ) {
       d3_geo_area.point = nextPoint;
-      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4),
+      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4), 
       sinφ0 = Math.sin(φ);
     };
     function nextPoint(λ, φ) {
@@ -13462,7 +13465,7 @@ d.gs = function (dscr, get, set/*, options*/) {
       return _ ? center([ -_[1], _[0] ]) : (_ = center(), [ _[1], -_[0] ]);
     };
     projection.rotate = function(_) {
-      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(),
+      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(), 
       [ _[0], _[1], _[2] - 90 ]);
     };
     return rotate([ 0, 0, 90 ]);
@@ -14316,7 +14319,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     };
     quadtree.extent = function(_) {
       if (!arguments.length) return x1 == null ? null : [ [ x1, y1 ], [ x2, y2 ] ];
-      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0],
+      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0], 
       y2 = +_[1][1];
       return quadtree;
     };
@@ -16041,7 +16044,7 @@ d.gs = function (dscr, get, set/*, options*/) {
         return d3_layout_treemapPad(node, x);
       }
       var type;
-      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ],
+      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ], 
       padConstant) : padConstant;
       return treemap;
     };
@@ -16444,7 +16447,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     };
     scale.rangePoints = function(x, padding) {
       if (arguments.length < 2) padding = 0;
-      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = (start + stop) / 2,
+      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = (start + stop) / 2, 
       0) : (stop - start) / (domain.length - 1 + padding);
       range = steps(start + step * padding / 2, step);
       rangeBand = 0;
@@ -16456,7 +16459,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     };
     scale.rangeRoundPoints = function(x, padding) {
       if (arguments.length < 2) padding = 0;
-      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = stop = Math.round((start + stop) / 2),
+      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = stop = Math.round((start + stop) / 2), 
       0) : (stop - start) / (domain.length - 1 + padding) | 0;
       range = steps(start + Math.round(step * padding / 2 + (stop - start - (domain.length - 1 + padding) * step) / 2), step);
       rangeBand = 0;
@@ -16884,7 +16887,7 @@ d.gs = function (dscr, get, set/*, options*/) {
     return points.length < 4 ? d3_svg_lineLinear(points) : points[1] + d3_svg_lineHermite(points.slice(1, -1), d3_svg_lineCardinalTangents(points, tension));
   }
   function d3_svg_lineCardinalClosed(points, tension) {
-    return points.length < 3 ? d3_svg_lineLinearClosed(points) : points[0] + d3_svg_lineHermite((points.push(points[0]),
+    return points.length < 3 ? d3_svg_lineLinearClosed(points) : points[0] + d3_svg_lineHermite((points.push(points[0]), 
     points), d3_svg_lineCardinalTangents([ points[points.length - 2] ].concat(points, [ points[1] ]), tension));
   }
   function d3_svg_lineCardinal(points, tension) {
@@ -17657,7 +17660,7 @@ d.gs = function (dscr, get, set/*, options*/) {
         var g = d3.select(this);
         var scale0 = this.__chart__ || scale, scale1 = this.__chart__ = scale.copy();
         var ticks = tickValues == null ? scale1.ticks ? scale1.ticks.apply(scale1, tickArguments_) : scale1.domain() : tickValues, tickFormat = tickFormat_ == null ? scale1.tickFormat ? scale1.tickFormat.apply(scale1, tickArguments_) : d3_identity : tickFormat_, tick = g.selectAll(".tick").data(ticks, scale1), tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", ε), tickExit = d3.transition(tick.exit()).style("opacity", ε).remove(), tickUpdate = d3.transition(tick.order()).style("opacity", 1), tickSpacing = Math.max(innerTickSize, 0) + tickPadding, tickTransform;
-        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"),
+        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"), 
         d3.transition(path));
         tickEnter.append("line");
         tickEnter.append("text");
@@ -18292,7 +18295,7 @@ if(!hasTypedArrays) {
     buffer.writeUInt32LE(hi, 4, true)
     return buffer.readDoubleLE(0, true)
   }
-  module.exports.pack = toDouble
+  module.exports.pack = toDouble  
   function lowUint(n) {
     buffer.writeDoubleLE(n, 0, true)
     return buffer.readUInt32LE(0, true)
@@ -19316,7 +19319,7 @@ function fixDoubleBlack(stack) {
         } else {
           //console.log("case 2: black sibling, black parent", p.right.value)
           p.right = repaint(RED, s)
-          continue
+          continue  
         }
       } else {
         //console.log("case 3: red sibling")
@@ -19405,7 +19408,7 @@ function fixDoubleBlack(stack) {
         } else {
           //console.log("case 2: black sibling, black parent")
           p.left = repaint(RED, s)
-          continue
+          continue  
         }
       } else {
         //console.log("case 3: red sibling")
@@ -20026,7 +20029,7 @@ function fromRotationTranslation(out, q, v) {
     out[13] = v[1];
     out[14] = v[2];
     out[15] = 1;
-
+    
     return out;
 };
 },{}],84:[function(require,module,exports){
@@ -20152,8 +20155,8 @@ function invert(out, a) {
         // Calculate the determinant
         det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
-    if (!det) {
-        return null;
+    if (!det) { 
+        return null; 
     }
     det = 1.0 / det;
 
@@ -20285,7 +20288,7 @@ function multiply(out, a, b) {
         a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
 
     // Cache only the current line of the second matrix
-    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];  
     out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
     out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
     out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
@@ -20447,7 +20450,7 @@ function rotate(out, a, rad, axis) {
         b20, b21, b22;
 
     if (Math.abs(len) < 0.000001) { return null; }
-
+    
     len = 1 / len;
     x *= len;
     y *= len;
@@ -20667,7 +20670,7 @@ module.exports = str;
 function str(a) {
     return 'mat4(' + a[0] + ', ' + a[1] + ', ' + a[2] + ', ' + a[3] + ', ' +
                     a[4] + ', ' + a[5] + ', ' + a[6] + ', ' + a[7] + ', ' +
-                    a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' +
+                    a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' + 
                     a[12] + ', ' + a[13] + ', ' + a[14] + ', ' + a[15] + ')';
 };
 },{}],99:[function(require,module,exports){
@@ -20756,7 +20759,7 @@ function transpose(out, a) {
         out[14] = a[11];
         out[15] = a[15];
     }
-
+    
     return out;
 };
 },{}],101:[function(require,module,exports){
@@ -21676,7 +21679,7 @@ function rebuild(node, intervals) {
 function rebuildWithInterval(node, interval) {
   var intervals = node.intervals([])
   intervals.push(interval)
-  rebuild(node, intervals)
+  rebuild(node, intervals)    
 }
 
 function rebuildWithoutInterval(node, interval) {
@@ -21929,7 +21932,7 @@ function createIntervalTree(intervals) {
   leftPoints.sort(compareBegin)
   rightPoints.sort(compareEnd)
 
-  return new IntervalTreeNode(mid,
+  return new IntervalTreeNode(mid, 
     createIntervalTree(leftIntervals),
     createIntervalTree(rightIntervals),
     leftPoints,
@@ -22490,7 +22493,7 @@ function compileSurfaceProcedure(vertexFunc, faceFunc, phaseFunc, scalarArgs, or
 
   //Assemble arguments
   for(var i=0; i<arrayArgs; ++i) {
-    args.push(array(i))
+    args.push(array(i))  
   }
   for(var i=0; i<scalarArgs; ++i) {
     args.push(scalar(i))
@@ -22590,7 +22593,7 @@ function compileSurfaceProcedure(vertexFunc, faceFunc, phaseFunc, scalarArgs, or
 
   function fillEmptySlice(k) {
     for(var i=k-1; i>=0; --i) {
-      forLoopBegin(i, 0)
+      forLoopBegin(i, 0) 
     }
     var phaseFuncArgs = []
     for(var i=0; i<arrayArgs; ++i) {
@@ -22630,9 +22633,9 @@ function compileSurfaceProcedure(vertexFunc, faceFunc, phaseFunc, scalarArgs, or
     for(var i=0; i<scalarArgs; ++i) {
       phaseFuncArgs.push(scalar(i))
     }
-
+    
     code.push(pcube(0), "=", PHASES, "[", POINTER, "]=phase(", phaseFuncArgs.join(), ");")
-
+    
     //Read in other cube data
     for(var j=1; j<(1<<dimension); ++j) {
       code.push(pcube(j), "=", PHASES, "[", POINTER, "+", pdelta(j), "];")
@@ -22704,7 +22707,7 @@ function compileSurfaceProcedure(vertexFunc, faceFunc, phaseFunc, scalarArgs, or
           "face(", faceArgs.join(), ")}")
       }
     }
-
+    
     //Increment pointer, close off if statement
     code.push("}",
       POINTER, "+=1;")
@@ -22761,17 +22764,17 @@ function compileSurfaceProcedure(vertexFunc, faceFunc, phaseFunc, scalarArgs, or
     "return ", funcName ].join("")
 
   var proc = new Function(
-    "vertex",
-    "face",
-    "phase",
-    "mallocUint32",
+    "vertex", 
+    "face", 
+    "phase", 
+    "mallocUint32", 
     "freeUint32",
     procedureCode)
   return proc(
-    vertexFunc,
-    faceFunc,
-    phaseFunc,
-    pool.mallocUint32,
+    vertexFunc, 
+    faceFunc, 
+    phaseFunc, 
+    pool.mallocUint32, 
     pool.freeUint32)
 }
 
@@ -23402,8 +23405,8 @@ function planarDual(cells, positions) {
         var e = nbhd[k]
         var p = e[dir^1]
         var cmp = compareAngle(
-            positions[a],
-            positions[b],
+            positions[a], 
+            positions[b], 
             positions[nextVertex],
             positions[p])
         if(cmp > 0) {
@@ -23531,7 +23534,7 @@ function trimLeaves(edges, positions) {
       nedges.push([ newIndex[e[0]], newIndex[e[1]] ])
     }
   }
-
+  
   return [ nedges, npositions ]
 }
 },{"edges-to-adjacency-list":58}],143:[function(require,module,exports){
@@ -33984,7 +33987,7 @@ function orientation(n) {
   for(var i=0; i<n; ++i) {
     m[0][i] = "1"
     m[n-1][i] = "w"+i
-  }
+  } 
   for(var i=0; i<n; ++i) {
     if((i&1)===0) {
       pos.push.apply(pos,determinant(cofactor(m, i)))
@@ -34156,7 +34159,7 @@ var orientation4Exact = orientation(4)
 var CACHED = [
   function orientation0() { return 0 },
   function orientation1() { return 0 },
-  function orientation2(a, b) {
+  function orientation2(a, b) { 
     return b[0] - a[0]
   },
   function orientation3(a, b, c) {
@@ -34201,7 +34204,7 @@ var CACHED = [
     var adxcdy = adx * cdy
     var adxbdy = adx * bdy
     var bdxady = bdx * ady
-    var det = adz * (bdxcdy - cdxbdy)
+    var det = adz * (bdxcdy - cdxbdy) 
             + bdz * (cdxady - adxcdy)
             + cdz * (adxbdy - bdxady)
     var permanent = (Math.abs(bdxcdy) + Math.abs(cdxbdy)) * Math.abs(adz)
@@ -34276,7 +34279,7 @@ function robustProduct(a, b) {
   } else {
     for(var i=0; i<b.length; ++i) {
       r = robustSum(r, robustScale(a, b[i]))
-    }
+    }    
   }
   return r
 }
@@ -34344,12 +34347,12 @@ function checkCollinear(a0, a1, b0, b1) {
     var x0 = a0[d]
     var y0 = a1[d]
     var l0 = Math.min(x0, y0)
-    var h0 = Math.max(x0, y0)
+    var h0 = Math.max(x0, y0)    
 
     var x1 = b0[d]
     var y1 = b1[d]
     var l1 = Math.min(x1, y1)
-    var h1 = Math.max(x1, y1)
+    var h1 = Math.max(x1, y1)    
 
     if(h1 < l0 || h0 < l1) {
       return false
@@ -34511,7 +34514,7 @@ function robustSubtract(e, f) {
     y = b - bv
     if(y) {
       g[count++] = y
-    }
+    } 
     _x = q1 + x
     _bv = _x - q1
     _av = _x - _bv
@@ -34531,7 +34534,7 @@ function robustSubtract(e, f) {
     g[count++] = q1
   }
   if(!count) {
-    g[count++] = 0.0
+    g[count++] = 0.0  
   }
   g.length = count
   return g
@@ -34668,7 +34671,7 @@ function linearExpansionSum(e, f) {
     y = b - bv
     if(y) {
       g[count++] = y
-    }
+    } 
     _x = q1 + x
     _bv = _x - q1
     _av = _x - _bv
@@ -34688,7 +34691,7 @@ function linearExpansionSum(e, f) {
     g[count++] = q1
   }
   if(!count) {
-    g[count++] = 0.0
+    g[count++] = 0.0  
   }
   g.length = count
   return g
@@ -34703,7 +34706,7 @@ module.exports = UnionFind;
 function UnionFind(count) {
   this.roots = new Array(count);
   this.ranks = new Array(count);
-
+  
   for(var i=0; i<count; ++i) {
     this.roots[i] = i;
     this.ranks[i] = 0;
@@ -34826,9 +34829,9 @@ function compareCells(a, b) {
         return d
       }
       return min(l0+a[2], l1) - min(m0+b[2], m1)
-
+    
     //TODO: Maybe optimize n=4 as well?
-
+    
     default:
       var as = a.slice(0)
       as.sort()
@@ -35118,7 +35121,7 @@ function simplifyPolygon(cells, positions, minArea) {
   var outv = new Array(n)
   var weights = new Array(n)
   var dead = new Array(n)
-
+  
   //Initialize tables
   for(var i=0; i<n; ++i) {
     inv[i] = outv[i] = -1
@@ -35208,7 +35211,7 @@ function simplifyPolygon(cells, positions, minArea) {
         return i
       }
       heapSwap(i, next)
-      i = next
+      i = next      
     }
   }
 
@@ -35297,7 +35300,7 @@ function simplifyPolygon(cells, positions, minArea) {
   for(var i=heapCount>>1; i>=0; --i) {
     heapDown(i)
   }
-
+  
   //Kill vertices
   while(true) {
     var hmin = heapPop()
@@ -35766,7 +35769,7 @@ function buildSurfaceNets(order, dtype) {
           "function ", efName, "(m,", extraArgs.join(), "){switch(m){"
         ]
         extraFuncs.push(currentFunc)
-      }
+      }  
     }
     currentFunc.push("case ", (i&0x7f), ":")
     var crossings = new Array(dimension)
@@ -35799,7 +35802,7 @@ function buildSurfaceNets(order, dtype) {
             crossingCount[k] += 2
           } else {
             crossings[k].push("v" + j + "+v" + u)
-            crossingCount[k] -= 2
+            crossingCount[k] -= 2            
           }
           totalCrossings += 1
           for(var l=0; l<dimension; ++l) {
@@ -35829,7 +35832,7 @@ function buildSurfaceNets(order, dtype) {
         var weight = 0.5 * (crossings[k].length / totalCrossings)
         var shift = 0.5 + 0.5 * (bias[k] / totalCrossings)
         vertexStr.push("d" + k + "-" + shift + "-" + weight + "*(" + crossings[k].join("+") + cStr + ")/(" + denoms[k].join("+") + ")")
-
+        
       }
     }
     currentFunc.push("a.push([", vertexStr.join(), "]);",
@@ -36065,11 +36068,11 @@ exports.freeUint32 =
 exports.freeInt8 =
 exports.freeInt16 =
 exports.freeInt32 =
-exports.freeFloat32 =
+exports.freeFloat32 = 
 exports.freeFloat =
-exports.freeFloat64 =
-exports.freeDouble =
-exports.freeUint8Clamped =
+exports.freeFloat64 = 
+exports.freeDouble = 
+exports.freeUint8Clamped = 
 exports.freeDataView = freeTypedArray
 
 exports.freeArrayBuffer = freeArrayBuffer
@@ -37766,7 +37769,7 @@ module.exports = UnionFind;
 function UnionFind(count) {
   this.roots = new Array(count);
   this.ranks = new Array(count);
-
+  
   for(var i=0; i<count; ++i) {
     this.roots[i] = i;
     this.ranks[i] = 0;
@@ -42721,7 +42724,7 @@ Object.defineProperty(exports, 'commentRegex', {
 Object.defineProperty(exports, 'mapFileCommentRegex', {
   get: function getMapFileCommentRegex () {
     //Example (Extra space between slashes added to solve Safari bug. Exclude space in production):
-    //     / /# sourceMappingURL=foo.js.map
+    //     / /# sourceMappingURL=foo.js.map           
     return /(?:\/\/[@#][ \t]+sourceMappingURL=([^\s'"]+?)[ \t]*$)|(?:\/\*[@#][ \t]+sourceMappingURL=([^\*]+?)[ \t]*(?:\*\/){1}[ \t]*$)/mg;
   }
 });
@@ -69062,7 +69065,7 @@ $export.P = 8;   // proto
 $export.B = 16;  // bind
 $export.W = 32;  // wrap
 $export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
+$export.R = 128; // real proto method for `library` 
 module.exports = $export;
 },{"./_core":368,"./_ctx":369,"./_global":378,"./_hide":380}],376:[function(require,module,exports){
 module.exports = function(exec){
@@ -73174,7 +73177,7 @@ inherits(DestroyableTransform, Transform)
 DestroyableTransform.prototype.destroy = function(err) {
   if (this._destroyed) return
   this._destroyed = true
-
+  
   var self = this
   process.nextTick(function() {
     if (err)

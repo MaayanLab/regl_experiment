@@ -261,6 +261,9 @@ function run_viz(regl, assets){
   // generate draw_cells_props using buffers
   var draw_cells_props = make_draw_cells_props(arrs);
 
+  var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
+  var scaled_height = 0.5 / height_to_width;
+
   var spillover_tri_positions = [
     // left spillover rect
     {'pos': [[-1, 1], [-0.5, -1], [-1.0, -1]]},
@@ -271,12 +274,12 @@ function run_viz(regl, assets){
     {'pos': [[1, 1], [0.5,  1], [0.5, -1]]},
 
     // top spillover rect
-    {'pos': [[-0.5, 1], [-0.5, 0.373], [0.5, 1]]},
-    {'pos': [[ 0.5, 1], [0.5, 0.373], [-0.5, 0.373]]},
+    {'pos': [[-0.5, 1], [-0.5, scaled_height], [0.5, 1]]},
+    {'pos': [[ 0.5, 1], [0.5, scaled_height], [-0.5, scaled_height]]},
 
     // bottom spillover rect
-    {'pos': [[-0.5, -1], [-0.5, -0.373], [0.5, -1]]},
-    {'pos': [[ 0.5, -1], [0.5, -0.373], [-0.5, -0.373]]},
+    {'pos': [[-0.5, -1], [-0.5, -scaled_height], [0.5, -1]]},
+    {'pos': [[ 0.5, -1], [0.5, -scaled_height], [-0.5, -scaled_height]]},
   ]
 
   camera_type = 'mat'
