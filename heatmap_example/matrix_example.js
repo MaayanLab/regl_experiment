@@ -63,8 +63,8 @@ const draw_text_triangles = require('./draw_text_triangles')
 var draw_spillover_rects = require('./draw_spillover_rects')
   (regl, zoom_function);
 
-var draw_spillover_rects_2 = require('./draw_spillover_rects_2')
-  (regl, zoom_function);
+// var draw_spillover_rects_2 = require('./draw_spillover_rects_2')
+//   (regl, zoom_function);
 
 function run_viz(regl, assets){
 
@@ -322,7 +322,7 @@ function run_viz(regl, assets){
     // Static components (later prevent from redrawing)
     camera['static'].draw(() => {
       draw_text_triangles();
-      draw_spillover_rects_2(spillover_tri_positions);
+      draw_spillover_rects(spillover_tri_positions);
     });
 
   }

@@ -44,7 +44,9 @@ module.exports = function make_draw_cells_props(arrs){
       gl_Position = zoom *
                     vec4( position.x + pos_att.x,
                           position.y + pos_att.y,
-                          0,
+                          // positioned further down (spillover recst are
+                          // above at 0.5)
+                          0.75,
                           1
                         );
 
@@ -102,6 +104,13 @@ module.exports = function make_draw_cells_props(arrs){
       inst_color: [0,0,1],
     },
     instances: num_instances,
+    depth: {
+      enable: true,
+      mask: true,
+      func: 'less',
+      // func: 'greater',
+      range: [0, 1]
+    },
   };
 
   // draw top and bottom of matrix cells

@@ -88,7 +88,7 @@ const draw_text_triangles = regl({
   elements: text_vect.cells,
   uniforms: {
     zoom: zoom_function
-  }
+  },
 })
 
 function run_viz(regl, assets){
