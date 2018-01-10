@@ -60,11 +60,13 @@ var zoom_function = function(context){
 const draw_text_triangles = require('./draw_text_triangles')
   (regl, zoom_function);
 
-var draw_spillover_rects = require('./draw_spillover_rects')
-  (regl, zoom_function);
+var draw_spillover_rects = {};
+// inst_depth is passed to spillover rects
+draw_spillover_rects.mat = require('./draw_spillover_rects')
+  (regl, zoom_function, 0.5);
 
-// var draw_spillover_rects_2 = require('./draw_spillover_rects_2')
-//   (regl, zoom_function);
+draw_spillover_rects.corners = require('./draw_spillover_rects')
+  (regl, zoom_function, 0.4, [1, 0, 0, 1]);
 
 function run_viz(regl, assets){
 
@@ -264,7 +266,7 @@ function run_viz(regl, assets){
   var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
   var scaled_height = 0.5 / height_to_width;
 
-  var spillover_tri_positions = [
+  var spillover_positions_mat = [
     // left spillover rect
     {'pos': [[-1, 1], [-0.5, -1], [-1.0, -1]]},
     {'pos': [[-1, 1], [-0.5,  1], [-0.5, -1]]},
@@ -280,7 +282,25 @@ function run_viz(regl, assets){
     // bottom spillover rect
     {'pos': [[-0.5, -1], [-0.5, -scaled_height], [0.5, -1]]},
     {'pos': [[ 0.5, -1], [0.5, -scaled_height], [-0.5, -scaled_height]]},
-  ]
+  ];
+
+  var spillover_positions_corners = [
+    // left spillover rect
+    {'pos': [[-1, 1], [-0.5, scaled_height], [-1.0, scaled_height]]},
+    {'pos': [[-1, 1], [-0.5,  1], [-0.5, scaled_height]]},
+
+    // // right spillover rect
+    // {'pos': [[1, 1], [0.5, -1], [1.0, -1]]},
+    // {'pos': [[1, 1], [0.5,  1], [0.5, -1]]},
+
+    // // top spillover rect
+    // {'pos': [[-0.5, 1], [-0.5, scaled_height], [0.5, 1]]},
+    // {'pos': [[ 0.5, 1], [0.5, scaled_height], [-0.5, scaled_height]]},
+
+    // // bottom spillover rect
+    // {'pos': [[-0.5, -1], [-0.5, -scaled_height], [0.5, -1]]},
+    // {'pos': [[ 0.5, -1], [0.5, -scaled_height], [-0.5, -scaled_height]]},
+  ];
 
   camera_type = 'mat'
   function draw_commands(){
@@ -322,7 +342,8 @@ function run_viz(regl, assets){
     // Static components (later prevent from redrawing)
     camera['static'].draw(() => {
       draw_text_triangles();
-      draw_spillover_rects(spillover_tri_positions);
+      draw_spillover_rects.mat(spillover_positions_mat);
+      draw_spillover_rects.corners(spillover_positions_corners);
     });
 
   }
