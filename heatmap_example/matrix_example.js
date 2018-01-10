@@ -310,13 +310,13 @@ function run_viz(regl, assets){
     /* Row labels and dendrogram */
     camera['row-labels'].draw(() => {
       draw_labels['row']();
-      // draw_dendro['row']();
+      draw_dendro['row']();
     });
 
     /* Column labels and dendrogram */
     camera['col-labels'].draw(() => {
       draw_labels['col']();
-      // draw_dendro['col']();
+      draw_dendro['col']();
     });
 
     // Static components (later prevent from redrawing)

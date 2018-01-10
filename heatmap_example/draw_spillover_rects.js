@@ -28,7 +28,7 @@ module.exports = function draw_spillover_rects(regl, zoom_function){
     },
 
     uniforms: {
-      color: [0, 0, 1, 0.5],
+      color: [1, 1, 1, 1],
       // offset: regl.prop('pos')
     },
 
