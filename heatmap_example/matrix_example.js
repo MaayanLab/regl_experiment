@@ -66,7 +66,7 @@ draw_spillover_rects.mat = require('./draw_spillover_rects')
   (regl, zoom_function, 0.5);
 
 draw_spillover_rects.corners = require('./draw_spillover_rects')
-  (regl, zoom_function, 0.4, [1, 0, 0, 1]);
+  (regl, zoom_function, 0.4);
 
 function run_viz(regl, assets){
 
@@ -285,21 +285,22 @@ function run_viz(regl, assets){
   ];
 
   var spillover_positions_corners = [
-    // left spillover rect
+    // top-left spillover rect
     {'pos': [[-1, 1], [-0.5, scaled_height], [-1.0, scaled_height]]},
     {'pos': [[-1, 1], [-0.5,  1], [-0.5, scaled_height]]},
 
-    // // right spillover rect
-    // {'pos': [[1, 1], [0.5, -1], [1.0, -1]]},
-    // {'pos': [[1, 1], [0.5,  1], [0.5, -1]]},
+    // bottom-left spillover rect
+    {'pos': [[-1, -1], [-0.5, -scaled_height], [-1.0, -scaled_height]]},
+    {'pos': [[-1, -1], [-0.5,  -1], [-0.5, -scaled_height]]},
 
-    // // top spillover rect
-    // {'pos': [[-0.5, 1], [-0.5, scaled_height], [0.5, 1]]},
-    // {'pos': [[ 0.5, 1], [0.5, scaled_height], [-0.5, scaled_height]]},
+    // top-right spillover rect
+    {'pos': [[1, 1], [0.5, scaled_height], [1.0, scaled_height]]},
+    {'pos': [[1, 1], [0.5,  1], [0.5, scaled_height]]},
 
-    // // bottom spillover rect
-    // {'pos': [[-0.5, -1], [-0.5, -scaled_height], [0.5, -1]]},
-    // {'pos': [[ 0.5, -1], [0.5, -scaled_height], [-0.5, -scaled_height]]},
+    // bottom-right spillover rect
+    {'pos': [[1, -1], [0.5, -scaled_height], [1.0, -scaled_height]]},
+    {'pos': [[1, -1], [0.5,  -1], [0.5, -scaled_height]]},
+
   ];
 
   camera_type = 'mat'
